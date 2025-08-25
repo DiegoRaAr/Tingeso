@@ -24,7 +24,7 @@ public class EmployeeService {
     }
 
     // Find Employee by Id
-    public EmployeeEntity getAdminById(Long id){
+    public EmployeeEntity getEmployeeById(Long id){
         return employeeRepository.findById(id).get();
     }
 
@@ -34,8 +34,8 @@ public class EmployeeService {
     }
 
     //Update Employee
-    public EmployeeEntity updateClient(EmployeeEntity client){
-        return employeeRepository.save(client);
+    public EmployeeEntity updateEmployee(EmployeeEntity employee){
+        return employeeRepository.save(employee);
     }
 
     // Delaete Employee

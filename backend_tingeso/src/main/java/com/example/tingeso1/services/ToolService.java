@@ -32,10 +32,10 @@ public class ToolService {
         return toolRepository.save(toolEntity);
     }
 
-    // Delete Tool
-    public boolean deleteTool(ToolEntity toolEntity) throws Exception{
+    // Delete Tool by Id
+    public boolean deleteTool(Long id) throws Exception{
         try {
-            toolRepository.delete(toolEntity);
+            toolRepository.deleteById(id);
             return true;
         }catch (Exception e){
             throw new Exception(e.getMessage());
