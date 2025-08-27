@@ -14,12 +14,12 @@ public class ClientEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private Long id_client;
+    private Long idClient;
 
-    private String rut_client;
-    private String name_client;
-    private String state_client;
-    private String email_client;
-    private String phone_number;
+    private String rutClient;
+    private String nameClient;
+    private String stateClient;
+    private String emailClient;
+    private String phoneNumberClient;
 
 }

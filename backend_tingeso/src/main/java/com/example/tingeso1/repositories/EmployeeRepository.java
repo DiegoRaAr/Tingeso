@@ -8,8 +8,8 @@ import java.util.List;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> {
-    public EmployeeEntity findByRut_employee(String rut);
-    public EmployeeEntity findByName_employee(String name);
+    public EmployeeEntity findByRutEmployee(String rut);
+    public EmployeeEntity findByNameEmployee(String name);
 
-    List<EmployeeEntity> findByState_employee(String state);
+    List<EmployeeEntity> findByStateEmployee(String state);
 }

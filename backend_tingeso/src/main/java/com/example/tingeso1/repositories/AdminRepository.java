@@ -8,8 +8,8 @@ import java.util.List;
 
 @Repository
 public interface AdminRepository extends JpaRepository<AdminEntity, Long> {
-    public AdminEntity findByRut_admin(String rut);
-    public AdminEntity findByName_admin(String name);
+    public AdminEntity findByRutAdmin(String rut);
+    public AdminEntity findByNameAdmin(String name);
 
-    List<AdminEntity> findByState_admin(String state);
+    List<AdminEntity> findByStateAdmin(String state);
 }

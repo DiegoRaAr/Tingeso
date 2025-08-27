@@ -16,10 +16,10 @@ public class AdminEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private Long id_admin;
+    private Long idAdmin;
 
-    private String rut_admin;
-    private String name_admin;
-    private String state_admin;
-    private String password_admin;
+    private String rutAdmin;
+    private String nameAdmin;
+    private String stateAdmin;
+    private String passwordAdmin;
 }

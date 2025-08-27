@@ -6,9 +6,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ClientRepository extends JpaRepository<ClientEntity, Long> {
-    public ClientEntity findByRut_client(String rut);
-    public ClientEntity findByName_client(String name);
+    public ClientEntity findByRutClient(String rut);
+    public ClientEntity findByNameClient(String name);
 
-    public ClientEntity findAByState_client(String state);
+    public ClientEntity findAByStateClient(String state);
 
 }

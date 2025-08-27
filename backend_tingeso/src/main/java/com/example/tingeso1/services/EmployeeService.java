@@ -30,7 +30,7 @@ public class EmployeeService {
 
     // Find Employee by rut
     public EmployeeEntity getEmployeeByRut(String rut){
-        return  employeeRepository.findByRut_employee(rut);
+        return  employeeRepository.findByRutEmployee(rut);
     }
 
     //Update Employee

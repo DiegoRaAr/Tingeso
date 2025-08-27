@@ -32,7 +32,7 @@ public class AdminService {
 
     // find Admin by Rut
     public AdminEntity getAdminByRut(String rut){
-        return adminRepository.findByRut_admin(rut);
+        return adminRepository.findByRutAdmin(rut);
     }
 
     // Update Admin

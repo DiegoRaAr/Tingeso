@@ -30,7 +30,7 @@ public class ClientService {
 
     //Find Client by Rut
     public ClientEntity getClientByRut(String rut){
-        return clientRepository.findByRut_client(rut);
+        return clientRepository.findByRutClient(rut);
     }
 
     // Update Client

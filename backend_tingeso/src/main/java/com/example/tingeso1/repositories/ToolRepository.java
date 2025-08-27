@@ -8,10 +8,10 @@ import java.util.List;
 
 @Repository
 public interface ToolRepository extends JpaRepository<ToolEntity, Long> {
-    public ToolEntity findByName_tool(String name);
-    public ToolEntity findById_tool(long id);
+    public ToolEntity findByNameTool(String name);
+    public ToolEntity findByIdTool(long id);
 
-    List<ToolEntity> findByCategory_tool(String category);
-    List<ToolEntity> findByState_tool(String state);
-    List<ToolEntity> findByDaily_charge(int daily_charge);
+    List<ToolEntity> findByCategoryTool(String category);
+    List<ToolEntity> findByStateTool(String state);
+    List<ToolEntity> findByDailyCharge(int daily_charge);
 }

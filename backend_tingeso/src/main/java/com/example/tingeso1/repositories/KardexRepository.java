@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface KardexRepository extends JpaRepository<KardexEntity,Long> {
-    public KardexEntity findById_kardex(Long id);
+    public KardexEntity findByIdKardex(Long id);
 
-    List<KardexEntity> findByDate_kardexBetween(Date startdate, Date enddate);
+    List<KardexEntity> findByDateKardexBetween(Date startdate, Date enddate);
 }

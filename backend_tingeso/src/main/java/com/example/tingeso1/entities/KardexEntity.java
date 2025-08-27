@@ -16,7 +16,7 @@ public class KardexEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private Long id_kardex;
+    private Long idKardex;
 
-    private Date date_kardex;
+    private Date dateKardex;
 }

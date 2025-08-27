@@ -9,8 +9,8 @@ import java.util.List;
 
 @Repository
 public interface LoanRepository extends JpaRepository<LoanEntity, Long> {
-    public LoanEntity  findById_loan(Long loanId);
+    public LoanEntity  findByIdLoan(Long loanId);
 
-    List<LoanEntity> findByInit_dateBetween(Date start, Date end);
-    List<LoanEntity> findByState_loan(String state);
+    List<LoanEntity> findByInitDateBetween(Date start, Date end);
+    List<LoanEntity> findByStateLoan(String state);
 }

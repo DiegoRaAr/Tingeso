@@ -15,14 +15,14 @@ public class ToolEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private Long id_tool;
+    private Long idTool;
 
-    private String name_tool;
-    private String category_tool;
-    private int total_value;
-    private String state_tool;
-    private int stock_tool;
-    private int repair_charge;
-    private int daily_charge;
-    private int late_charge;
+    private String nameTool;
+    private String categoryTool;
+    private int totalValue;
+    private String stateTool;
+    private int stockTool;
+    private int repairCharge;
+    private int dailyCharge;
+    private int lateCharge;
 }

@@ -17,12 +17,12 @@ public class LoanEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private Long id_loan;
+    private Long idLoan;
 
-    private Date init_date;
-    private LocalTime hour_loan;
-    private Date end_date;
-    private String state_loan;
-    private int penalty_loan;
+    private Date initDate;
+    private LocalTime hourLoan;
+    private Date endDate;
+    private String stateLoan;
+    private int penaltyLoan;
 
 }
