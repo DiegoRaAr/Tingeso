@@ -29,7 +29,7 @@ public class AdminController {
         return ResponseEntity.ok(admin);
     }
 
-    // Create a Admin
+    // Create a Admin-
     @PostMapping("/")
     public ResponseEntity<AdminEntity> saveAdmin(@RequestBody AdminEntity adminEntity){
         AdminEntity newAdmin = adminService.saveAdmin(adminEntity);

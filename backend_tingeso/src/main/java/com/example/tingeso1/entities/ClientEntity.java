@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "client")
 @Data
@@ -22,4 +24,7 @@ public class ClientEntity {
     private String emailClient;
     private String phoneNumberClient;
 
+    @ManyToOne
+    @JoinColumn(name = "idLoan", referencedColumnName = "idLoan")
+    private LoanEntity idloan;
 }

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.List;
+
 @Entity
 @Table(name = "admin")
 @Data
@@ -22,4 +24,36 @@ public class AdminEntity {
     private String nameAdmin;
     private String stateAdmin;
     private String passwordAdmin;
+
+    @ManyToMany
+    @JoinTable(
+            name = "admin_loan",
+            joinColumns = @JoinColumn(name = "idAdmin"),
+            inverseJoinColumns = @JoinColumn(name = "idLoan")
+    )
+    private List<LoanEntity> loan;
+
+    @ManyToMany
+    @JoinTable(
+            name = "admin_client",
+            joinColumns = @JoinColumn(name = "idAdmin"),
+            inverseJoinColumns = @JoinColumn(name = "idClient")
+    )
+    private List<ClientEntity> client;
+
+    @ManyToMany
+    @JoinTable(
+            name = "admin_tool",
+            joinColumns = @JoinColumn(name = "idAdmin"),
+            inverseJoinColumns = @JoinColumn(name = "idTool")
+    )
+    private List<ToolEntity> tool;
+
+    @ManyToMany
+    @JoinTable(
+            name = "admin_employee",
+            joinColumns = @JoinColumn(name = "idAdmin"),
+            inverseJoinColumns = @JoinColumn(name = "idEmployee")
+    )
+    private List<EmployeeEntity> employee;
 }

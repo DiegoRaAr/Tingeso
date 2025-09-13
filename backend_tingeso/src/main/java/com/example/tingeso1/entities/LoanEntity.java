@@ -25,4 +25,15 @@ public class LoanEntity {
     private String stateLoan;
     private int penaltyLoan;
 
+    @ManyToOne
+    @JoinColumn(name = "idTool", referencedColumnName = "idTool")
+    private ToolEntity idTool;
+
+    @ManyToOne
+    @JoinColumn(name = "idEmployee", referencedColumnName = "idEmployee")
+    private EmployeeEntity idEmployee;
+
+    @ManyToOne
+    @JoinColumn(name = "idKardex", referencedColumnName = "idKardex")
+    private KardexEntity idKardex;
 }
