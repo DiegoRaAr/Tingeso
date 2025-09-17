@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "kardex")
@@ -19,4 +20,13 @@ public class KardexEntity {
     private Long idKardex;
 
     private Date dateKardex;
+    private String state_tool;
+
+    @ManyToMany
+    @JoinTable(
+            name = "kardex_tool",
+            joinColumns = @JoinColumn(name = "idKardex"),
+            inverseJoinColumns = @JoinColumn(name = "idTool")
+    )
+    private List<ToolEntity> tool;
 }

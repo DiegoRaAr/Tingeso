@@ -1,0 +1,104 @@
+import { useState } from "react";
+import clientService from "../services/client.service";
+
+const AddClient = () => {
+
+  const [client, setClient] = useState({
+    rutClient: "",
+    nameClient: "",
+    stateClient: "ACTIVO",
+    emailClient: "",
+    phoneNumberClient: ""
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setClient({
+      ...client,
+      [name]: type === 'checkbox' ? checked : value 
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    clientService.createClient(client)
+      .then(response => {
+        alert("Cliente añadido con éxito");
+        setClient({
+          rutClient: "",
+          nameClient: "",
+          stateClient: "ACTIVO",
+          emailClient: "",
+          phoneNumberClient: ""
+        });
+      })
+      .catch(error => {
+        console.log("Error al añadir cliente", error);
+      });
+  };
+
+
+  return (
+    <div>
+      <h1 className="text-start my-1 mb-4">Añadir un nuevo cliente</h1>
+      <h5 className="text-start my-3 mb-4">Datos del cliente:</h5>
+
+      
+      
+      <form onSubmit={handleSubmit}>
+                <div className="mb-4 text-start">
+                    <label htmlFor="rutClient" className="form-label">Rut Cliente</label>
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        id="rutClient" 
+                        name="rutClient"
+                        value={client.rutClient}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div className="mb-4 text-start">
+                    <label htmlFor="nameclient" className="form-label">Nombre Cliente</label>
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        id="nameClient"
+                        name="nameClient"
+                        value={client.nameClient}
+                        onChange={handleChange} 
+                    />
+                </div>
+
+                <div className="mb-4 text-start">
+                    <label htmlFor="emailClient" className="form-label">Correo electronico Cliente</label>
+                    <input 
+                        type="email" 
+                        className="form-control" 
+                        id="emailClient" 
+                        name="emailClient"
+                        value={client.emailClient}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div className="mb-4 text-start">
+                    <label htmlFor="phoneNumberClient" className="form-label">Numero de telefono</label>
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        id="phoneNumbreClient"
+                        name="phoneNumberClient"
+                        value={client.phoneNumberClient}
+                        onChange={handleChange} 
+                    />
+                </div>
+                <button type="submit" className="btn btn-primary">Añadir Cliente</button>
+            </form>
+
+    </div>
+  );
+};
+
+export default AddClient;
+
