@@ -7,6 +7,8 @@ const Home = () => {
 
     const [tools, setTools] = useState([]);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         toolService.getAllTools()
             .then(response => {
@@ -42,13 +44,28 @@ const Home = () => {
                             <td>{tool.dailyCharge}</td>
                             <td>{tool.stockTool}</td>
                             <div class="d-grid gap-2 d-md-block">
-                            <button class="btn btn-danger mx-4" type="button">Dar de baja</button>
+                            <button 
+                                className="btn btn-danger mx-4" 
+                                type="button" 
+                                onClick={async () => {
+                                    if (confirm('¿Eliminar herramienta?')) {
+                                    await toolService.deleteTool(tool.idTool);
+                                    window.location.reload(); // Recarga la página
+                                    }
+                                }}
+                                >
+                                Dar de baja
+                                </button>
                             <button class="btn btn-warning bg-" type="button">Editar</button>
                             </div>
                         </tr>
                     ))}
                 </tbody>
                 </table>
+
+            <button class="btn btn-primary mx-2" type="button" onClick={() => navigate(`/add-tool`)}>Agregar herramienta</button>
+            <button class="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
+
         </div>
         
     );

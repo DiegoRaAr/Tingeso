@@ -45,4 +45,10 @@ public class ClientController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/by-rut/{rut}")
+    public ResponseEntity<ClientEntity> getClientByRut(@PathVariable String rut){
+        ClientEntity client = clientService.getClientByRut(rut);
+        return ResponseEntity.ok(client);
+    }
+    
 }

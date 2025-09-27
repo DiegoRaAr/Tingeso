@@ -1,7 +1,10 @@
 import { useState } from "react";
 import clientService from "../services/client.service";
+import { useNavigate } from "react-router-dom";
 
 const AddClient = () => {
+
+  const navigate = useNavigate();
 
   const [client, setClient] = useState({
     rutClient: "",
@@ -96,6 +99,7 @@ const AddClient = () => {
                 <button type="submit" className="btn btn-primary">Añadir Cliente</button>
             </form>
 
+      <button class="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/admin-client`)}>Volver</button>
     </div>
   );
 };

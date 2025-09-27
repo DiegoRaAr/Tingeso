@@ -1,7 +1,10 @@
 import toolService from "../services/tool.service";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AddTool = () => {
+
+    const navigate = useNavigate();
 
     const [tool, setTool] = useState({
         nameTool: "",
@@ -127,6 +130,8 @@ const AddTool = () => {
                 </div>
                 <button type="submit" className="btn btn-primary">Añadir herramienta</button>
             </form>
+
+            <button class="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/home`)}>Volver</button>
         </div>
     );
 }

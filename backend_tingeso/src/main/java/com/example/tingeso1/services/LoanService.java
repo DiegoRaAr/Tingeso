@@ -1,11 +1,13 @@
 package com.example.tingeso1.services;
 
 import com.example.tingeso1.entities.LoanEntity;
+import com.example.tingeso1.repositories.ClientRepository;
 import com.example.tingeso1.repositories.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class LoanService {
@@ -40,5 +42,10 @@ public class LoanService {
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }
+    }
+
+    // Get loan by rut client
+    public List<LoanEntity> findByRutClient(String rut){
+        return loanRepository.findByIdClient_RutClient(rut);
     }
 }

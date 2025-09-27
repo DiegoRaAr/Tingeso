@@ -43,6 +43,11 @@ public class LoanController {
         return ResponseEntity.ok(loanUpdated);
     }
 
+    @GetMapping("/by-rut/{rut}")
+    public ResponseEntity<List<LoanEntity>> getLoansByRut(@PathVariable String rut){
+        return ResponseEntity.ok(loanService.findByRutClient(rut));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteLoanByID(@PathVariable Long id) throws Exception{
         var isDeleted = loanService.deleteLoan(id);

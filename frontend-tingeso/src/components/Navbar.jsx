@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import '../App.css';
 
 const Navbar = () => (
-    <nav className="navbar navbar-dark bg-primary fixed-top">
+    <nav className="navbar navbar-dark bg-navbar fixed-top">
       <div className="container-fluid">
         <a className="navbar-brand" href="#">Sistema de prestamo de herramientas</a>
         <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
@@ -17,22 +17,13 @@ const Navbar = () => (
           <div className="offcanvas-body">
             <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
               <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/">Lista de herramientas</Link>
+                <Link className="nav-link" to="/">Inicio</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/add-tool">Registar herramienta</Link>
+                <Link className="nav-link" to="/home">Herramientas</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/admin-client">Lista de clientes</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/add-client">Registrar cliente</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/make-loan">Realizar prestamo</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/finish-loan">Registrar devolución</Link>
+                <Link className="nav-link" to="/admin-client">Clientes</Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/kardex">Ver kardex</Link>

@@ -27,13 +27,18 @@
 }
 
 body {
-  background-color: #f7e5b1;
+  background-color: #e7e7e7;
 }
 
 .bg-custom-yellow {
-  background-color: #eeca5d;
+  background-color: #F5F5F5;
 }
 
 .bg-red {
   background-color: #ee0000;
+}
+
+.bg-navbar {
+  background-color: #1e3a8a;
+  color: white;
 }

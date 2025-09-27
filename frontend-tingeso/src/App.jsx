@@ -10,6 +10,7 @@ import MakeLoan from "./components/MakeLoan";
 import FinishLoan from "./components/FinishLoan";
 import Kardex from "./components/Kardex";
 import Reports from "./components/Reports";
+import ViewLoanClient from "./components/ViewLoanClient";
 
 function App() {
 
@@ -18,16 +19,17 @@ function App() {
         <Navbar />
         <div className="container bg-white p-4 p-md-5 my-5 rounded-5 shadow-sm">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Start />} />
             <Route path="/home" element={<Home />} />
             <Route path="/add-tool" element={<AddTool />} />
             <Route path="/start" element={<Start />} />
             <Route path="/admin-client" element={<AdminClient />} />
             <Route path="/add-client" element={<AddClient />} />
-            <Route path="/make-loan" element={<MakeLoan />} />
+            <Route path="/make-loan/:rut" element={<MakeLoan />} />
             <Route path="/finish-loan" element={<FinishLoan />} />
             <Route path="/kardex" element={<Kardex />} />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/loans-by-rut/:rut" element={<ViewLoanClient />} />
           </Routes>
         </div>
     </BrowserRouter>

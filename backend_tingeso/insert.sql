@@ -14,11 +14,16 @@ INSERT INTO kardex (id_kardex, date_kardex, state_tool) VALUES
 (4, '2025-08-29', "NUEVA");
 
 
-INSERT INTO tool (id_tool, category_tool, daily_charge, late_charge, name_tool, repair_charge, state_tool, stock_tool, total_value, id_employee) VAlUES
-(1, "Manual", 4590, 5199, "Martillo", "21250", "BUENA", 3, 21250,  1),
-(2, "Electrica", 18990, 29900, "Motosierra", "109900", "BUENA", 1, 120650, 2);
+INSERT INTO tool (id_tool, category_tool, daily_charge, late_charge, name_tool, repair_charge, state_tool, stock_tool, total_value) VAlUES
+(1, "Manual", 4590, 5199, "Martillo", "21250", "BUENA", 3, 21250),
+(2, "Electrica", 18990, 29900, "Motosierra", "109900", "BUENA", 1, 120650);
 
-INSERT INTO loan (id_loan, end_date, hour_loan, init_date, penalty_loan, state_loan, id_employee) VALUES
+INSERT INTO client (id_client, email_client, name_client, phone_number_client, rut_client, state_client) VALUES
+(1, "marco.h@gmail.com", "Marco hernandez", "+56926108472", "21.307.176-k", "ACTIVO"),
+(2, "andrea.e@gmail.com", "Andrea Esteves", "+56920329105", "22.235.245-1", "ACTIVO"),
+(3, "carlos.m@gmail.com", "Carlos Muñoz", "+56981234567", "18.456.789-2", "ACTIVO");
+
+INSERT INTO loan (id_loan, end_date, hour_loan, init_date, penalty_loan, state_loan, id_client) VALUES
 (1, '2025-09-11', '10:32:45', '2025-09-02', 0, "ACTIVO", 1),
 (2, '2025-09-05', '11:54:12', '2025-08-15', 0, "ACTIVO", 2),
 (3, '2025-09-26', '15:39:36', '2025-09-06', 15980, "FINALIZADO",3);
@@ -35,10 +40,7 @@ INSERT INTO kardex_tool(id_kardex,id_tool) VALUES
 (4,2);
 
 
-INSERT INTO client (id_client, email_client, name_client, phone_number_client, rut_client, state_client, id_loan) VALUES
-(1, "marco.h@gmail.com", "Marco hernandez", "+56926108472", "21.307.176-k", "ACTIVO",1),
-(2, "andrea.e@gmail.com", "Andrea Esteves", "+56920329105", "22.235.245-1", "ACTIVO",2),
-(3, "carlos.m@gmail.com", "Carlos Muñoz", "+56981234567", "18.456.789-2", "ACTIVO",3);
+
 
 INSERT INTO admin_client(id_admin,id_client) VALUES
 (1,1),

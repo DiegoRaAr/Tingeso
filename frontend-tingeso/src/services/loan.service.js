@@ -1,4 +1,4 @@
-import httpLoan from '../http-common-loan';
+import httpLoan from '../http-common';
 
 const getAllLoans = () => {
     return httpLoan.get('/api/v1/loan/');
@@ -20,4 +20,8 @@ const deleteLoan = id => {
     return httpLoan.delete(`/api/v1/loan/${id}`);
 }
 
-export default { getAllLoans, createLoan, getLoanById, updateLoan, deleteLoan };
+const getLoansByRut = rut => {
+    return httpLoan.get(`/api/v1/loan/by-rut/${rut}`);
+}
+
+export default { getAllLoans, createLoan, getLoanById, updateLoan, deleteLoan , getLoansByRut};

@@ -23,8 +23,4 @@ public class ClientEntity {
     private String stateClient;
     private String emailClient;
     private String phoneNumberClient;
-
-    @ManyToOne
-    @JoinColumn(name = "idLoan", referencedColumnName = "idLoan")
-    private LoanEntity idloan;
 }

@@ -35,7 +35,7 @@ public class LoanEntity {
     private List<ToolEntity> tool;
 
     @ManyToOne
-    @JoinColumn(name = "idEmployee", referencedColumnName = "idEmployee")
-    private EmployeeEntity idEmployee;
+    @JoinColumn(name = "idClient", referencedColumnName = "idClient")
+    private ClientEntity idClient;
 
 }

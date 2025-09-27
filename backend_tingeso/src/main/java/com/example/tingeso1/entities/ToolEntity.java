@@ -26,7 +26,4 @@ public class ToolEntity {
     private int dailyCharge;
     private int lateCharge;
 
-    @ManyToOne
-    @JoinColumn(name = "idEmployee", referencedColumnName = "idEmployee")
-    private EmployeeEntity idEmployee;
 }

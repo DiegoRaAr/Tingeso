@@ -1,8 +1,11 @@
 import React, {use, useEffect, useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 import clientService from '../services/client.service';
 import '../App.css';
 
 const AdminClient = () => {
+
+  const navigate = useNavigate();
 
   const [clients, setClients] = React.useState([]);
 
@@ -19,6 +22,10 @@ const AdminClient = () => {
   return (
     <div>
       <h2 className='text-start my-1 mb-4'>Lista de clientes</h2>
+      <div className="d-flex gap-2 mb-3">
+        <input className="form-control" type="search" placeholder="Search" aria-label="Search" />
+        <button className="btn btn-outline-success" type="submit">Search</button>
+      </div>
       <table className="table table-striped table-hover align-middle">
                 <thead>
                     <tr>
@@ -36,13 +43,46 @@ const AdminClient = () => {
                             <td>{client.stateClient}</td>
                             <td>{client.phoneNumberClient}</td>
                             <div class="d-grid gap-2 d-md-block">
-                            <button class="btn btn-danger mx-4" type="button">Dar de baja</button>
-                            <button class="btn btn-warning bg-" type="button">Editar</button>
+
+                            <button 
+                              class="btn btn-danger mx-2"
+                              type="button"
+                              
+                            >
+                              Dar de baja
+                              </button>
+
+                            <button 
+                              class="btn btn-warning mx-2" 
+                              type="button"
+                              >
+                                Editar
+                                </button>
+
+                            <button 
+                              class="btn btn-info mx-2" 
+                              type="button" 
+                              onClick= {() => navigate(`/loans-by-rut/${client.rutClient}`)}
+                            >
+                              Ver prestamos
+                              </button>
+
+                            <button 
+                              class="btn btn-success mx-2" 
+                              type="button" 
+                              onClick= {() => navigate(`/make-loan/${client.rutClient}`)}
+                            >
+                              Iniciar prestamo
+                              </button>
+
                             </div>
                         </tr>
                     ))}
                 </tbody>
                 </table>
+
+            <button class="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/add-client`)}>Agregar cliente</button>
+            <button class="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
       
     </div>
   );
