@@ -16,6 +16,15 @@ const ViewLoanClient = () => {
 
   const { rut } = useParams();
   const navigate = useNavigate();
+  const [tools, setTools] = useState([]);
+  const [showTools, setShowTools] = useState({});
+  
+  const toggleTools = (loanId) => {
+    setShowTools(prev => ({
+      ...prev,
+      [loanId]: !prev[loanId]
+    }));
+  }
 
   useEffect(() => {
     clientService.getClientByRut(rut)
@@ -49,32 +58,63 @@ const ViewLoanClient = () => {
             <th>Hora de prestamo</th>
             <th>Fecha de fin</th>
             <th>Estado</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {loans.map(loan => (
-            <tr key={loan.idLoan}>
-              <td>{loan.idLoan}</td>
-              <td>{loan.initDate}</td>
-              <td>{loan.hourLoan}</td>
-              <td>{loan.endDate}</td>
-              <td>{loan.stateLoan}</td>
-
-              <button 
-                class="btn btn-danger mx-2" 
-                type="button"
-                >
-                Finalizar prestamo
-                </button>
-
-
-            </tr>
+            <React.Fragment key={loan.idLoan}>
+              <tr>
+                <td>{loan.idLoan}</td>
+                <td>{loan.initDate}</td>
+                <td>{loan.hourLoan}</td>
+                <td>{loan.endDate}</td>
+                <td>{loan.stateLoan}</td>
+                <td>
+                  <button 
+                    className="btn btn-danger mx-2" 
+                    type="button"
+                    >
+                    Finalizar prestamo
+                    </button>
+                  <button 
+                    className="btn btn-info mx-2" 
+                    type="button"
+                    onClick={() => toggleTools(loan.idLoan)}
+                    >
+                    <i className={`bi bi-chevron-${showTools[loan.idLoan] ? 'up' : 'down'}`}></i>
+                    {showTools[loan.idLoan] ? 'Ocultar' : 'Ver'} herramientas
+                    </button>
+                </td>
+              </tr>
+              {showTools[loan.idLoan] && (
+                <tr>
+                  <td colSpan="6">
+                    <div className="card card-body">
+                      <h6>Herramientas del préstamo:</h6>
+                      {loan.tool && loan.tool.length > 0 ? (
+                        <div className="d-flex flex-wrap gap-2">
+                          {loan.tool.map(tool => (
+                            <span key={tool.idTool} className="badge bg-primary">
+                              {tool.nameTool} - {tool.categoryTool}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-muted">No hay herramientas asociadas</p>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
+          
         </tbody>
       </table>
 
       <button 
-                class="btn btn-primary mx-2" 
+                className="btn btn-primary mx-2" 
                 type="button"
                 onClick={() => navigate(`/admin-client`)}
                 >

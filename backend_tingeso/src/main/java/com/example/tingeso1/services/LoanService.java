@@ -5,6 +5,7 @@ import com.example.tingeso1.repositories.ClientRepository;
 import com.example.tingeso1.repositories.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.tingeso1.entities.ToolEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,5 +48,11 @@ public class LoanService {
     // Get loan by rut client
     public List<LoanEntity> findByRutClient(String rut){
         return loanRepository.findByIdClient_RutClient(rut);
+    }
+
+    // Get tools by loan id
+    public List<ToolEntity> getToolsByLoanId(Long id){
+        LoanEntity loan = loanRepository.findByIdLoan(id);
+        return loan.getTool();
     }
 }

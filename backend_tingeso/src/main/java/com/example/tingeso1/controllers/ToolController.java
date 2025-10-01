@@ -45,4 +45,12 @@ public class ToolController {
         var isDeleted = toolService.deleteTool(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/add-tool-number/{id}")
+    public ResponseEntity<Boolean> addToolNumber(@PathVariable Long id, @RequestBody int number) throws Exception {
+        toolService.addToolNumber(id, number);
+        return ResponseEntity.noContent().build();
+    }
+
+    
 }

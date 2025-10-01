@@ -7,6 +7,7 @@ import com.example.tingeso1.services.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.tingeso1.entities.ToolEntity;
 
 import java.util.List;
 
@@ -52,5 +53,10 @@ public class LoanController {
     public ResponseEntity<Boolean> deleteLoanByID(@PathVariable Long id) throws Exception{
         var isDeleted = loanService.deleteLoan(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/tools-by-loan/{id}")
+    public ResponseEntity<List<ToolEntity>> getToolsByLoanId(@PathVariable Long id){
+        return ResponseEntity.ok(loanService.getToolsByLoanId(id));
     }
 }

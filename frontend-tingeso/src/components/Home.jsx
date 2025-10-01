@@ -6,7 +6,13 @@ import '../App.css';
 const Home = () => {
 
     const [tools, setTools] = useState([]);
-
+    const addToolNumber = (id, number) => {
+        toolService.addToolNumber(id, number)
+        window.location.reload()
+            .then(response => {
+                alert("Herramienta agregada con éxito");
+            })
+    }
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -35,36 +41,41 @@ const Home = () => {
                     <th scope="col">Stock</th>
                     </tr>
                 </thead>
-                <tbody class="table-group-divider">
-                    {tools.map((tool) => (
-                        <tr key={tool.id}>
-                            <th scope="row">{tool.idTool}</th>
-                            <td>{tool.nameTool}</td>
-                            <td>{tool.categoryTool}</td>
-                            <td>{tool.dailyCharge}</td>
-                            <td>{tool.stockTool}</td>
-                            <div class="d-grid gap-2 d-md-block">
-                            <button 
-                                className="btn btn-danger mx-4" 
-                                type="button" 
-                                onClick={async () => {
-                                    if (confirm('¿Eliminar herramienta?')) {
-                                    await toolService.deleteTool(tool.idTool);
-                                    window.location.reload(); // Recarga la página
-                                    }
-                                }}
+                <tbody className="table-group-divider">
+                {tools.map((tool) => (
+                    <tr key={tool.idTool}>
+                        <th scope="row">{tool.idTool}</th>
+                        <td>{tool.nameTool}</td>
+                        <td>{tool.categoryTool}</td>
+                        <td>{tool.dailyCharge}</td>
+                        <td>{tool.stockTool}</td>
+                        <td>
+                            <div className="d-grid gap-2 d-md-block">
+                                <button 
+                                    className="btn btn-danger mx-2" 
+                                    type="button" 
+                                    onClick={async () => {
+                                        if (confirm('¿Eliminar herramienta?')) {
+                                            await toolService.deleteTool(tool.idTool);
+                                            window.location.reload();
+                                        }
+                                    }}
                                 >
-                                Dar de baja
+                                    Dar de baja
                                 </button>
-                            <button class="btn btn-warning bg-" type="button">Editar</button>
+                                <button className="btn btn-warning mx-2" type="button">Editar</button>
+                                <button className="btn btn-success mx-2" type="button" onClick={() => addToolNumber(tool.idTool,1)}>Agregar herramienta</button>
+                                <button className="btn btn-warning mx-2" type="button" onClick={() => addToolNumber(tool.idTool,-1)}>Quitar herramienta</button>
                             </div>
-                        </tr>
-                    ))}
+                        </td>
+                    </tr>
+                ))}
                 </tbody>
                 </table>
 
-            <button class="btn btn-primary mx-2" type="button" onClick={() => navigate(`/add-tool`)}>Agregar herramienta</button>
-            <button class="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
+            <button className="btn btn-primary mx-2" type="button" onClick={() => navigate(`/add-tool`)}>Agregar herramienta</button>
+            <button className="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
+            
 
         </div>
         

@@ -55,7 +55,10 @@ const AddTool = () => {
                     <input 
                         type="text" 
                         className="form-control" 
-                        id="nameTool" 
+                        id="nameTool"
+                        required
+                        minLength="4" 
+                        maxLength="50"
                         name="nameTool"
                         value={tool.nameTool}
                         onChange={handleChange}
@@ -70,8 +73,9 @@ const AddTool = () => {
                         name="categoryTool"
                         value={tool.categoryTool}
                         onChange={handleChange}
+                        required
                     >
-                        <option selected>Selecciona una opción</option>
+                        <option value="">Selecciona una opción</option>
                         <option value="Manual">Manual</option>
                         <option value="Electrica">Electrica</option>
                         <option value="Pedestal">Pedestal</option>
@@ -84,6 +88,7 @@ const AddTool = () => {
                         type="number" 
                         className="form-control" 
                         id="totalValueTool"
+                        min="1"
                         name="totalValueTool"
                         value={tool.totalValueTool}
                         onChange={handleChange} 
@@ -97,6 +102,7 @@ const AddTool = () => {
                         className="form-control" 
                         id="repairCharge" 
                         name="repairCharge"
+                        min="1"
                         value={tool.repairCharge}
                         onChange={handleChange}
                     />
@@ -109,6 +115,7 @@ const AddTool = () => {
                         className="form-control" 
                         id="dailyCharge"
                         name="dailyCharge"
+                        min="1"
                         value={tool.dailyCharge}
                         onChange={handleChange} 
                     />
@@ -121,13 +128,12 @@ const AddTool = () => {
                         className="form-control" 
                         id="lateCharge"
                         name="lateCharge"
+                        min="1"
                         value={tool.lateCharge}
                         onChange={handleChange}
                     />
                 </div>
-                <div className="mb-4 form-check">
-                    <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-                </div>
+                
                 <button type="submit" className="btn btn-primary">Añadir herramienta</button>
             </form>
 

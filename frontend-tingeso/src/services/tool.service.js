@@ -20,4 +20,8 @@ const deleteTool = id => {
     return httpTool.delete(`/api/v1/tool/${id}`);
 }
 
-export default { getAllTools, createTool, getToolById, updateTool, deleteTool };
+const addToolNumber = (id, number) => {
+    return httpTool.put(`/api/v1/tool/add-tool-number/${id}`, number);
+}
+
+export default { getAllTools, createTool, getToolById, updateTool, deleteTool, addToolNumber };

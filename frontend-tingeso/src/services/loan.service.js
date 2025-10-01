@@ -24,4 +24,8 @@ const getLoansByRut = rut => {
     return httpLoan.get(`/api/v1/loan/by-rut/${rut}`);
 }
 
-export default { getAllLoans, createLoan, getLoanById, updateLoan, deleteLoan , getLoansByRut};
+const getToolsByLoanId = id => {
+    return httpLoan.get(`/api/v1/loan/tools-by-loan/${id}`);
+}
+
+export default { getAllLoans, createLoan, getLoanById, updateLoan, deleteLoan , getLoansByRut, getToolsByLoanId};

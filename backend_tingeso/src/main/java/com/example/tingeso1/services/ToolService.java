@@ -41,4 +41,14 @@ public class ToolService {
             throw new Exception(e.getMessage());
         }
     }
+
+    // Add one at stock tool
+    public void addToolNumber(Long id, int number) throws Exception{
+        ToolEntity tool = toolRepository.findById(id).get();
+        tool.setStockTool(tool.getStockTool() + number);
+        if(tool.getStockTool() < 0){
+            throw new Exception("No hay suficiente stock de la herramienta");
+        }
+        toolRepository.save(tool);
+    }
 }
