@@ -7,16 +7,15 @@ INSERT INTO employee (id_employee, name_employee, password_employee, rut_employe
 (2, "Manuel Rojas", "manu1234ro", "12.634.961-8", "ACTIVO"),
 (3, "Camila Fuentes", "camiF2023", "15.987.234-1", "ACTIVO");
 
-INSERT INTO kardex (id_kardex, date_kardex, state_tool) VALUES
-(1, '2025-08-28', "NUEVA"),
-(2, '2025-08-28', "NUEVA"),
-(3, '2025-08-28', "NUEVA"),
-(4, '2025-08-29', "NUEVA");
-
-
 INSERT INTO tool (id_tool, category_tool, daily_charge, late_charge, name_tool, repair_charge, state_tool, stock_tool, total_value) VAlUES
-(1, "Manual", 4590, 5199, "Martillo", "21250", "BUENA", 3, 21250),
-(2, "Electrica", 18990, 29900, "Motosierra", "109900", "BUENA", 1, 120650);
+(1, "Manual", 4590, 5199, "Martillo", "21250", "ACTIVA", 9, 21250),
+(2, "Electrica", 18990, 29900, "Motosierra", "109900", "ACTIVA", 2, 120650);
+
+INSERT INTO kardex (id_kardex, date_kardex, state_tool, id_tool) VALUES
+                                                                     (1, '2025-08-28', "NUEVA", 1),
+                                                                     (2, '2025-08-28', "NUEVA", 2),
+                                                                     (3, '2025-08-28', "NUEVA",1),
+                                                                     (4, '2025-08-29', "NUEVA",2);
 
 INSERT INTO client (id_client, email_client, name_client, phone_number_client, rut_client, state_client) VALUES
 (1, "marco.h@gmail.com", "Marco hernandez", "+56926108472", "21.307.176-k", "ACTIVO"),
@@ -32,14 +31,6 @@ INSERT INTO loan_tool (id_loan,id_tool) VALUES
 (1, 1),
 (2, 1),
 (3, 2);
-
-INSERT INTO kardex_tool(id_kardex,id_tool) VALUES
-(1,1),
-(2,1),
-(3,1),
-(4,2);
-
-
 
 
 INSERT INTO admin_client(id_admin,id_client) VALUES

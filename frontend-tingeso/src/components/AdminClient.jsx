@@ -70,7 +70,7 @@ const AdminClient = () => {
                             <button 
                               class="btn btn-success mx-2" 
                               type="button" 
-                              onClick= {() => navigate(`/make-loan/${client.rutClient}`)}
+                              onClick= {() => navigate(`/make-loan/${client.rutClient}`, {state: {client}})}
                             >
                               Iniciar prestamo
                               </button>

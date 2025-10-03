@@ -1,6 +1,8 @@
 package com.example.tingeso1.services;
 
+import com.example.tingeso1.entities.KardexEntity;
 import com.example.tingeso1.entities.ToolEntity;
+import com.example.tingeso1.repositories.KardexRepository;
 import com.example.tingeso1.repositories.ToolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,8 +13,10 @@ import java.util.ArrayList;
 public class ToolService {
     @Autowired
     ToolRepository toolRepository;
+    @Autowired
+    KardexRepository kardexRepository;
 
-    // Dind Tools
+    // Find Tools
     public ArrayList<ToolEntity> getTools(){
         return (ArrayList<ToolEntity>) toolRepository.findAll();
     }
@@ -42,13 +46,44 @@ public class ToolService {
         }
     }
 
-    // Add one at stock tool
-    public void addToolNumber(Long id, int number) throws Exception{
-        ToolEntity tool = toolRepository.findById(id).get();
-        tool.setStockTool(tool.getStockTool() + number);
-        if(tool.getStockTool() < 0){
-            throw new Exception("No hay suficiente stock de la herramienta");
+    // subtract tool by id
+    public boolean subtractTool(Long id) throws Exception{
+        ToolEntity tool =  findById(id);
+
+        KardexEntity kardex = new KardexEntity();
+        kardex.setDateKardex(new java.util.Date());
+        kardex.setIdTool(tool.getIdTool());
+
+        if (tool.getStockTool() == 1){
+            tool.setStockTool(tool.getStockTool() - 1);
+            tool.setStateTool("BAJA");
+            kardex.setStateTool("BAJA");
+            kardexRepository.save(kardex);
+            toolRepository.save(tool);
+            return true;
         }
-        toolRepository.save(tool);
+        if (tool.getStockTool() > 1){
+            tool.setStockTool(tool.getStockTool() - 1);
+            kardex.setStateTool("DISMINUCIÓN");
+            kardexRepository.save(kardex);
+            toolRepository.save(tool);
+            return true;
+        }
+        throw new Exception("Action not found (subtract tool)");
     }
+
+    // Add tool by id
+    public boolean addTool(Long id){
+        ToolEntity tool =  findById(id);
+        KardexEntity kardex = new KardexEntity();
+
+        kardex.setDateKardex(new java.util.Date());
+        kardex.setIdTool(tool.getIdTool());
+        kardex.setStateTool("SUMA");
+        kardexRepository.save(kardex);
+        tool.setStockTool(tool.getStockTool() + 1);
+        toolRepository.save(tool);
+        return true;
+    }
+
 }

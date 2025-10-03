@@ -2,8 +2,14 @@ import React, {useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toolService from "../services/tool.service";
 import '../App.css';
+import { useKeycloak } from "@react-keycloak/web";
 
 const Home = () => {
+
+    const { keycloak } = useKeycloak();
+    const roles = keycloak.tokenParsed?.realm_access?.roles || [];
+    const isAdmin = roles.includes("ADMIN");
+    const isEMPLOYEE = roles.includes("EMPLOYEE");
 
     const [tools, setTools] = useState([]);
     const addToolNumber = (id, number) => {
@@ -42,7 +48,9 @@ const Home = () => {
                     </tr>
                 </thead>
                 <tbody className="table-group-divider">
-                {tools.map((tool) => (
+                {tools
+                    .filter(tool => tool.stateTool === "ACTIVA")
+                    .map((tool) => (
                     <tr key={tool.idTool}>
                         <th scope="row">{tool.idTool}</th>
                         <td>{tool.nameTool}</td>
@@ -51,21 +59,57 @@ const Home = () => {
                         <td>{tool.stockTool}</td>
                         <td>
                             <div className="d-grid gap-2 d-md-block">
-                                <button 
-                                    className="btn btn-danger mx-2" 
+                                
+                                {isAdmin && (
+                                <button
+                                    className="btn btn-warning mx-2"
+                                    type="button"
+                                    onClick={() => navigate('/add-tool', { state: { tool } })}
+                                    >
+                                    Editar
+                                </button>
+                                )}
+
+                                {isAdmin && (
+                                <button className="btn btn-success mx-2"
                                     type="button" 
-                                    onClick={async () => {
-                                        if (confirm('¿Eliminar herramienta?')) {
-                                            await toolService.deleteTool(tool.idTool);
+                                    onClick={() => {toolService.addTool(tool.idTool)
+                                        .then(() => {
+                                            alert("Herramienta agregada con éxito");
                                             window.location.reload();
+                                        })
+                                        .catch(() => alert("Error al agregar herramienta"));
+                                    
+                                    }}
+                                    >Sumar herramienta
+                                </button>
+                                )}
+
+                                {isAdmin && (
+                                <button className="btn btn-danger mx-2" 
+                                    type="button" 
+                                    onClick={() => {
+                                        if (tool.stockTool > 1){
+                                            toolService.subtractTool(tool.idTool)
+                                            .then(() => {
+                                                alert("Herramienta quitada con éxito");
+                                                window.location.reload();
+                                            })
+                                            .catch(() => alert("Error al quitar herramienta"));
+                                        }else{
+                                            if(confirm('¿Eliminar herramienta?')){
+                                                toolService.subtractTool(tool.idTool)
+                                                .then(() => {
+                                                    alert("Herramienta eliminada con éxito");
+                                                })
+                                                .catch(() => alert("Error al eliminar herramienta"));
+                                                window.location.reload()
+                                            }
                                         }
                                     }}
-                                >
-                                    Dar de baja
+                                    >Bajar herramienta
                                 </button>
-                                <button className="btn btn-warning mx-2" type="button">Editar</button>
-                                <button className="btn btn-success mx-2" type="button" onClick={() => addToolNumber(tool.idTool,1)}>Agregar herramienta</button>
-                                <button className="btn btn-warning mx-2" type="button" onClick={() => addToolNumber(tool.idTool,-1)}>Quitar herramienta</button>
+                                )}
                             </div>
                         </td>
                     </tr>

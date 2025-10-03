@@ -12,16 +12,21 @@ const getToolById = id => {
     return httpTool.get(`/api/v1/tool/${id}`);
 }
 
-const updateTool = (id, data) => {
-    return httpTool.put(`/api/v1/tool/${id}`, data);
+const updateTool = (data) => {
+    return httpTool.put('/api/v1/tool/', data);
 }
 
 const deleteTool = id => {
     return httpTool.delete(`/api/v1/tool/${id}`);
 }
 
-const addToolNumber = (id, number) => {
-    return httpTool.put(`/api/v1/tool/add-tool-number/${id}`, number);
+const subtractTool = (id) => {
+    return httpTool.put(`/api/v1/tool/subtract-tool/${id}`);
 }
 
-export default { getAllTools, createTool, getToolById, updateTool, deleteTool, addToolNumber };
+const addTool = (id) => {
+    return httpTool.put(`/api/v1/tool/add-tool/${id}`);
+}
+
+
+export default { getAllTools, createTool, getToolById, updateTool, deleteTool, subtractTool, addTool };

@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import '../App.css';
+import { useKeycloak } from "@react-keycloak/web";
+import keycloak from "../services/keycloak";
 
 const Navbar = () => (
     <nav className="navbar navbar-dark bg-navbar fixed-top">
@@ -30,6 +32,10 @@ const Navbar = () => (
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/reports">Reportes</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="btn btn-danger w-100 mt-3"
+                onClick={() => keycloak.logout()} > Cerrar sesión</Link>
               </li>
             </ul>
           </div>

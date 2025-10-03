@@ -20,13 +20,6 @@ public class KardexEntity {
     private Long idKardex;
 
     private Date dateKardex;
-    private String state_tool;
-
-    @ManyToMany
-    @JoinTable(
-            name = "kardex_tool",
-            joinColumns = @JoinColumn(name = "idKardex"),
-            inverseJoinColumns = @JoinColumn(name = "idTool")
-    )
-    private List<ToolEntity> tool;
+    private String stateTool;
+    private Long idTool;
 }

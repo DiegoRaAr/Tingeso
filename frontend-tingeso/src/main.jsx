@@ -10,8 +10,8 @@ import { ReactKeycloakProvider } from '@react-keycloak/web'
 import ReactDOM from 'react-dom/client'
 
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <ReactKeycloakProvider authClient={keycloak}>
     <App />
-  </StrictMode>,
+  </ReactKeycloakProvider>,
 )

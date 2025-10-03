@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import toolService from '../services/tool.service';
-import clientService from '../services/client.service';
 import loanService from '../services/loan.service';
+import { useLocation } from "react-router-dom";
 
 const MakeLoan = () => {
+  const location = useLocation();
+  const client = location.state?.client;
+
   const [tools, setTools] = useState([]);
-  const [clients, setClients] = useState([]);
   const [selectedTools, setSelectedTools] = useState([]);
-  const [selectedClient, setSelectedClient] = useState('');
   const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
     toolService.getAllTools().then(r => setTools(r.data));
-    clientService.getAllClients().then(r => setClients(r.data));
   }, []);
 
   const handleToolSelect = (toolId) => {
-    setSelectedTools(prev => 
-      prev.includes(toolId) 
+    setSelectedTools(prev =>
+      prev.includes(toolId)
         ? prev.filter(id => id !== toolId)
         : [...prev, toolId]
     );
@@ -25,22 +25,20 @@ const MakeLoan = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const loanData = {
       initDate: new Date(),
       endDate: new Date(endDate),
       stateLoan: 'ACTIVO',
       penaltyLoan: 0,
       tool: selectedTools.map(id => ({ idTool: id })),
-      idClient: { idClient: selectedClient }
+      idClient: { idClient: client.idClient }
     };
 
     try {
       await loanService.createLoan(loanData);
       alert('Préstamo creado exitosamente');
-      // Limpiar formulario
       setSelectedTools([]);
-      setSelectedClient('');
       setEndDate('');
     } catch (error) {
       console.error('Error:', error);
@@ -50,52 +48,40 @@ const MakeLoan = () => {
 
   return (
     <div>
-      <h2>Crear Préstamo</h2>
+      <h1 className="text-start my-1 mb-4">Realizar prestamo</h1>
       <form onSubmit={handleSubmit}>
-        {/* Seleccionar Cliente */}
+        {/* Mostrar Cliente por defecto */}
         <div className="mb-3">
-          <label className="form-label">Cliente</label>
-          <select 
-            className="form-select" 
-            value={selectedClient} 
-            onChange={(e) => setSelectedClient(e.target.value)}
-            required
-          >
-            <option value="">Seleccionar cliente</option>
-            {clients.map(client => (
-              <option key={client.idClient} value={client.idClient}>
-                {client.nameClient} - {client.rutClient}
-              </option>
-            ))}
-          </select>
+          <label className="form-label fw-bold fs-4">Cliente</label>
+          <div className="form-control" readOnly>
+            {client.nameClient} - {client.rutClient}
+          </div>
         </div>
 
-        {/* Seleccionar Herramientas */}
+        {/* Lista de Herramientas con Checkbox */}
         <div className="mb-3">
-          <label className="form-label">Herramientas</label>
-          <div className="row">
+          <label className="form-label fw-bold fs-4">Herramientas</label>
+          <ul className="list-group">
             {tools.map(tool => (
-              <div key={tool.idTool} className="col-md-4 mb-2">
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id={`tool-${tool.idTool}`}
-                    checked={selectedTools.includes(tool.idTool)}
-                    onChange={() => handleToolSelect(tool.idTool)}
-                  />
-                  <label className="form-check-label" htmlFor={`tool-${tool.idTool}`}>
-                    {tool.nameTool} - Stock: {tool.stockTool}
-                  </label>
-                </div>
-              </div>
+              <li key={tool.idTool} className="list-group-item">
+                <input
+                  className="form-check-input me-2"
+                  type="checkbox"
+                  id={`tool-${tool.idTool}`}
+                  checked={selectedTools.includes(tool.idTool)}
+                  onChange={() => handleToolSelect(tool.idTool)}
+                />
+                <label className="form-check-label" htmlFor={`tool-${tool.idTool}`}>
+                  {tool.nameTool} - Stock: {tool.stockTool}
+                </label>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
 
         {/* Fecha de Devolución */}
         <div className="mb-3">
-          <label className="form-label">Fecha de Devolución</label>
+          <label className="form-label fw-bold fs-4">Fecha de Devolución</label>
           <input
             type="date"
             className="form-control"

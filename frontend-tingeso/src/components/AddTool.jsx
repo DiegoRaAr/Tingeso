@@ -1,9 +1,12 @@
 import toolService from "../services/tool.service";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const AddTool = () => {
 
+    const location = useLocation();
+    const toolToEdit = location.state?.tool;
     const navigate = useNavigate();
 
     const [tool, setTool] = useState({
@@ -16,6 +19,15 @@ const AddTool = () => {
         lateCharge: 0
     });
 
+    useEffect(() => {
+        if (toolToEdit) {
+            setTool({
+                ...toolToEdit,
+                totalValueTool: toolToEdit.totalValueTool ?? 0
+            });
+        }
+    }, [toolToEdit]);
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setTool({
@@ -26,29 +38,43 @@ const AddTool = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        toolService.createTool(tool)
-            .then(response => {
-                alert("Herramienta añadida con éxito");
-                setTool({
-                    nameTool: "",
-                    categoryTool: "",
-                    totalValueTool: 0,
-                    stockTool: 1,
-                    repairCharge: 0,
-                    dailyCharge: 0,
-                    lateCharge: 0
+        if (toolToEdit) {
+            toolService.updateTool(tool)
+                .then(response => {
+                    alert("Herramienta actualizada con éxito");
+                    navigate('/home');
+                })
+                .catch(error => {
+                    console.log("Error al actualizar herramienta", error);
                 });
-            })
-            .catch(error => {
-                console.log("Error al añadir herramienta", error);
-            });
-    };
-
+        } else {
+            toolService.createTool(tool)
+                .then(response => {
+                    alert("Herramienta añadida con éxito");
+                    setTool({
+                        nameTool: "",
+                        categoryTool: "",
+                        totalValue: 0,
+                        stockTool: 1,
+                        repairCharge: 0,
+                        dailyCharge: 0,
+                        lateCharge: 0
+                    });
+                })
+                .catch(error => {
+                    console.log("Error al añadir herramienta", error);
+                });
+    }
+};
 
     return (
         <div className="container-fluid">
-            <h1 className="text-start my-1 mb-4">Añadir Nueva Herramienta</h1>
-            <h5 className="text-start my-3 mb-4">Ingrese los datos de la herramienta:</h5>
+            <h1 className="text-start my-1 mb-4">
+                {toolService ? "Editar herramienta" : "Añadir Nueva Herramienta"}
+                </h1>
+            <h5 className="text-start my-3 mb-4">
+                {toolToEdit ? "Modifique los datos de la herramienta":"Ingrese los datos de la herramienta:"}
+                </h5>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4 text-start">
                     <label htmlFor="nameTool" className="form-label">Nombre herramienta</label>
@@ -68,7 +94,7 @@ const AddTool = () => {
                 <div className="mb-4 text-start">
                 <label htmlFor="categoryTool" className="form-label">Categoria herramienta</label>
                     <select 
-                        class="form-select" 
+                        className="form-select" 
                         id="categoryTool"
                         name="categoryTool"
                         value={tool.categoryTool}
@@ -90,7 +116,7 @@ const AddTool = () => {
                         id="totalValueTool"
                         min="1"
                         name="totalValueTool"
-                        value={tool.totalValueTool}
+                        value={tool.totalValue}
                         onChange={handleChange} 
                     />
                 </div>
@@ -134,10 +160,11 @@ const AddTool = () => {
                     />
                 </div>
                 
-                <button type="submit" className="btn btn-primary">Añadir herramienta</button>
+                <button type="submit" className="btn btn-primary">
+                    {toolToEdit ? "Actualizar herramienta" : "Añadir herramienta"}</button>
             </form>
 
-            <button class="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/home`)}>Volver</button>
+            <button className="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/home`)}>Volver</button>
         </div>
     );
 }
