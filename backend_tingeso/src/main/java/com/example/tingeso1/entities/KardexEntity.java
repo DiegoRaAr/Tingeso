@@ -22,4 +22,5 @@ public class KardexEntity {
     private Date dateKardex;
     private String stateTool;
     private Long idTool;
+    private String nameTool;
 }

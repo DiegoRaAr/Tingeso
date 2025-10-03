@@ -38,4 +38,9 @@ public class LoanEntity {
     @JoinColumn(name = "idClient", referencedColumnName = "idClient")
     private ClientEntity idClient;
 
+    public ClientEntity findAllLoanByIdClient(Long idClient2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findAllLoanByIdClient'");
+    }
+
 }

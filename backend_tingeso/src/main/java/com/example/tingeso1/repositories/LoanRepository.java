@@ -1,5 +1,6 @@
 package com.example.tingeso1.repositories;
 
+import com.example.tingeso1.entities.ClientEntity;
 import com.example.tingeso1.entities.LoanEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +17,6 @@ public interface LoanRepository extends JpaRepository<LoanEntity, Long> {
     List<LoanEntity> findByInitDateBetween(Date start, Date end);
     List<LoanEntity> findByStateLoan(String state);
 
-    // Buscar préstamos por RUT del cliente aprovechando la relación en LoanEntity
     @Query("SELECT l FROM LoanEntity l JOIN l.idClient c WHERE c.rutClient = :rut")
     List<LoanEntity> findByIdClient_RutClient(@Param("rut") String rut);
 }

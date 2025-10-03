@@ -1,6 +1,7 @@
 import React, {use, useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import clientService from '../services/client.service';
+import loanService from '../services/loan.service';
 import '../App.css';
 
 const AdminClient = () => {
@@ -62,7 +63,12 @@ const AdminClient = () => {
                             <button 
                               class="btn btn-info mx-2" 
                               type="button" 
-                              onClick= {() => navigate(`/loans-by-rut/${client.rutClient}`)}
+                              onClick= {() => {
+                                loanService.updatePenalty(client.idClient)
+                                .then(() =>{
+                                navigate(`/loans-by-rut/${client.rutClient}`)}
+                                )}
+                              }
                             >
                               Ver prestamos
                               </button>
@@ -70,7 +76,12 @@ const AdminClient = () => {
                             <button 
                               class="btn btn-success mx-2" 
                               type="button" 
-                              onClick= {() => navigate(`/make-loan/${client.rutClient}`, {state: {client}})}
+                              onClick= {() => {
+                                loanService.updatePenalty(client.idClient)
+                                .then(() =>{
+                                navigate(`/make-loan/${client.rutClient}`, {state: {client}})}
+                                )}
+                              }
                             >
                               Iniciar prestamo
                               </button>

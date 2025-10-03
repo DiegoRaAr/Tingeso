@@ -55,9 +55,9 @@ const ViewLoanClient = () => {
           <tr>
             <th>ID</th>
             <th>Fecha de inicio</th>
-            <th>Hora de prestamo</th>
             <th>Fecha de fin</th>
             <th>Estado</th>
+            <th>Multa</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -66,10 +66,10 @@ const ViewLoanClient = () => {
             <React.Fragment key={loan.idLoan}>
               <tr>
                 <td>{loan.idLoan}</td>
-                <td>{loan.initDate}</td>
-                <td>{loan.hourLoan}</td>
-                <td>{loan.endDate}</td>
+                <td>{loan.initDate ? new Date(loan.initDate).toLocaleDateString() : ""}</td>
+                <td>{loan.endDate ? new Date(loan.endDate).toLocaleDateString() : ""}</td>
                 <td>{loan.stateLoan}</td>
+                <td>${loan.penaltyLoan.toLocaleString()}</td>
                 <td>
                   <button 
                     className="btn btn-danger mx-2" 

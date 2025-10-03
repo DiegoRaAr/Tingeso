@@ -33,7 +33,7 @@ public class LoanController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<LoanEntity> saveLoan(@RequestBody LoanEntity loan){
+    public ResponseEntity<LoanEntity> saveLoan(@RequestBody LoanEntity loan) throws Exception {
         LoanEntity newloan = loanService.createLoan(loan);
         return ResponseEntity.ok(newloan);
     }
@@ -58,5 +58,11 @@ public class LoanController {
     @GetMapping("/tools-by-loan/{id}")
     public ResponseEntity<List<ToolEntity>> getToolsByLoanId(@PathVariable Long id){
         return ResponseEntity.ok(loanService.getToolsByLoanId(id));
+    }
+
+    @PutMapping("/update-penalty/{id}")
+    public ResponseEntity<LoanEntity> updatePenaltyLoan(@PathVariable Long id){
+        LoanEntity loanUpdated = loanService.updatePenaltyLoan(id);
+        return ResponseEntity.ok(loanUpdated);
     }
 }

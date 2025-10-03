@@ -47,7 +47,6 @@ const AddClient = () => {
       <h5 className="text-start my-3 mb-4">Datos del cliente:</h5>
 
       
-      
       <form onSubmit={handleSubmit}>
                 <div className="mb-4 text-start">
                     <label htmlFor="rutClient" className="form-label">Rut Cliente</label>

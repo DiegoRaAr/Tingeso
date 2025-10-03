@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import toolService from '../services/tool.service';
 import loanService from '../services/loan.service';
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const MakeLoan = () => {
   const location = useLocation();
   const client = location.state?.client;
+
+  const navigate = useNavigate();
 
   const [tools, setTools] = useState([]);
   const [selectedTools, setSelectedTools] = useState([]);
@@ -40,6 +42,7 @@ const MakeLoan = () => {
       alert('Préstamo creado exitosamente');
       setSelectedTools([]);
       setEndDate('');
+      navigate(`/loans-by-rut/${client.rutClient}`);
     } catch (error) {
       console.error('Error:', error);
       alert('Error al crear préstamo');
@@ -62,20 +65,22 @@ const MakeLoan = () => {
         <div className="mb-3">
           <label className="form-label fw-bold fs-4">Herramientas</label>
           <ul className="list-group">
-            {tools.map(tool => (
-              <li key={tool.idTool} className="list-group-item">
-                <input
-                  className="form-check-input me-2"
-                  type="checkbox"
-                  id={`tool-${tool.idTool}`}
-                  checked={selectedTools.includes(tool.idTool)}
-                  onChange={() => handleToolSelect(tool.idTool)}
-                />
-                <label className="form-check-label" htmlFor={`tool-${tool.idTool}`}>
-                  {tool.nameTool} - Stock: {tool.stockTool}
-                </label>
-              </li>
-            ))}
+            {tools
+              .filter(tool => tool.stockTool >= 1)
+              .map(tool => (
+                <li key={tool.idTool} className="list-group-item">
+                  <input
+                    className="form-check-input me-2"
+                    type="checkbox"
+                    id={`tool-${tool.idTool}`}
+                    checked={selectedTools.includes(tool.idTool)}
+                    onChange={() => handleToolSelect(tool.idTool)}
+                  />
+                  <label className="form-check-label" htmlFor={`tool-${tool.idTool}`}>
+                    {tool.nameTool} - Stock: {tool.stockTool}
+                  </label>
+                </li>
+              ))}
           </ul>
         </div>
 
@@ -91,8 +96,19 @@ const MakeLoan = () => {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary">
+        <button 
+          type="submit" 
+          className="btn btn-success mx-2"
+          >
           Crear Préstamo
+        </button>
+
+        <button 
+          type="button" 
+          className="btn btn-warning mx-2"
+          onClick={() => navigate(-1)}
+          >
+          Cancelar
         </button>
       </form>
     </div>

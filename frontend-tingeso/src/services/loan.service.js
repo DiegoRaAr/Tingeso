@@ -28,4 +28,8 @@ const getToolsByLoanId = id => {
     return httpLoan.get(`/api/v1/loan/tools-by-loan/${id}`);
 }
 
-export default { getAllLoans, createLoan, getLoanById, updateLoan, deleteLoan , getLoansByRut, getToolsByLoanId};
+const updatePenalty = (id) => {
+    return httpLoan.put(`/api/v1/loan/update-penalty/${id}`);
+}
+
+export default { getAllLoans, createLoan, getLoanById, updateLoan, deleteLoan , getLoansByRut, getToolsByLoanId, updatePenalty};

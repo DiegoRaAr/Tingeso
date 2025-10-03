@@ -58,6 +58,7 @@ public class ToolService {
             tool.setStockTool(tool.getStockTool() - 1);
             tool.setStateTool("BAJA");
             kardex.setStateTool("BAJA");
+            kardex.setNameTool(tool.getNameTool());
             kardexRepository.save(kardex);
             toolRepository.save(tool);
             return true;
@@ -65,6 +66,7 @@ public class ToolService {
         if (tool.getStockTool() > 1){
             tool.setStockTool(tool.getStockTool() - 1);
             kardex.setStateTool("DISMINUCIÓN");
+            kardex.setNameTool(tool.getNameTool());
             kardexRepository.save(kardex);
             toolRepository.save(tool);
             return true;
@@ -80,6 +82,7 @@ public class ToolService {
         kardex.setDateKardex(new java.util.Date());
         kardex.setIdTool(tool.getIdTool());
         kardex.setStateTool("SUMA");
+        kardex.setNameTool(tool.getNameTool());
         kardexRepository.save(kardex);
         tool.setStockTool(tool.getStockTool() + 1);
         toolRepository.save(tool);
