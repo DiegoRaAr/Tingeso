@@ -10,6 +10,7 @@ import MakeLoan from "./components/MakeLoan";
 import FinishLoan from "./components/FinishLoan";
 import Kardex from "./components/Kardex";
 import Reports from "./components/Reports";
+
 import ViewLoanClient from "./components/ViewLoanClient";
 import { BrowserRouter as Router } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
@@ -54,10 +55,11 @@ function App() {
           <Route path="/admin-client" element={<AdminClient />} />
           <Route path="/add-client" element={<AddClient />} />
           <Route path="/make-loan/:rut" element={<MakeLoan />} />
-          <Route path="/finish-loan" element={<FinishLoan />} />
+          <Route path="/finish-loan/:id" element={<FinishLoan />} />
           <Route path="/kardex" element={<Kardex />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/loans-by-rut/:rut" element={<ViewLoanClient />} />
+          
         </Routes>
       </div>
     </Router>

@@ -1,8 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clientService from "../services/client.service";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const AddClient = () => {
+
+  const location = useLocation();
+  const clientToEdit = location.state?.client;
+
+  if (clientToEdit) {
+    console.log("Editar cliente:", clientToEdit);
+  }
 
   const navigate = useNavigate();
 
@@ -14,6 +22,12 @@ const AddClient = () => {
     phoneNumberClient: ""
   });
 
+  useEffect(() => {
+    if (clientToEdit) {
+      setClient(clientToEdit);
+    }
+  }, [clientToEdit]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setClient({
@@ -24,26 +38,40 @@ const AddClient = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    clientService.createClient(client)
-      .then(response => {
-        alert("Cliente añadido con éxito");
-        setClient({
-          rutClient: "",
-          nameClient: "",
-          stateClient: "ACTIVO",
-          emailClient: "",
-          phoneNumberClient: ""
+
+    if (clientToEdit) {
+      clientService.updateClient(client)
+        .then(response => {
+          alert("Cliente actualizado con éxito");
+          navigate('/admin-client');
+        })
+        .catch(error => {
+          console.log("Error al actualizar cliente", error);
         });
-      })
-      .catch(error => {
-        console.log("Error al añadir cliente", error);
-      });
+      return;
+    } else {
+        clientService.createClient(client)
+          .then(response => {
+            alert("Cliente añadido con éxito");
+            setClient({
+              rutClient: "",
+              nameClient: "",
+              stateClient: "ACTIVO",
+              emailClient: "",
+              phoneNumberClient: ""
+            });
+          })
+          .catch(error => {
+            console.log("Error al añadir cliente", error);
+          });
+      }
   };
 
 
   return (
     <div>
-      <h1 className="text-start my-1 mb-4">Añadir un nuevo cliente</h1>
+      <h1 className="text-start my-1 mb-4">
+        {clientToEdit ? "Editar cliente" : "Añadir un nuevo cliente"}</h1>
       <h5 className="text-start my-3 mb-4">Datos del cliente:</h5>
 
       
@@ -95,7 +123,10 @@ const AddClient = () => {
                         onChange={handleChange} 
                     />
                 </div>
-                <button type="submit" className="btn btn-primary">Añadir Cliente</button>
+                <button 
+                  type="submit" 
+                  className="btn btn-primary">
+                    {clientToEdit ? "Actualizar cliente" : "Añadir Cliente"}</button>
             </form>
 
       <button class="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/admin-client`)}>Volver</button>

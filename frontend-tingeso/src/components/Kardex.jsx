@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import '../App.css';
 import kardexService from "../services/kardex.service";
@@ -7,21 +7,72 @@ import toolService from "../services/tool.service";
 const Kardex = () => {
     const navigate = useNavigate();
 
-    const [kardexes, setKardexes] = React.useState([]);
+    const [kardexes, setKardexes] = useState([]);
+    const [tools, setTools] = useState([]);
+    const [selectedTool, setSelectedTool] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
 
-    React.useEffect(() => {
+    useEffect(() => {
         kardexService.getAllKardex()
-            .then(response => {
-                setKardexes(response.data);
-            })
-            .catch(error => {
-                console.log("Error al obtener kardex", error);
-            });
+            .then(response => setKardexes(response.data))
+            .catch(error => console.log("Error al obtener kardex", error));
+        toolService.getAllTools()
+            .then(response => setTools(response.data))
+            .catch(error => console.log("Error al obtener herramientas", error));
     }, []);
+
+    const filteredKardexes = kardexes.filter(kardex => {
+        // Filter for tool
+        const toolMatch = selectedTool ? kardex.idTool === Number(selectedTool) : true;
+        // filter for date range
+        const kardexDate = new Date(kardex.dateKardex);
+        const startMatch = startDate ? kardexDate >= new Date(startDate) : true;
+        const endMatch = endDate ? kardexDate <= new Date(endDate) : true;
+        return toolMatch && startMatch && endMatch;
+    });
 
     return (
         <div>
             <h2>Kardex</h2>
+            {/* Filtros */}
+            <div className="mb-3 d-flex gap-3">
+                <select
+                    className="form-select"
+                    value={selectedTool}
+                    onChange={e => setSelectedTool(e.target.value)}
+                >
+                    <option value="">Todas las herramientas</option>
+                    {tools.map(tool => (
+                        <option key={tool.idTool} value={tool.idTool}>
+                            {tool.nameTool}
+                        </option>
+                    ))}
+                </select>
+                <input
+                    type="date"
+                    className="form-control"
+                    value={startDate}
+                    onChange={e => setStartDate(e.target.value)}
+                />
+                <input
+                    type="date"
+                    className="form-control"
+                    value={endDate}
+                    onChange={e => setEndDate(e.target.value)}
+                />
+                <button
+                    className="btn btn-secondary"
+                    type="button"
+                    onClick={() => {
+                        setSelectedTool("");
+                        setStartDate("");
+                        setEndDate("");
+                    }}
+                >
+                    Limpiar filtros
+                </button>
+            </div>
             <table className="table table-hover">
                 <thead>
                     <tr>
@@ -33,7 +84,7 @@ const Kardex = () => {
                     </tr>
                 </thead>
                 <tbody className="table-group-divider">
-                    {kardexes.map((kardex) => (
+                    {filteredKardexes.map((kardex) => (
                         <tr key={kardex.idKardex}>
                             <td>{kardex.idKardex}</td>
                             <td>{new Date(kardex.dateKardex).toLocaleDateString()}</td>

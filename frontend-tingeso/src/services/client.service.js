@@ -24,4 +24,12 @@ const deleteClient = id => {
     return httpClient.delete(`/api/v1/client/${id}`);
 }
 
-export default { getAllClients, createClient, getClientById, updateClient, deleteClient, getClientByRut };
+const changeStateClient = (id) => {
+    return httpClient.put(`/api/v1/client/change-state/${id}`);
+}
+
+const getRestrictedClients = () => {
+    return httpClient.get('/api/v1/client/restricted-clients');
+}
+
+export default { getAllClients, createClient, getClientById, updateClient, deleteClient, getClientByRut, changeStateClient, getRestrictedClients };

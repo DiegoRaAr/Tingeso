@@ -12,7 +12,8 @@ const AddTool = () => {
     const [tool, setTool] = useState({
         nameTool: "",
         categoryTool: "",
-        totalValueTool: 0,
+        totalValue: 0,
+        stateTool: "ACTIVA",
         stockTool: 1,
         repairCharge: 0,
         dailyCharge: 0,
@@ -23,7 +24,7 @@ const AddTool = () => {
         if (toolToEdit) {
             setTool({
                 ...toolToEdit,
-                totalValueTool: toolToEdit.totalValueTool ?? 0
+                totalValue: toolToEdit.totalValue ?? 0
             });
         }
     }, [toolToEdit]);
@@ -54,6 +55,7 @@ const AddTool = () => {
                     setTool({
                         nameTool: "",
                         categoryTool: "",
+                        stateTool: "ACTIVA",
                         totalValue: 0,
                         stockTool: 1,
                         repairCharge: 0,
@@ -109,20 +111,20 @@ const AddTool = () => {
                 </div>
 
                 <div className="mb-4 text-start">
-                    <label htmlFor="totalValueTool" className="form-label">Valor total de la herramienta</label>
+                    <label htmlFor="totalValue" className="form-label">Valor total de la herramienta</label>
                     <input 
                         type="number" 
                         className="form-control" 
-                        id="totalValueTool"
+                        id="totalValue"
                         min="1"
-                        name="totalValueTool"
+                        name="totalValue"
                         value={tool.totalValue}
                         onChange={handleChange} 
                     />
                 </div>
 
                 <div className="mb-4 text-start">
-                    <label htmlFor="rapairCharge" className="form-label">Cargo de reparación</label>
+                    <label htmlFor="rapairCharge" className="form-label">Cargo por daños leves</label>
                     <input 
                         type="number" 
                         className="form-control" 

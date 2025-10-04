@@ -46,19 +46,30 @@ const AdminClient = () => {
                             <div class="d-grid gap-2 d-md-block">
 
                             <button 
-                              class="btn btn-danger mx-2"
+                              className="btn btn-danger mx-2"
                               type="button"
-                              
+                              onClick={() => {
+                                clientService.changeStateClient(client.idClient)
+                                .then(() => {
+                                  navigate('/admin-client');
+                                  window.location.reload();
+                                })
+                                .catch(error => {
+                                  console.log("Error al cambiar estado del cliente", error);
+                                });
+                              }
+                              }                              
                             >
-                              Dar de baja
+                              Cambiar estado
                               </button>
 
-                            <button 
-                              class="btn btn-warning mx-2" 
+                            <button
+                              className="btn btn-warning mx-2"
                               type="button"
-                              >
-                                Editar
-                                </button>
+                              onClick={() => navigate('/add-client', { state: { client } })}
+                            >
+                              Editar
+                            </button>
 
                             <button 
                               class="btn btn-info mx-2" 

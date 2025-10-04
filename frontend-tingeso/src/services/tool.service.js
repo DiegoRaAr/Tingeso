@@ -28,5 +28,9 @@ const addTool = (id) => {
     return httpTool.put(`/api/v1/tool/add-tool/${id}`);
 }
 
+const getBestToolsByRangeDate = (initDate, endDate) => {
+    return httpTool.get(`/api/v1/tool/best-tools-by-range-date/${initDate}/${endDate}`);
+}
 
-export default { getAllTools, createTool, getToolById, updateTool, deleteTool, subtractTool, addTool };
+
+export default { getAllTools, createTool, getToolById, updateTool, deleteTool, subtractTool, addTool, getBestToolsByRangeDate };

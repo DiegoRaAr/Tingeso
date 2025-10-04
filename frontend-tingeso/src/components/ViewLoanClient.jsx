@@ -58,6 +58,7 @@ const ViewLoanClient = () => {
             <th>Fecha de fin</th>
             <th>Estado</th>
             <th>Multa</th>
+            <th>Valor real</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -70,13 +71,17 @@ const ViewLoanClient = () => {
                 <td>{loan.endDate ? new Date(loan.endDate).toLocaleDateString() : ""}</td>
                 <td>{loan.stateLoan}</td>
                 <td>${loan.penaltyLoan.toLocaleString()}</td>
+                <td>${loan.totalLoan ? loan.totalLoan.toLocaleString() : '0'}</td>
                 <td>
-                  <button 
-                    className="btn btn-danger mx-2" 
-                    type="button"
+                  {loan.stateLoan === "ACTIVO" && (
+                    <button 
+                      className="btn btn-danger mx-2" 
+                      type="button"
+                      onClick={ () => { navigate(`/finish-loan/${loan.idLoan}`) } }
                     >
-                    Finalizar prestamo
+                      Finalizar prestamo
                     </button>
+                  )}
                   <button 
                     className="btn btn-info mx-2" 
                     type="button"
@@ -93,16 +98,16 @@ const ViewLoanClient = () => {
                     <div className="card card-body">
                       <h6>Herramientas del préstamo:</h6>
                       {loan.tool && loan.tool.length > 0 ? (
-                        <div className="d-flex flex-wrap gap-2">
-                          {loan.tool.map(tool => (
-                            <span key={tool.idTool} className="badge bg-primary">
-                              {tool.nameTool} - {tool.categoryTool}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-muted">No hay herramientas asociadas</p>
-                      )}
+                    <ul className="list-group">
+                      {loan.tool.map(tool => (
+                        <li key={tool.idTool} className="list-group-item">
+                          {tool.nameTool} - {tool.categoryTool}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-muted">No hay herramientas asociadas</p>
+                  )}
                     </div>
                   </td>
                 </tr>
@@ -114,12 +119,12 @@ const ViewLoanClient = () => {
       </table>
 
       <button 
-                className="btn btn-primary mx-2" 
-                type="button"
-                onClick={() => navigate(`/admin-client`)}
-                >
-                Volver
-                </button>
+        className="btn btn-primary mx-2" 
+        type="button"
+        onClick={() => navigate(`/admin-client`)}
+        >
+        Volver
+      </button>
     </div>
   );
 };

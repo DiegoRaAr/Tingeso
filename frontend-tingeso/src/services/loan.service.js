@@ -32,4 +32,12 @@ const updatePenalty = (id) => {
     return httpLoan.put(`/api/v1/loan/update-penalty/${id}`);
 }
 
-export default { getAllLoans, createLoan, getLoanById, updateLoan, deleteLoan , getLoansByRut, getToolsByLoanId, updatePenalty};
+const finishLoan = (id,total) => {
+    return httpLoan.put(`/api/v1/loan/finish-loan/${id}/${total}`);
+}
+
+const getLoanByRangeDate = (startDate, endDate) => {
+    return httpLoan.get(`/api/v1/loan/loans-by-range-date/${startDate}/${endDate}`);
+}
+
+export default { getAllLoans, createLoan, getLoanById, updateLoan, deleteLoan , getLoansByRut, getToolsByLoanId, updatePenalty, finishLoan, getLoanByRangeDate };

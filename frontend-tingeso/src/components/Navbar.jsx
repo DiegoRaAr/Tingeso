@@ -4,7 +4,13 @@ import '../App.css';
 import { useKeycloak } from "@react-keycloak/web";
 import keycloak from "../services/keycloak";
 
-const Navbar = () => (
+const Navbar = () => {
+
+  const { keycloak } = useKeycloak();
+  const roles = keycloak.tokenParsed?.realm_access?.roles || [];
+  const isAdmin = roles.includes("ADMIN");
+
+  return (
     <nav className="navbar navbar-dark bg-navbar fixed-top">
       <div className="container-fluid">
         <a className="navbar-brand" href="#">Sistema de prestamo de herramientas</a>
@@ -33,15 +39,18 @@ const Navbar = () => (
               <li className="nav-item">
                 <Link className="nav-link" to="/reports">Reportes</Link>
               </li>
+              
               <li className="nav-item">
                 <Link className="btn btn-danger w-100 mt-3"
                 onClick={() => keycloak.logout()} > Cerrar sesión</Link>
               </li>
+              
             </ul>
           </div>
         </div>
       </div>
     </nav>
-);
+  );
+}
 
 export default Navbar;

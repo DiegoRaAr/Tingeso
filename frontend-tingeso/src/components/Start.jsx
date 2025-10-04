@@ -18,6 +18,16 @@ const Start = () => {
                 
             Herramientas
             </button>
+            <button type="button" className="btn btn-primary btn-lg" onClick={() => navigate(`/kardex`)}>
+                <i class="bi bi-filetype-mov m-2"></i>
+                
+            Kardex
+            </button>
+            <button type="button" className="btn btn-primary btn-lg" onClick={() => navigate(`/reports`)}>
+                <i class="bi bi-file-earmark-arrow-down-fill m-2"></i>
+                
+            Reportes
+            </button>
         </div>
     );
 }

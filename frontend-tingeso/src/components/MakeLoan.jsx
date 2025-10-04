@@ -9,6 +9,8 @@ const MakeLoan = () => {
 
   const navigate = useNavigate();
 
+  const [previewPrice, setPreviewPrice] = useState(null);
+
   const [tools, setTools] = useState([]);
   const [selectedTools, setSelectedTools] = useState([]);
   const [endDate, setEndDate] = useState('');
@@ -23,6 +25,25 @@ const MakeLoan = () => {
         ? prev.filter(id => id !== toolId)
         : [...prev, toolId]
     );
+  };
+
+  const handlePreview = () => {
+    if (!endDate || selectedTools.length === 0) {
+      alert("Selecciona herramientas y fecha de devolución");
+      return;
+    }
+    
+    const days =
+      Math.ceil(
+        (new Date(endDate).getTime() - new Date().getTime()) /
+        (1000 * 60 * 60 * 24)
+      ) || 1;
+
+    const total = tools
+      .filter(tool => selectedTools.includes(tool.idTool))
+      .reduce((sum, tool) => sum + tool.dailyCharge * days, 0);
+
+    setPreviewPrice(total);
   };
 
   const handleSubmit = async (e) => {
@@ -66,7 +87,8 @@ const MakeLoan = () => {
           <label className="form-label fw-bold fs-4">Herramientas</label>
           <ul className="list-group">
             {tools
-              .filter(tool => tool.stockTool >= 1)
+              .filter(tool => tool.stockTool >= 1 && tool.stateTool === "ACTIVA")
+              
               .map(tool => (
                 <li key={tool.idTool} className="list-group-item">
                   <input
@@ -103,6 +125,20 @@ const MakeLoan = () => {
           Crear Préstamo
         </button>
 
+        <button
+          type="button"
+          className="btn btn-info mx-2"
+          onClick={handlePreview}
+        >
+          Vista previa precio
+        </button>
+
+        {previewPrice !== null && (
+          <div className="alert alert-primary mt-3">
+            <strong>Precio estimado del préstamo:</strong> ${previewPrice}
+          </div>
+        )}
+
         <button 
           type="button" 
           className="btn btn-warning mx-2"
@@ -110,6 +146,8 @@ const MakeLoan = () => {
           >
           Cancelar
         </button>
+
+
       </form>
     </div>
   );
