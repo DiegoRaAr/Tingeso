@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/loan")
-@CrossOrigin("*")
 public class LoanController {
     @Autowired
     LoanService loanService;

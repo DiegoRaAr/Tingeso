@@ -1,0 +1,93 @@
+version: "3.9"
+
+services:
+  # ==========================
+  # 🔹 MySQL (base de datos para backend y Keycloak)
+  # ==========================
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_tingeso        # base de datos del backend
+      MYSQL_USER: diego
+      MYSQL_PASSWORD: diego1234
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init-mysql:/docker-entrypoint-initdb.d
+    networks:
+      - tingeso-net
+    expose:
+      - "3306"
+
+  # ==========================
+  # 🔹 Backend (tu imagen de Docker Hub)
+  # ==========================
+  backend:
+    image: diegoraar/backend-tingeso:1.0
+    container_name: backend
+    restart: always
+    environment:
+      - DB_HOST=mysql
+      - DB_NAME=db_tingeso
+      - DB_USER=diego
+      - DB_PASSWORD=diego1234
+    depends_on:
+      - mysql
+    networks:
+      - tingeso-net
+    expose:
+      - "8090"
+
+  # ==========================
+  # 🔹 Keycloak (usando MySQL)
+  # ==========================
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: keycloak
+    command: start-dev
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=mysql
+      - KC_DB_URL=jdbc:mysql://mysql:3306/keycloak_db
+      - KC_DB_USERNAME=diego
+      - KC_DB_PASSWORD=diego1234
+      - KC_DB_SCHEMA=keycloak_db
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+    networks:
+      - tingeso-net
+    restart: always
+
+  # ==========================
+  # 🔹 Frontend (React + Vite + Nginx)
+  # ==========================
+  frontend:
+    image: diegoraar/frontend-tingeso:1.0
+    container_name: frontend
+    restart: always
+    depends_on:
+      - backend
+      - keycloak
+    ports:
+      - "5173:80"   # todo el sistema visible en este puerto
+    networks:
+      - tingeso-net
+
+
+# ==========================
+# 🔸 Volúmenes persistentes
+# ==========================
+volumes:
+  mysql_data:
+
+# ==========================
+# 🔸 Red interna compartida
+# ==========================
+networks:
+  tingeso-net:
+    driver: bridge
