@@ -13,11 +13,11 @@
     "@react-keycloak/web": "^3.4.0",
     "axios": "^1.12.1",
     "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "keycloak-js": "^26.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router-dom": "^7.9.1",
-    "bootstrap-icons": "^1.11.3"
+    "react-router-dom": "^7.9.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",

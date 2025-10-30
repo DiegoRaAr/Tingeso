@@ -10,6 +10,8 @@ import MakeLoan from "./components/MakeLoan";
 import FinishLoan from "./components/FinishLoan";
 import Kardex from "./components/Kardex";
 import Reports from "./components/Reports";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import ViewLoanClient from "./components/ViewLoanClient";
 import { BrowserRouter as Router } from "react-router-dom";

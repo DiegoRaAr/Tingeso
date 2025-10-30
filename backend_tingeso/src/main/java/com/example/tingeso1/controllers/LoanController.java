@@ -2,7 +2,6 @@ package com.example.tingeso1.controllers;
 
 import com.example.tingeso1.entities.LoanEntity;
 import com.example.tingeso1.services.AdminService;
-import com.example.tingeso1.services.KardexService;
 import com.example.tingeso1.services.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.tingeso1.entities.ToolEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/loan")
@@ -26,8 +26,8 @@ public class LoanController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LoanEntity> getLoanById(@PathVariable Long id){
-        LoanEntity loan = loanService.findById(id);
+    public ResponseEntity<Optional<LoanEntity>> getLoanById(@PathVariable Long id){
+        Optional<LoanEntity> loan = loanService.findById(id);
         return ResponseEntity.ok(loan);
     }
 

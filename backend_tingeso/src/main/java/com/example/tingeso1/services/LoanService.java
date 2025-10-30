@@ -15,6 +15,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LoanService {
@@ -103,8 +104,8 @@ public class LoanService {
     }
 
     // Find Loan by Id
-    public LoanEntity findById(Long id){
-        return loanRepository.findById(id).get();
+    public Optional<LoanEntity> findById(Long id){
+        return loanRepository.findById(id);
     }
 
     //Update Loan
@@ -129,8 +130,12 @@ public class LoanService {
 
     // Get tools by loan id
     public List<ToolEntity> getToolsByLoanId(Long id){
-        LoanEntity loan = loanRepository.findByIdLoan(id);
-        return loan.getTool();
+        try {
+            Optional<LoanEntity> loan = loanRepository.findByIdLoan(id);
+            return loan.get().getTool();
+        }catch (Exception e){
+            return null;
+        }
     }
 
     // Get loans by id client
@@ -140,33 +145,37 @@ public class LoanService {
 
     // Update penalty
     public LoanEntity updatePenaltyLoan(Long id){
-        LoanEntity loanEntity = findById(id);
-        ClientEntity client = loanEntity.getIdClient();
-        Date finishDate = loanEntity.getEndDate();
-        Date todayDate = new Date();
+        try{
+            LoanEntity loanEntity =  loanRepository.findById(id).orElse(null);
+            ClientEntity client = loanEntity.getIdClient();
+            Date finishDate = loanEntity.getEndDate();
+            Date todayDate = new Date();
 
-        if (loanEntity.getStateLoan().equals("FINALIZADO")) {
-            return loanEntity;
-        }
-
-        if (finishDate.before(todayDate)) {
-            long diffMillis = todayDate.getTime() - finishDate.getTime();
-            long diffDays = diffMillis / (1000 * 60 * 60 * 24);
-            
-            List<ToolEntity> tools = loanEntity.getTool();
-
-            int totalPenalty = 0;
-            for (ToolEntity tool: tools) {
-                totalPenalty += tool.getLateCharge() * diffDays;
-                client.setStateClient("RESTRINGIDO");
-                clientRepository.save(client);
+            if (loanEntity.getStateLoan().equals("FINALIZADO")) {
+                return loanEntity;
             }
 
-            loanEntity.setPenaltyLoan(totalPenalty);
-            loanRepository.save(loanEntity);
-            return loanEntity;
+            if (finishDate.before(todayDate)) {
+                long diffMillis = todayDate.getTime() - finishDate.getTime();
+                long diffDays = diffMillis / (1000 * 60 * 60 * 24);
+
+                List<ToolEntity> tools = loanEntity.getTool();
+
+                int totalPenalty = 0;
+                for (ToolEntity tool: tools) {
+                    totalPenalty += tool.getLateCharge() * diffDays;
+                    client.setStateClient("RESTRINGIDO");
+                    clientRepository.save(client);
+                }
+
+                loanEntity.setPenaltyLoan(totalPenalty);
+                loanRepository.save(loanEntity);
+                return loanEntity;
+            }
+            loanEntity.setPenaltyLoan(0);
+            return loanRepository.save(loanEntity);
+        } catch (Exception e){
+            return null;
         }
-        loanEntity.setPenaltyLoan(0);
-        return loanRepository.save(loanEntity);
     }
 }
