@@ -4,10 +4,12 @@ import com.example.tingeso1.entities.LoanEntity;
 import com.example.tingeso1.services.AdminService;
 import com.example.tingeso1.services.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.tingeso1.entities.ToolEntity;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,5 +65,18 @@ public class LoanController {
     public ResponseEntity<LoanEntity> updatePenaltyLoan(@PathVariable Long id){
         LoanEntity loanUpdated = loanService.updatePenaltyLoan(id);
         return ResponseEntity.ok(loanUpdated);
+    }
+
+    @PutMapping("/finish-loan/{id}/{totalValue}")
+    public ResponseEntity<LoanEntity> finishLoan(@PathVariable Long id, @PathVariable Integer totalValue) throws Exception{
+        return ResponseEntity.ok(loanService.finalizeLoan(id,totalValue));
+    }
+
+    @GetMapping("/loans-by-range-date/{initDate}/{endDate}")
+    public ResponseEntity<List<LoanEntity>> getLoansByRangeDate(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date initDate,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate
+    ) throws Exception {
+        return ResponseEntity.ok(loanService.getLoansByDateRange(initDate, endDate));
     }
 }

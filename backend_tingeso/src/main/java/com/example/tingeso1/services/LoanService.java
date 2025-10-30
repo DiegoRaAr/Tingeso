@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.tingeso1.entities.ToolEntity;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -78,6 +81,12 @@ public class LoanService {
             throw new Exception("La fecha de fin no puede ser anterior a la fecha de inicio");
         }
 
+        LocalDate start = iniDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate end = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        long days = ChronoUnit.DAYS.between(start, end);
+
+        int total = 0;
         for (ToolEntity tool: completeTools) {
             tool.setStockTool(tool.getStockTool() - 1);
             toolRepository.save(tool);
@@ -86,6 +95,8 @@ public class LoanService {
                 tool.setStateTool("BAJA");
             }
             System.out.println("aaaaa");
+
+            total += tool.getDailyCharge();
 
             KardexEntity kardex = new KardexEntity();
             kardex.setDateKardex(new java.util.Date());
@@ -99,6 +110,7 @@ public class LoanService {
         loan.setHourLoan(LocalTime.now());
         loan.setTool(completeTools);
         loan.setIdClient(client);
+        loan.setTotalLoan(total);
         loanRepository.save(loan);
         return loan;
     }
@@ -177,5 +189,83 @@ public class LoanService {
         } catch (Exception e){
             return null;
         }
+    }
+
+    // finalize loan
+    public LoanEntity finalizeLoan(Long id, int totalValueLoan) throws Exception {
+
+        KardexEntity kardex = new KardexEntity();
+        kardex.setDateKardex(new java.util.Date());
+
+        try {
+            LoanEntity loan = loanRepository.findById(id).get();
+
+            ClientEntity client = clientRepository.findById(loan.getIdClient().getIdClient())
+                    .orElseThrow(() -> new Exception("Cliente no encontrado"));
+
+            List<ToolEntity> completeTools = new ArrayList<>();
+            for (ToolEntity t : loan.getTool()) {
+                ToolEntity tool = toolRepository.findById(t.getIdTool()).orElseThrow(() -> new Exception("Herramienta no encontrada"));
+                completeTools.add(tool);
+            }
+
+            // update stock tool and save kardex
+            for (ToolEntity tool : completeTools) {
+                tool.setStockTool(tool.getStockTool() + 1);
+                toolRepository.save(tool);
+                kardex.setIdTool(tool.getIdTool());
+                kardex.setNameTool(tool.getNameTool());
+                if (tool.getStockTool() == 1) {
+                    tool.setStateTool("ACTIVA");
+                }
+                kardex.setStateTool("DEVOLUCIÓN");
+                kardexRepository.save(kardex);
+            }
+
+            if (client.getStateClient().equals("RESTRINGIDO")) {
+                boolean hasDebt = false;
+                List<LoanEntity> loans = clientRepository.findAllLoanByIdClient(client);
+                for (LoanEntity l : loans) {
+                    int penalty = l.getPenaltyLoan();
+                    if (penalty > 0 && l.getStateLoan() == "ACTIVO") {
+                        hasDebt = true;
+                        break;
+                    }
+                }
+                if (!hasDebt) {
+                    client.setStateClient("ACTIVO");
+                    clientRepository.save(client);
+                }
+            }
+
+            System.out.println("finishhh");
+
+            loan.setTotalLoan(totalValueLoan);
+            loan.setStateLoan("FINALIZADO");
+            return loanRepository.save(loan);
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    // Get all loans by date range
+    public List<LoanEntity> getLoansByDateRange(Date startDate, Date endDate) throws Exception {
+        if (startDate == null || endDate == null) {
+            throw new Exception("Las fechas no pueden ser nulas");
+        }
+        if (endDate.before(startDate)) {
+            throw new Exception("La fecha de fin no puede ser anterior a la fecha de inicio");
+        }
+
+        List<LoanEntity> allLoans = loanRepository.findAll();
+        List<LoanEntity> filteredLoans = new ArrayList<>();
+
+        for (LoanEntity loan : allLoans) {
+            Date initDate = loan.getInitDate();
+            if (initDate != null && !initDate.before(startDate) && !initDate.after(endDate)) {
+                filteredLoans.add(loan);
+            }
+        }
+        return filteredLoans;
     }
 }

@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ToolService {
@@ -87,6 +90,38 @@ public class ToolService {
         tool.setStockTool(tool.getStockTool() + 1);
         toolRepository.save(tool);
         return true;
+    }
+
+    // Get best tools by range date
+    public List<ToolEntity> getBestToolsByRangeDate(java.util.Date initDate, java.util.Date endDate) {
+        // Get all kardex between the given dates
+        List<KardexEntity> kardexList = kardexRepository.findByDateKardexBetween(initDate, endDate);
+
+        // filter for "PRESTAMO" state
+        List<KardexEntity> prestamos = kardexList.stream()
+                .filter(k -> "PRESTAMO".equals(k.getStateTool()))
+                .toList();
+
+        // Count occurrences of each tool ID
+        Map<Long, Integer> toolCount = new HashMap<>();
+        for (KardexEntity kardex : prestamos) {
+            Long toolId = kardex.getIdTool();
+            toolCount.put(toolId, toolCount.getOrDefault(toolId, 0) + 1);
+        }
+
+        // Order tool IDs by their count in descending order
+        List<Long> sortedToolIds = toolCount.entrySet().stream()
+                .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+                .map(Map.Entry::getKey)
+                .toList();
+
+        // get ToolEntity objects for the sorted IDs
+        List<ToolEntity> bestTools = new ArrayList<>();
+        for (Long toolId : sortedToolIds) {
+            toolRepository.findById(toolId).ifPresent(bestTools::add);
+        }
+
+        return bestTools;
     }
 
 }

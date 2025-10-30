@@ -25,6 +25,7 @@ public class LoanEntity {
     private Date endDate;
     private String stateLoan;
     private int penaltyLoan;
+    private int totalLoan;
 
     @ManyToMany
     @JoinTable(

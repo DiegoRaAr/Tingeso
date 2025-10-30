@@ -3,6 +3,7 @@ package com.example.tingeso1.controllers;
 import com.example.tingeso1.entities.ToolEntity;
 import com.example.tingeso1.services.ToolService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,5 +58,13 @@ public class ToolController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/best-tools-by-range-date/{initDate}/{endDate}")
+    public ResponseEntity<List<ToolEntity>> getBestToolsByRangeDate(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.util.Date initDate,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.util.Date endDate
+    ) {
+        List<ToolEntity> bestTools = toolService.getBestToolsByRangeDate(initDate, endDate);
+        return ResponseEntity.ok(bestTools);
+    }
     
 }
