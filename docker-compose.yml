@@ -25,7 +25,8 @@ services:
   # 🔹 Backend (tu imagen de Docker Hub)
   # ==========================
   backend:
-    image: diegoraar/backend-tingeso:1.0
+    image: diegoraar/backend-tingeso:1.2
+    #build: ./backend_tingeso 
     container_name: backend
     restart: always
     environment:
@@ -67,7 +68,8 @@ services:
   # 🔹 Frontend (React + Vite + Nginx)
   # ==========================
   frontend:
-    image: diegoraar/frontend-tingeso:1.0
+    image: diegoraar/frontend-tingeso:1.2
+    #build: ./frontend-tingeso
     container_name: frontend
     restart: always
     depends_on:
