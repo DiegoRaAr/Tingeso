@@ -21,7 +21,7 @@ public class KardexController {
         return ResponseEntity.ok(kardex);
     }
 
-    @GetMapping("/id")
+    @GetMapping("/{id}")
     public ResponseEntity<KardexEntity> getKardexByID(@PathVariable Long id){
         KardexEntity kardex = kardexService.getKardexById(id);
         return ResponseEntity.ok(kardex);
