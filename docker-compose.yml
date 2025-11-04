@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   # ==========================
-  # 🔹 MySQL (base de datos para backend y Keycloak)
+  # 🔹 MySQL
   # ==========================
   mysql:
     image: mysql:8.0
@@ -10,7 +10,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: db_tingeso        # base de datos del backend
+      MYSQL_DATABASE: db_tingeso
       MYSQL_USER: diego
       MYSQL_PASSWORD: diego1234
     volumes:
@@ -22,12 +22,46 @@ services:
       - "3306"
 
   # ==========================
-  # 🔹 Backend (tu imagen de Docker Hub)
+  # 🔹 Backend cluster (3 instancias)
   # ==========================
-  backend:
-    image: diegoraar/backend-tingeso:1.2
-    #build: ./backend_tingeso 
-    container_name: backend
+  backend1:
+    image: diegoraar/backend-tingeso:1.4
+    #build: ./backend_tingeso
+    container_name: backend1
+    restart: always
+    environment:
+      - DB_HOST=mysql
+      - DB_NAME=db_tingeso
+      - DB_USER=diego
+      - DB_PASSWORD=diego1234
+    depends_on:
+      - mysql
+    networks:
+      - tingeso-net
+    expose:
+      - "8090"
+
+  backend2:
+    image: diegoraar/backend-tingeso:1.4
+    #build: ./backend_tingeso
+    container_name: backend2
+    restart: always
+    environment:
+      - DB_HOST=mysql
+      - DB_NAME=db_tingeso
+      - DB_USER=diego
+      - DB_PASSWORD=diego1234
+    depends_on:
+      - mysql
+    networks:
+      - tingeso-net
+    expose:
+      - "8090"
+
+  backend3:
+    image: diegoraar/backend-tingeso:1.4
+    #build: ./backend_tingeso
+    container_name: backend3
     restart: always
     environment:
       - DB_HOST=mysql
@@ -42,7 +76,26 @@ services:
       - "8090"
 
   # ==========================
-  # 🔹 Keycloak (usando MySQL)
+  # 🔹 Nginx Load Balancer
+  # ==========================
+  nginx-loadbalancer:
+    image: nginx:latest
+    container_name: nginx-loadbalancer
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "70:80"     # puedes usar 80:80 si prefieres
+    depends_on:
+      - backend1
+      - backend2
+      - backend3
+      - frontend
+    networks:
+      - tingeso-net
+    restart: always
+
+  # ==========================
+  # 🔹 Keycloak
   # ==========================
   keycloak:
     image: quay.io/keycloak/keycloak:26.0
@@ -65,21 +118,19 @@ services:
     restart: always
 
   # ==========================
-  # 🔹 Frontend (React + Vite + Nginx)
+  # 🔹 Frontend (React)
   # ==========================
   frontend:
-    image: diegoraar/frontend-tingeso:1.2
+    image: diegoraar/frontend-tingeso:1.4
     #build: ./frontend-tingeso
     container_name: frontend
     restart: always
     depends_on:
-      - backend
       - keycloak
-    ports:
-      - "5173:80"   # todo el sistema visible en este puerto
+    expose:
+      - "80"
     networks:
       - tingeso-net
-
 
 # ==========================
 # 🔸 Volúmenes persistentes
