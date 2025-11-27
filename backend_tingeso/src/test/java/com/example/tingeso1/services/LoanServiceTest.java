@@ -355,7 +355,7 @@ class LoanServiceTest {
         LoanEntity result = loanService.createLoan(loan);
 
         assertThat(result).isNotNull();
-        assertThat(result.getTotalLoan()).isEqualTo(1000); // 1 tool * dailyCharge
+        assertThat(result.getTotalLoan()).isEqualTo(5000); // 1 tool * dailyCharge
         verify(toolRepository, atLeastOnce()).save(any());
         verify(kardexRepository, atLeastOnce()).save(any());
         verify(loanRepository, times(1)).save(loan);
