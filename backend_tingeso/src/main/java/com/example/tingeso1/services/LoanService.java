@@ -107,6 +107,9 @@ public class LoanService {
 
             kardexRepository.save(kardex);
         }
+
+        total = Math.toIntExact(total * days);
+
         loan.setHourLoan(LocalTime.now());
         loan.setTool(completeTools);
         loan.setIdClient(client);

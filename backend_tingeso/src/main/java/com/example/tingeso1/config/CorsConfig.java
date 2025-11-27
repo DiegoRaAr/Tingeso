@@ -19,7 +19,8 @@ public class CorsConfig {
                                 "http://localhost:5173",   // Vite en local
                                 "http://localhost:8080",   // Keycloak
                                 "http://frontend",         // contenedor docker del front
-                                "http://frontend:80"       // Nginx dentro de la red docker
+                                "http://frontend:80",      // Nginx dentro de la red docker
+                                "http://localhost:70"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
