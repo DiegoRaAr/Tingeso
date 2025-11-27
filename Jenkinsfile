@@ -43,6 +43,7 @@ pipeline {
                         docker.withRegistry('https://index.docker.io/v1/', 'docker-credentials') {
                             def img = docker.build("${env.DOCKER_IMAGE}:${env.BUILD_NUMBER}")
                             img.push()
+                            img.push("latest")
                         }
                     }
                 }
