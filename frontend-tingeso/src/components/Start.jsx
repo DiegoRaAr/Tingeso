@@ -8,7 +8,7 @@ const Start = () => {
 
     return (
         <div className="d-grid gap-2 col-6 mx-auto">
-            <h2 className="text-center my-4">PRUEBAAAAA Bienvenido al sistema de prestamo de herramientas</h2>
+            <h2 className="text-center my-4">Bienvenido al sistema de prestamo de herramientas</h2>
             En la parte superior se encuentra el menu de navegacion, en el cual se puede acceder a las diferentes secciones del sistema.
             <button type="button" className="btn btn-primary btn-lg" onClick={() => navigate(`/admin-client`)}>
                 <i className="bi bi-people me-2"></i>Clientes
