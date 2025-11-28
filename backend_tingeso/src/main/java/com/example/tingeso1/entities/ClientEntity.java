@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+// Entity Client, this class represents the client table in the database
 @Entity
 @Table(name = "client")
 @Data

@@ -6,14 +6,12 @@ pipeline {
     }
 
     environment {
-        // opcional: nombre de la imagen base
         DOCKER_IMAGE = "diegoraar/backend-tingeso"
     }
 
     stages {
         stage("Checkout") {
             steps {
-                // usa pipeline checkout para que Jenkins marque el SCM
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']],
                           userRemoteConfigs: [[url: 'https://github.com/DiegoRaAr/Tingeso']]])
             }
@@ -39,7 +37,6 @@ pipeline {
             steps {
                 dir("backend_tingeso") {
                     script {
-                        // usa el plugin docker para login/push con credentialsId
                         docker.withRegistry('https://index.docker.io/v1/', 'docker-credentials') {
                             def img = docker.build("${env.DOCKER_IMAGE}:${env.BUILD_NUMBER}")
                             img.push()

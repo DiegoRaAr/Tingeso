@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.List;
 
+// Entity Admin, this class represents the admin table in the database
 @Entity
 @Table(name = "admin")
 @Data

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
 
+// Entity Employee, this class represents the employee table in the database
 @Entity
 @Table(name = "employee")
 @Data

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.apachecommons.CommonsLog;
 
+// Entity Tool, this class represents the tool table in the database.
 @Entity
 @Table(name = "tool")
 @Data

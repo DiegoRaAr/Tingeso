@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
 
+// Entity Kardex, this class represents the kardex table in the database.
+// KArdex is a table that stores the changes of the tools.
 @Entity
 @Table(name = "kardex")
 @Data

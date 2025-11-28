@@ -40,16 +40,20 @@ public class LoanService {
         return (ArrayList<LoanEntity>) loanRepository.findAll();
     }
 
-    // Create Loan
+    // Create Loan with conditions
     public LoanEntity createLoan(LoanEntity loan) throws Exception {
+        // Search all tools of loan, and verify if they exist
         List<ToolEntity> completeTools = new ArrayList<>();
         for (ToolEntity t : loan.getTool()) {
             ToolEntity tool = toolRepository.findById(t.getIdTool()).orElseThrow(() -> new Exception("Herramienta no encontrada"));
             completeTools.add(tool);
         }
+
+        // Search client of loan, and verify if it exists
         ClientEntity client = clientRepository.findById(loan.getIdClient().getIdClient())
         .orElseThrow(() -> new Exception("Cliente no encontrado"));
 
+        // Get all loans of client and verify if it has debt
         boolean debt = false;
         List<LoanEntity> loans = clientRepository.findAllLoanByIdClient(client);
         for (LoanEntity l: loans) {
@@ -60,20 +64,22 @@ public class LoanService {
             }
         }
 
+        // Verify if client has 5 active loans
         if (loans.size() >= 5) {
             throw new Exception("El cliente ya tiene 5 prestamos activos");
         }
 
+        // Verify if client has debt
         if (debt) {
             throw new Exception("El cliente tiene deudas pendientes");
         }
 
-        System.out.println(client.getStateClient());
-
+        // Verify if client is restricted
         if (client.getStateClient().equals("RESTRINGIDO")) {
             throw new Exception("El cliente se encuentra restringido");
         }
 
+        // Verify if end date is before start date
         Date iniDate = loan.getInitDate();
         Date endDate = loan.getEndDate();
 
@@ -84,8 +90,10 @@ public class LoanService {
         LocalDate start = iniDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate end = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
+        // Calculate days of loans
         long days = ChronoUnit.DAYS.between(start, end);
 
+        // Calculate total of loans and update stock of tools
         int total = 0;
         for (ToolEntity tool: completeTools) {
             tool.setStockTool(tool.getStockTool() - 1);
@@ -94,10 +102,10 @@ public class LoanService {
             if (tool.getStockTool() == 0) {
                 tool.setStateTool("BAJA");
             }
-            System.out.println("aaaaa");
 
             total += tool.getDailyCharge();
 
+            // Create kardex for each tool
             KardexEntity kardex = new KardexEntity();
             kardex.setDateKardex(new java.util.Date());
             kardex.setIdTool(tool.getIdTool());
@@ -108,12 +116,16 @@ public class LoanService {
             kardexRepository.save(kardex);
         }
 
+        // Calculate total of loans
         total = Math.toIntExact(total * days);
 
+        // Set variables of loan
         loan.setHourLoan(LocalTime.now());
         loan.setTool(completeTools);
         loan.setIdClient(client);
         loan.setTotalLoan(total);
+
+        // Save loan
         loanRepository.save(loan);
         return loan;
     }
@@ -158,18 +170,24 @@ public class LoanService {
         return loanRepository.findByIdClient_RutClient(rut);
     }
 
-    // Update penalty
+    // Update penalty: This function updates the penalty of loan
     public LoanEntity updatePenaltyLoan(Long id){
         try{
+            // Search loan by id
             LoanEntity loanEntity =  loanRepository.findById(id).orElse(null);
+            // Search client by id
             ClientEntity client = loanEntity.getIdClient();
+            // Search finish date of loan
             Date finishDate = loanEntity.getEndDate();
+            // Search today date
             Date todayDate = new Date();
 
+            // Verify if loan is finished
             if (loanEntity.getStateLoan().equals("FINALIZADO")) {
                 return loanEntity;
             }
 
+            // Verify if loan is finished and update penalty 
             if (finishDate.before(todayDate)) {
                 long diffMillis = todayDate.getTime() - finishDate.getTime();
                 long diffDays = diffMillis / (1000 * 60 * 60 * 24);
@@ -194,18 +212,21 @@ public class LoanService {
         }
     }
 
-    // finalize loan
+    // finalize loan with conditions
     public LoanEntity finalizeLoan(Long id, int totalValueLoan) throws Exception {
 
         KardexEntity kardex = new KardexEntity();
         kardex.setDateKardex(new java.util.Date());
 
+
         try {
             LoanEntity loan = loanRepository.findById(id).get();
 
+            // Search client by id
             ClientEntity client = clientRepository.findById(loan.getIdClient().getIdClient())
                     .orElseThrow(() -> new Exception("Cliente no encontrado"));
 
+            // Search tools by loan id
             List<ToolEntity> completeTools = new ArrayList<>();
             for (ToolEntity t : loan.getTool()) {
                 ToolEntity tool = toolRepository.findById(t.getIdTool()).orElseThrow(() -> new Exception("Herramienta no encontrada"));
@@ -225,6 +246,7 @@ public class LoanService {
                 kardexRepository.save(kardex);
             }
 
+            // Verify if client has debt
             if (client.getStateClient().equals("RESTRINGIDO")) {
                 boolean hasDebt = false;
                 List<LoanEntity> loans = clientRepository.findAllLoanByIdClient(client);
@@ -241,8 +263,7 @@ public class LoanService {
                 }
             }
 
-            System.out.println("finishhh");
-
+            // Update loan
             loan.setTotalLoan(totalValueLoan);
             loan.setStateLoan("FINALIZADO");
             return loanRepository.save(loan);

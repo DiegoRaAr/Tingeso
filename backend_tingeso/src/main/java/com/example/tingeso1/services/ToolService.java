@@ -57,6 +57,7 @@ public class ToolService {
         kardex.setDateKardex(new java.util.Date());
         kardex.setIdTool(tool.getIdTool());
 
+        // Verify if tool is the last one
         if (tool.getStockTool() == 1){
             tool.setStockTool(tool.getStockTool() - 1);
             tool.setStateTool("BAJA");
@@ -66,6 +67,7 @@ public class ToolService {
             toolRepository.save(tool);
             return true;
         }
+        // Verify if tool has stock 
         if (tool.getStockTool() > 1){
             tool.setStockTool(tool.getStockTool() - 1);
             kardex.setStateTool("DISMINUCIÓN");
@@ -82,6 +84,7 @@ public class ToolService {
         ToolEntity tool =  findById(id);
         KardexEntity kardex = new KardexEntity();
 
+        // Update the kardex
         kardex.setDateKardex(new java.util.Date());
         kardex.setIdTool(tool.getIdTool());
         kardex.setStateTool("SUMA");

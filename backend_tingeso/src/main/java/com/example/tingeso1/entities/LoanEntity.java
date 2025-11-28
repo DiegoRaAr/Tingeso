@@ -9,6 +9,8 @@ import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
+// Entity Loan, this class represents the loan table in the database.
+// Loan is a table that stores the loans of the tools for the clients.
 @Entity
 @Table(name = "loan")
 @Data

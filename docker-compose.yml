@@ -84,7 +84,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
-      - "70:80"     # puedes usar 80:80 si prefieres
+      - "70:80"   
     depends_on:
       - backend1
       - backend2
@@ -135,13 +135,13 @@ services:
       - ./frontend-tingeso/nginx.conf:/etc/nginx/conf.d/default.conf:ro 
 
 # ==========================
-# 🔸 Volúmenes persistentes
+# 🔸 Volumes 
 # ==========================
 volumes:
   mysql_data:
 
 # ==========================
-# 🔸 Red interna compartida
+# 🔸 Network
 # ==========================
 networks:
   tingeso-net:
