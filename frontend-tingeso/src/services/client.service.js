@@ -16,8 +16,8 @@ const getClientByRut = rut => {
     return httpClient.get(`/v1/client/by-rut/${rut}`);
 }
 
-const updateClient = (id, data) => {
-    return httpClient.put(`/v1/client/${id}`, data);
+const updateClient = (data) => {
+    return httpClient.put('/v1/client/', data);
 }
 
 const deleteClient = id => {

@@ -91,7 +91,7 @@ public class LoanService {
         LocalDate end = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         // Calculate days of loans
-        long days = ChronoUnit.DAYS.between(start, end);
+        long days = ChronoUnit.DAYS.between(start, end) + 1;
 
         // Calculate total of loans and update stock of tools
         int total = 0;
