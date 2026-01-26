@@ -42,3 +42,31 @@ body {
   background-color: #1e3a8a;
   color: white;
 }
+
+/* DatePicker más grande */
+.datepicker-large {
+  font-size: 1.1rem;
+}
+
+.datepicker-large .react-datepicker__month-container {
+  width: 300px;
+}
+
+.datepicker-large .react-datepicker__day {
+  width: 2.5rem;
+  line-height: 2.5rem;
+  margin: 0.2rem;
+}
+
+.datepicker-large .react-datepicker__day-name {
+  width: 2.5rem;
+  line-height: 2.5rem;
+}
+
+.datepicker-large .react-datepicker__header {
+  padding: 10px 0;
+}
+
+.datepicker-large .react-datepicker__current-month {
+  font-size: 1.2rem;
+}

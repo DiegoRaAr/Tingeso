@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import toolService from '../services/tool.service';
 import loanService from '../services/loan.service';
 import { useLocation, useNavigate } from "react-router-dom";
+import DatePicker, { registerLocale } from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import es from 'date-fns/locale/es';
+
+registerLocale('es', es);
 
 const MakeLoan = () => {
   const location = useLocation();
@@ -13,7 +18,7 @@ const MakeLoan = () => {
 
   const [tools, setTools] = useState([]);
   const [selectedTools, setSelectedTools] = useState([]);
-  const [endDate, setEndDate] = useState('');
+  const [endDate, setEndDate] = useState(null);
 
   useEffect(() => {
     toolService.getAllTools().then(r => setTools(r.data));
@@ -35,7 +40,7 @@ const MakeLoan = () => {
 
     const days =
       Math.ceil(
-        (new Date(endDate).getTime() - new Date().getTime()) /
+        (endDate.getTime() - new Date().getTime()) /
         (1000 * 60 * 60 * 24)
       ) + 1 || 1;
 
@@ -51,7 +56,7 @@ const MakeLoan = () => {
 
     const loanData = {
       initDate: new Date(),
-      endDate: new Date(endDate),
+      endDate: endDate,
       stateLoan: 'ACTIVO',
       penaltyLoan: 0,
       tool: selectedTools.map(id => ({ idTool: id })),
@@ -62,7 +67,7 @@ const MakeLoan = () => {
       await loanService.createLoan(loanData);
       alert('Préstamo creado exitosamente');
       setSelectedTools([]);
-      setEndDate('');
+      setEndDate(null);
       navigate(`/loans-by-rut/${client.rutClient}`);
     } catch (error) {
       console.error('Error:', error);
@@ -73,49 +78,70 @@ const MakeLoan = () => {
   return (
     <div>
       <h1 className="text-start my-1 mb-4">Realizar prestamo</h1>
-      <form onSubmit={handleSubmit}>|
+      <h3 className="text-start fs-4">{client.nameClient} - {client.rutClient}</h3>
+      <form onSubmit={handleSubmit}>
+        
         <div className="mb-3">
-          <label className="form-label fw-bold fs-4">Cliente</label>
-          <div className="form-control" readOnly>
-            {client.nameClient} - {client.rutClient}
+          <label className="form-label fw-bold fs-4">Seleccionar Herramientas</label>
+          <table className="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>Herramienta</th>
+                <th>Cargo Diario</th>
+                <th>Cargo por Atraso</th>
+                <th>Stock</th>
+              
+              </tr>
+            </thead>
+            <tbody>
+              {tools
+                .filter(tool => tool.stockTool >= 1 && tool.stateTool === "ACTIVA")
+                .map(tool => (
+                  <tr key={tool.idTool}>
+                    <td>{tool.nameTool}</td>
+                    <td>{tool.dailyCharge}</td>
+                    <td>{tool.lateCharge}</td>
+                    <td>{tool.stockTool}</td>
+                    <td>
+                      <button
+                        type="button"
+                        className={`btn ${selectedTools.includes(tool.idTool) ? 'btn-danger' : 'btn-success'}`}
+                        onClick={() => handleToolSelect(tool.idTool)}
+                      >
+                        {selectedTools.includes(tool.idTool) ? 'Quitar' : 'Agregar'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="mb-3 d-flex align-items-center gap-5">
+          <label className="fw-bold fs-5">Seleccione la fecha de devolución </label>
+          <div className="ms-auto" style={{ marginRight: '0%' }}>
+            <DatePicker
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              locale="es"
+              dateFormat="dd/MM/yyyy"
+              minDate={new Date()}
+              className="form-control form-control-lg"
+              placeholderText="Selecciona una fecha"
+              showPopperArrow={false}
+              required
+              calendarClassName="datepicker-large"
+            />
           </div>
         </div>
 
-        <div className="mb-3">
-          <label className="form-label fw-bold fs-4">Herramientas</label>
-          <ul className="list-group">
-            {tools
-              .filter(tool => tool.stockTool >= 1 && tool.stateTool === "ACTIVA")
-
-              .map(tool => (
-                <li key={tool.idTool} className="list-group-item">
-                  <input
-                    className="form-check-input me-2"
-                    type="checkbox"
-                    id={`tool-${tool.idTool}`}
-                    checked={selectedTools.includes(tool.idTool)}
-                    onChange={() => handleToolSelect(tool.idTool)}
-                  />
-                  <label className="form-check-label" htmlFor={`tool-${tool.idTool}`}>
-                    {tool.nameTool} - Stock: {tool.stockTool}
-                  </label>
-                </li>
-              ))}
-          </ul>
-        </div>
-
-        {/* Fecha de Devolución */}
-        <div className="mb-3">
-          <label className="form-label fw-bold fs-4">Fecha de Devolución</label>
-          <input
-            type="date"
-            className="form-control"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            required
-          />
-        </div>
-
+        {previewPrice !== null && (
+          <div className="alert alert-primary mb-3">
+            <strong>Precio total del préstamo:</strong> ${previewPrice}
+          </div>
+        )}
+        
+        <div className="mb-3">          
         <button
           type="submit"
           className="btn btn-success mx-2"
@@ -131,12 +157,6 @@ const MakeLoan = () => {
           Vista previa precio
         </button>
 
-        {previewPrice !== null && (
-          <div className="alert alert-primary mt-3">
-            <strong>Precio estimado del préstamo:</strong> ${previewPrice}
-          </div>
-        )}
-
         <button
           type="button"
           className="btn btn-warning mx-2"
@@ -145,6 +165,7 @@ const MakeLoan = () => {
           Cancelar
         </button>
 
+        </div>
 
       </form>
     </div>

@@ -48,7 +48,6 @@ const Home = () => {
                 </thead>
                 <tbody className="table-group-divider">
                 {tools
-                    .filter(tool => tool.stateTool === "ACTIVA")
                     .map((tool) => (
                     <tr key={tool.idTool}>
                         <th scope="row">{tool.idTool}</th>
