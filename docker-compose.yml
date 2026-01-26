@@ -18,8 +18,8 @@ services:
       - ./init-mysql:/docker-entrypoint-initdb.d
     networks:
       - tingeso-net
-    expose:
-      - "3306"
+    ports:
+      - "3307:3306"
 
   # ==========================
   # 🔹 Backend cluster (3 instancias)

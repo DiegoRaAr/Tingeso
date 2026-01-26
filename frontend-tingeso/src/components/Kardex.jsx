@@ -2,79 +2,119 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import '../App.css';
 import kardexService from "../services/kardex.service";
-import toolService from "../services/tool.service";
+import DatePicker, { registerLocale } from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import es from 'date-fns/locale/es';
+
+registerLocale('es', es);
 
 const Kardex = () => {
     const navigate = useNavigate();
 
     const [kardexes, setKardexes] = useState([]);
-    const [tools, setTools] = useState([]);
-    const [selectedTool, setSelectedTool] = useState("");
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
 
     useEffect(() => {
         kardexService.getAllKardex()
             .then(response => setKardexes(response.data))
             .catch(error => console.log("Error al obtener kardex", error));
-        toolService.getAllTools()
-            .then(response => setTools(response.data))
-            .catch(error => console.log("Error al obtener herramientas", error));
     }, []);
 
     const filteredKardexes = kardexes.filter(kardex => {
-        // Filter for tool
-        const toolMatch = selectedTool ? kardex.idTool === Number(selectedTool) : true;
+        // Filter for tool name or ID Kardex
+        const searchMatch = searchTerm 
+            ? kardex.nameTool.toLowerCase().includes(searchTerm.toLowerCase()) || 
+              kardex.idKardex.toString().includes(searchTerm)
+            : true;
+
         // filter for date range
+        if (!startDate && !endDate) return searchMatch;
+        
         const kardexDate = new Date(kardex.dateKardex);
-        const startMatch = startDate ? kardexDate >= new Date(startDate) : true;
-        const endMatch = endDate ? kardexDate <= new Date(endDate) : true;
-        return toolMatch && startMatch && endMatch;
-    });
+        // Normalize dates to ignore time for stricter day comparison if desired, 
+        // but simple comparison usually suffices if kardexDate is mostly date-based.
+        // Assuming kardexDate comes from DB as ISO string.
+        
+        const startMatch = startDate ? kardexDate >= startDate : true;
+        // For end date, we might want to include the whole end day.
+        // DatePicker returns 00:00:00 of the selected day.
+        // If kardexDate has time (e.g. 14:00), and endDate is selected day 00:00, 
+        // <= endDate will exclude it unless we set endDate to end of day.
+        
+        let endMatch = true;
+        if (endDate) {
+            const endOfDay = new Date(endDate);
+            endOfDay.setHours(23, 59, 59, 999);
+            endMatch = kardexDate <= endOfDay;
+        }
+
+        return searchMatch && startMatch && endMatch;
+    }).sort((a, b) => b.idKardex - a.idKardex);
 
     return (
         <div>
             <h2>Kardex</h2>
             {/* Filtros */}
-            <div className="mb-3 d-flex gap-3">
-                <select
-                    className="form-select"
-                    value={selectedTool}
-                    onChange={e => setSelectedTool(e.target.value)}
-                >
-                    <option value="">Todas las herramientas</option>
-                    {tools.map(tool => (
-                        <option key={tool.idTool} value={tool.idTool}>
-                            {tool.nameTool}
-                        </option>
-                    ))}
-                </select>
-                <input
-                    type="date"
-                    className="form-control"
-                    value={startDate}
-                    onChange={e => setStartDate(e.target.value)}
-                />
-                <input
-                    type="date"
-                    className="form-control"
-                    value={endDate}
-                    onChange={e => setEndDate(e.target.value)}
-                />
+            <div className="mb-3 d-flex gap-3 align-items-center" style={{ position: 'relative', zIndex: 1050 }}>
+                <div style={{ flex: 1 }}>
+                    <input
+                        type="search"
+                        className="form-control w-100"
+                        placeholder="Buscar por ID o nombre..."
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                    />
+                </div>
+                
+                <div className="d-flex gap-2" style={{ flex: 2 }}>
+                    <div style={{ flex: 1 }}>
+                        <DatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            placeholderText="Desde"
+                            className="form-control w-100"
+                            wrapperClassName="w-100"
+                            locale="es"
+                            dateFormat="dd/MM/yyyy"
+                            showMonthDropdown
+                            showYearDropdown
+                            dropdownMode="select"
+                        />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                        <DatePicker
+                            selected={endDate}
+                            onChange={(date) => setEndDate(date)}
+                            minDate={startDate}
+                            placeholderText="Hasta"
+                            className="form-control w-100"
+                            wrapperClassName="w-100"
+                            locale="es"
+                            dateFormat="dd/MM/yyyy"
+                            showMonthDropdown
+                            showYearDropdown
+                            dropdownMode="select"
+                        />
+                    </div>
+                </div>
+
                 <button
                     className="btn btn-secondary"
                     type="button"
                     onClick={() => {
-                        setSelectedTool("");
-                        setStartDate("");
-                        setEndDate("");
+                        setSearchTerm("");
+                        setStartDate(null);
+                        setEndDate(null);
                     }}
                 >
                     Limpiar filtros
                 </button>
             </div>
-            <table className="table table-hover">
-                <thead>
+            <div style={{ height: '550px', overflowY: 'scroll', border: '1px solid #dee2e6', borderRadius: '5px' }}>
+            <table className="table table-striped table-hover mb-0">
+                <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f8f9fa', zIndex: 1 }}>
                     <tr>
                         <th scope="col">ID Kardex</th>
                         <th scope="col">Fecha</th>
@@ -95,6 +135,7 @@ const Kardex = () => {
                     ))}
                 </tbody>
             </table>
+            </div>
             <button className="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
         </div>
     );
