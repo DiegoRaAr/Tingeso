@@ -100,7 +100,7 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.0
     container_name: keycloak
-    command: start-dev
+    command: start-dev --import-realm --http-relative-path=/auth --hostname=http://localhost:70/auth --hostname-backchannel-dynamic=true
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
@@ -109,6 +109,10 @@ services:
       - KC_DB_USERNAME=diego
       - KC_DB_PASSWORD=diego1234
       - KC_DB_SCHEMA=keycloak_db
+      - KC_HTTP_RELATIVE_PATH=/auth
+      - KC_PROXY_HEADERS=xforwarded
+    volumes:
+      - ./keycloak-config/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
     depends_on:
       - mysql
     ports:
