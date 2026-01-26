@@ -73,8 +73,7 @@ const MakeLoan = () => {
   return (
     <div>
       <h1 className="text-start my-1 mb-4">Realizar prestamo</h1>
-      <form onSubmit={handleSubmit}>
-        {/* Mostrar Cliente por defecto */}
+      <form onSubmit={handleSubmit}>|
         <div className="mb-3">
           <label className="form-label fw-bold fs-4">Cliente</label>
           <div className="form-control" readOnly>
@@ -82,7 +81,6 @@ const MakeLoan = () => {
           </div>
         </div>
 
-        {/* Lista de Herramientas con Checkbox */}
         <div className="mb-3">
           <label className="form-label fw-bold fs-4">Herramientas</label>
           <ul className="list-group">

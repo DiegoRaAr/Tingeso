@@ -11,11 +11,11 @@
   "roles": {
     "realm": [
       {
-        "name": "admin",
+        "name": "ADMIN",
         "description": "Administrador del sistema"
       },
       {
-        "name": "user",
+        "name": "USER",
         "description": "Usuario regular"
       }
     ]
@@ -35,7 +35,7 @@
           "temporary": false
         }
       ],
-      "realmRoles": ["admin"]
+      "realmRoles": ["ADMIN"]
     },
     {
       "username": "usuario1",
@@ -51,7 +51,7 @@
           "temporary": false
         }
       ],
-      "realmRoles": ["user"]
+      "realmRoles": ["USER"]
     }
   ],
   "clients": [

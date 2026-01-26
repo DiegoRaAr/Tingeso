@@ -9,7 +9,6 @@ const Home = () => {
     const { keycloak } = useKeycloak();
     const roles = keycloak.tokenParsed?.realm_access?.roles || [];
     const isAdmin = roles.includes("ADMIN");
-    const isEMPLOYEE = roles.includes("EMPLOYEE");
 
     const [tools, setTools] = useState([]);
     const addToolNumber = (id, number) => {
