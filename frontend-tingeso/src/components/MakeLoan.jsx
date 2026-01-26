@@ -19,6 +19,7 @@ const MakeLoan = () => {
   const [tools, setTools] = useState([]);
   const [selectedTools, setSelectedTools] = useState([]);
   const [endDate, setEndDate] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     toolService.getAllTools().then(r => setTools(r.data));
@@ -77,48 +78,60 @@ const MakeLoan = () => {
 
   return (
     <div>
-      <h1 className="text-start my-1 mb-4">Realizar prestamo</h1>
-      <h3 className="text-start fs-4">{client.nameClient} - {client.rutClient}</h3>
+      <h1 className="text-start fs-2 my-1 mb-4">{client.nameClient} - {client.rutClient}</h1>
       <form onSubmit={handleSubmit}>
         
         <div className="mb-3">
-          <label className="form-label fw-bold fs-4">Seleccionar Herramientas</label>
-          <table className="table table-striped table-hover">
-            <thead>
-              <tr>
-                <th>Herramienta</th>
-                <th>Cargo Diario</th>
-                <th>Cargo por Atraso</th>
-                <th>Stock</th>
-              
-              </tr>
-            </thead>
-            <tbody>
-              {tools
-                .filter(tool => tool.stockTool >= 1 && tool.stateTool === "ACTIVA")
-                .map(tool => (
-                  <tr key={tool.idTool}>
-                    <td>{tool.nameTool}</td>
-                    <td>{tool.dailyCharge}</td>
-                    <td>{tool.lateCharge}</td>
-                    <td>{tool.stockTool}</td>
-                    <td>
-                      <button
-                        type="button"
-                        className={`btn ${selectedTools.includes(tool.idTool) ? 'btn-danger' : 'btn-success'}`}
-                        onClick={() => handleToolSelect(tool.idTool)}
-                      >
-                        {selectedTools.includes(tool.idTool) ? 'Quitar' : 'Agregar'}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+          <div className="d-flex justify-content-between align-items-center mb-2">
+            <label className="form-label fw-bold fs-4 mb-0">Seleccionar Herramientas</label>
+            <input
+              type="text"
+              className="form-control"
+              style={{ width: '300px' }}
+              placeholder="Buscar herramienta..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div style={{ height: '450px', overflowY: 'scroll', border: '1px solid #dee2e6', borderRadius: '5px' }}>
+            <table className="table table-striped table-hover mb-0">
+              <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f8f9fa', zIndex: 1 }}>
+                <tr>
+                  <th>Herramienta</th>
+                  <th>Cargo Diario</th>
+                  <th>Cargo por Atraso</th>
+                  <th>Stock</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tools
+                  .filter(tool => tool.stockTool >= 1 && tool.stateTool === "ACTIVA")
+                  .filter(tool => tool.nameTool.toLowerCase().includes(searchTerm.toLowerCase()))
+                  .map(tool => (
+                    <tr key={tool.idTool}>
+                      <td>{tool.nameTool}</td>
+                      <td>{tool.dailyCharge}</td>
+                      <td>{tool.lateCharge}</td>
+                      <td>{tool.stockTool}</td>
+                      <td>
+                        <button
+                          type="button"
+                          className={`btn btn-sm ${selectedTools.includes(tool.idTool) ? 'btn-danger' : 'btn-success'}`}
+                          onClick={() => handleToolSelect(tool.idTool)}
+                        >
+                          {selectedTools.includes(tool.idTool) ? 'Quitar' : 'Agregar'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div className="mb-3 d-flex align-items-center gap-5">
-          <label className="fw-bold fs-5">Seleccione la fecha de devolución </label>
+          <label className="fw-bold fs-4">Seleccione la fecha de devolución </label>
           <div className="ms-auto" style={{ marginRight: '0%' }}>
             <DatePicker
               selected={endDate}

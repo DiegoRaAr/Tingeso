@@ -1,11 +1,9 @@
 import Keycloak from "keycloak-js";
 
-// Para desarrollo: http://localhost:8080
-// Para producción (Docker): http://localhost:70/auth
 const keycloak = new Keycloak({
-  url: "http://localhost:8080",
-  realm: "tingeso-realm",
-  clientId: "frontend-app",
+  url: import.meta.env.VITE_KEYCLOAK_URL,
+  realm: import.meta.env.VITE_KEYCLOAK_REALM,
+  clientId: import.meta.env.VITE_KEYCLOAK_CLIENT,
 }); 
 
 export default keycloak;
