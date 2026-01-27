@@ -20,7 +20,9 @@ public class CorsConfig {
                                 "http://localhost:8080",   // Keycloak
                                 "http://frontend",         // contenedor docker del front
                                 "http://frontend:80",      // Nginx dentro de la red docker
-                                "http://localhost:70"
+                                "http://localhost:70",
+                                "http://15.228.56.166:70", // AWS Public IP
+                                "http://15.228.56.166"     // AWS Public IP (no port)
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
