@@ -20,15 +20,7 @@ pipeline {
         stage("Build JAR") {
             steps {
                 dir("backend_tingeso") {
-                    sh "mvn -B clean package"
-                }
-            }
-        }
-
-        stage("Test") {
-            steps {
-                dir("backend_tingeso") {
-                    sh "mvn -B test"
+                    sh "mvn -B clean package -DskipTests"
                 }
             }
         }

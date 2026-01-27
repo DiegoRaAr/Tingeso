@@ -11,6 +11,8 @@ const Home = () => {
     const isAdmin = roles.includes("ADMIN");
 
     const [tools, setTools] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+
     const addToolNumber = (id, number) => {
         toolService.addToolNumber(id, number)
         window.location.reload()
@@ -34,29 +36,44 @@ const Home = () => {
         
 
         <div className="container-fluid">
-            <h1 className="text-start my-1 mb-4">Lista de herramientas</h1>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h1 className="text-start my-1 mb-0">Lista de herramientas</h1>
+                <input 
+                    className="form-control" 
+                    style={{ width: '300px' }}
+                    type="search" 
+                    placeholder="Buscar herramienta..." 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
            
-            <table className="table table-striped table-hover align-middle">
-                <thead>
-                    <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Herramienta</th>
-                    <th scope="col">Categoría</th>
-                    <th scope="col">Cargo diario</th>
-                    <th scope="col">Stock</th>
-                    </tr>
-                </thead>
-                <tbody className="table-group-divider">
-                {tools
-                    .filter(tool => tool.stateTool === "ACTIVA")
-                    .map((tool) => (
-                    <tr key={tool.idTool}>
-                        <th scope="row">{tool.idTool}</th>
-                        <td>{tool.nameTool}</td>
-                        <td>{tool.categoryTool}</td>
-                        <td>{tool.dailyCharge}</td>
-                        <td>{tool.stockTool}</td>
-                        <td>
+            <div style={{ height: '550px', overflowY: 'scroll', border: '1px solid #dee2e6', borderRadius: '5px' }}>
+                <table className="table table-striped table-hover align-middle mb-0">
+                    <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f8f9fa', zIndex: 1 }}>
+                        <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Herramienta</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Cargo diario</th>
+                        <th scope="col">Stock</th>
+                        <th scope="col" className="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody className="table-group-divider">
+                    {tools
+                        .filter(tool => 
+                            tool.nameTool.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            tool.categoryTool.toLowerCase().includes(searchTerm.toLowerCase())
+                        )
+                        .map((tool) => (
+                        <tr key={tool.idTool}>
+                            <th scope="row">{tool.idTool}</th>
+                            <td>{tool.nameTool}</td>
+                            <td>{tool.categoryTool}</td>
+                            <td>{tool.dailyCharge}</td>
+                            <td>{tool.stockTool}</td>
+                            <td>
                             <div className="d-grid gap-2 d-md-block">
                                 
                                 {isAdmin && (
@@ -111,13 +128,16 @@ const Home = () => {
                                 )}
                             </div>
                         </td>
-                    </tr>
-                ))}
-                </tbody>
+                        </tr>
+                    ))}
+                    </tbody>
                 </table>
+            </div>
 
-            <button className="btn btn-primary mx-2" type="button" onClick={() => navigate(`/add-tool`)}>Agregar herramienta</button>
-            <button className="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
+            <div className="mt-4">
+                <button className="btn btn-primary mx-2" type="button" onClick={() => navigate(`/add-tool`)}>Agregar herramienta</button>
+                <button className="btn btn-primary mx-2" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
+            </div>
             
 
         </div>
