@@ -112,6 +112,8 @@ services:
       - KC_HTTP_RELATIVE_PATH=/auth
       - KC_PROXY_HEADERS=xforwarded
       - KEYCLOAK_FRONTEND_URL=http://54.94.174.49:70/auth
+      - KC_HOSTNAME=54.94.174.49
+      - KC_HOSTNAME_PORT=70
     volumes:
       - ./keycloak-config/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
     depends_on:
