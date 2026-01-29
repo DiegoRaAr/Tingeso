@@ -21,8 +21,8 @@ public class CorsConfig {
                                 "http://frontend",         // contenedor docker del front
                                 "http://frontend:80",      // Nginx dentro de la red docker
                                 "http://localhost:70",
-                                "http://15.228.56.166:70", // AWS Public IP
-                                "http://15.228.56.166"     // AWS Public IP (no port)
+                                "http://54.94.174.49:70", // AWS Elastic IP
+                                "http://54.94.174.49"     // AWS Elastic IP (no port)
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
