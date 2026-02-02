@@ -9,10 +9,14 @@ import keycloak from './services/keycloak.js'
 import { ReactKeycloakProvider } from '@react-keycloak/web'
 import ReactDOM from 'react-dom/client'
 
-
+const initOptions = {
+  onLoad: 'login-required',
+  checkLoginIframe: false,
+  pkceMethod: 'S256'
+}
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <ReactKeycloakProvider authClient={keycloak}>
+  <ReactKeycloakProvider authClient={keycloak} initOptions={initOptions}>
     <App />
   </ReactKeycloakProvider>,
 )
