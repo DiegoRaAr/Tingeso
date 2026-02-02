@@ -111,6 +111,7 @@ services:
       - KC_HTTP_RELATIVE_PATH=/auth
       - KC_PROXY=edge
       - KC_HOSTNAME_STRICT=false
+      - KC_HOSTNAME_STRICT_HTTPS=false
       - KC_HTTP_ENABLED=true
     volumes:
       - ./keycloak-config/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
