@@ -12,7 +12,8 @@ import ReactDOM from 'react-dom/client'
 const initOptions = {
   onLoad: 'check-sso',
   checkLoginIframe: false,
-  flow: 'standard'
+  flow: 'standard',
+  pkceMethod: false
 }
 
 const eventLogger = (event, error) => {
