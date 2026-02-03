@@ -30,7 +30,7 @@ function App() {
 
   const privateRoute = ({element, rolesAllowed}) => {
     if(!isLoggedIn) {
-      keycloak.login();
+      keycloak.login({ redirectUri: window.location.origin });
       return null;
     }
     if (rolesAllowed && !rolesAllowed.some(r => roles.includes(r))) {
@@ -40,8 +40,8 @@ function App() {
   };
 
   if (!isLoggedIn) {
-    keycloak.login();
-    return null;
+    keycloak.login({ redirectUri: window.location.origin });
+    return <div>Redirigiendo al login...</div>;
   }
 
 

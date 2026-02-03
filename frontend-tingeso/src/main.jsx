@@ -10,10 +10,7 @@ import { ReactKeycloakProvider } from '@react-keycloak/web'
 import ReactDOM from 'react-dom/client'
 
 const initOptions = {
-  onLoad: 'check-sso',
-  checkLoginIframe: false,
-  flow: 'standard',
-  pkceMethod: false
+  checkLoginIframe: false
 }
 
 const eventLogger = (event, error) => {
