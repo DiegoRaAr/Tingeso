@@ -10,13 +10,21 @@ import { ReactKeycloakProvider } from '@react-keycloak/web'
 import ReactDOM from 'react-dom/client'
 
 const initOptions = {
-  onLoad: 'login-required',
+  onLoad: 'check-sso',
   checkLoginIframe: false,
   pkceMethod: 'S256'
 }
 
+const eventLogger = (event, error) => {
+  console.log('Keycloak event:', event, error)
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <ReactKeycloakProvider authClient={keycloak} initOptions={initOptions}>
+  <ReactKeycloakProvider 
+    authClient={keycloak} 
+    initOptions={initOptions}
+    onEvent={eventLogger}
+  >
     <App />
   </ReactKeycloakProvider>,
 )
