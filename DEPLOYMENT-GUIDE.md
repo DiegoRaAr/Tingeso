@@ -1,10 +1,10 @@
-# 🚀 Guía Completa de Deployment en AWS EC2
+# 🚀 Guía Completa de Deployment en Ubuntu
 
 ## 📋 Tabla de Contenidos
 1. [Requisitos Previos](#requisitos-previos)
-2. [Configuración del Security Group en AWS](#configuración-del-security-group)
-3. [Paso 1: Conectarse a la EC2](#paso-1-conectarse-a-la-ec2)
-4. [Paso 2: Limpiar la EC2 (Formateo)](#paso-2-limpiar-la-ec2)
+2. [Configuración de Firewall](#configuración-de-firewall)
+3. [Paso 1: Conectarse al Servidor](#paso-1-conectarse-al-servidor)
+4. [Paso 2: Verificar el Sistema](#paso-2-verificar-el-sistema)
 5. [Paso 3: Instalar Dependencias](#paso-3-instalar-dependencias)
 6. [Paso 4: Desplegar la Aplicación](#paso-4-desplegar-la-aplicación)
 7. [Verificación y Testing](#verificación-y-testing)
@@ -15,21 +15,24 @@
 
 ## 📌 Requisitos Previos
 
-- Una instancia EC2 en AWS (recomendado: Amazon Linux 2023 o Amazon Linux 2)
+- Un servidor Ubuntu (20.04, 22.04, o 24.04)
+  - Puede ser: EC2 en AWS, VPS, o Ubuntu local
 - Memoria RAM: Mínimo 4 GB (recomendado 8 GB)
 - Espacio en disco: Mínimo 20 GB
-- Acceso SSH a la instancia con tu archivo .pem
+- Acceso SSH o terminal local
 - Tu cuenta de Docker Hub debe tener las imágenes:
   - `diegoraar/backend-tingeso:latest`
   - `diegoraar/frontend-tingeso:latest`
 
 ---
 
-## 🔐 Configuración del Security Group
+## 🔐 Configuración de Firewall
 
-**IMPORTANTE:** Antes de empezar, configura tu Security Group en AWS Console:
+### Si estás en AWS EC2:
 
-### Reglas de Entrada Requeridas:
+**Configura tu Security Group en AWS Console:**
+
+#### Reglas de Entrada Requeridas:
 
 | Tipo         | Puerto | Origen        | Descripción                    |
 |-------------|--------|---------------|--------------------------------|
@@ -37,97 +40,159 @@
 | Custom TCP  | 70     | 0.0.0.0/0     | Aplicación web (Nginx)         |
 | Custom TCP  | 8080   | 0.0.0.0/0     | Keycloak (opcional)            |
 
-### Pasos para configurar:
+#### Pasos para configurar:
 1. Ve a AWS Console → EC2 → Security Groups
 2. Selecciona el Security Group de tu instancia
 3. Click en "Edit inbound rules"
 4. Agrega las reglas de la tabla anterior
 5. Click en "Save rules"
 
+### Si estás en VPS o Ubuntu Local:
+
+**Usa UFW (Uncomplicated Firewall):**
+
+```bash
+# Permitir SSH
+sudo ufw allow 22/tcp
+
+# Permitir aplicación web
+sudo ufw allow 70/tcp
+
+# Permitir Keycloak (opcional)
+sudo ufw allow 8080/tcp
+
+# Habilitar firewall
+sudo ufw enable
+
+# Ver estado
+sudo ufw status
+```
+
 ---
 
-## 🔌 Paso 1: Conectarse a la EC2
+## 🔌 Paso 1: Conectarse al Servidor
 
-Desde tu computadora local, conéctate a tu EC2:
+### Si es EC2 en AWS:
 
 ```bash
 # Cambia los permisos de tu archivo .pem (solo la primera vez)
 chmod 400 tu-clave.pem
 
-# Conéctate por SSH (reemplaza con tus datos)
-ssh -i tu-clave.pem ec2-user@tu-ip-publica-ec2
+# Conéctate por SSH
+ssh -i tu-clave.pem ubuntu@tu-ip-publica-ec2
 
 # Ejemplo:
-# ssh -i tingeso-key.pem ec2-user@54.94.174.49
+# ssh -i tingeso-key.pem ubuntu@54.94.174.49
 ```
 
-Una vez conectado, verás un prompt como: `[ec2-user@ip-xxx-xxx-xxx-xxx ~]$`
+### Si es VPS u otro servidor:
+
+```bash
+# Conéctate por SSH normalmente
+ssh usuario@tu-ip-servidor
+
+# Ejemplo:
+# ssh diego@192.168.1.100
+```
+
+### Si es Ubuntu Local:
+
+```bash
+# Solo abre una terminal (Ctrl + Alt + T)
+# No necesitas SSH
+```
+
+Una vez conectado/en la terminal, continúa con el siguiente paso.
 
 ---
 
-## 🧹 Paso 2: Limpiar la EC2
+## 🔍 Paso 2: Verificar el Sistema
 
-Si ya tenías cosas instaladas y quieres empezar de cero, ejecuta:
+Antes de instalar, verifica que tu sistema sea compatible:
+
+```bash
+# Descargar script de verificación
+curl -o check-system.sh https://raw.githubusercontent.com/DiegoRaAr/Tingeso/main/check-system.sh
+chmod +x check-system.sh
+./check-system.sh
+```
+
+Este script te dirá:
+- ✅ Qué está instalado
+- ❌ Qué falta
+- 📋 Qué hacer a continuación
+
+---
+
+## 🧹 Paso 2 (Opcional): Limpiar Instalación Anterior
+
+Si ya tenías Docker y contenedores corriendo, puedes limpiar todo:
 
 ```bash
 # Descargar el script de limpieza
 curl -o cleanup.sh https://raw.githubusercontent.com/DiegoRaAr/Tingeso/main/ec2-cleanup.sh
-
-# Dar permisos de ejecución
 chmod +x cleanup.sh
-
-# Ejecutar limpieza
 ./cleanup.sh
 ```
 
-**O si tienes los scripts localmente, súbelos:**
-
-```bash
-# Desde tu computadora local (otra terminal):
-scp -i tu-clave.pem ec2-cleanup.sh ec2-user@tu-ip-ec2:~
-scp -i tu-clave.pem ec2-setup.sh ec2-user@tu-ip-ec2:~
-scp -i tu-clave.pem ec2-deploy.sh ec2-user@tu-ip-ec2:~
-```
-
-El script eliminará:
+Este script eliminará:
 - ✅ Todos los contenedores de Docker
 - ✅ Todas las imágenes de Docker
 - ✅ Todos los volúmenes
 - ✅ Carpetas de proyectos antiguos
 
+**⚠️ Cuidado:** Esto borra TODA la información de Docker. Solo hazlo si quieres empezar desde cero.
+
 ---
 
 ## 🛠️ Paso 3: Instalar Dependencias
 
-Ahora vamos a instalar todo lo necesario desde cero:
+Ahora vamos a instalar Docker, Docker Compose y Git:
 
 ```bash
-# Si subiste el script desde tu computadora local:
-chmod +x ec2-setup.sh
-./ec2-setup.sh
-
-# O descárgalo desde GitHub:
+# Descargar script de instalación
 curl -o setup.sh https://raw.githubusercontent.com/DiegoRaAr/Tingeso/main/ec2-setup.sh
 chmod +x setup.sh
 ./setup.sh
 ```
 
 Este script instalará:
-- ✅ Docker
+- ✅ Docker (desde repositorio oficial)
 - ✅ Docker Compose
 - ✅ Git
 - ✅ Herramientas útiles (htop, wget, nano)
 
-**⚠️ IMPORTANTE:** Después de la instalación, debes **cerrar sesión y volver a entrar**:
+Durante la instalación, te preguntará si quieres configurar UFW (firewall). Responde:
+- **s** = Sí, configurar puertos automáticamente (recomendado)
+- **n** = No, lo configuraré manualmente después
+
+**⚠️ MUY IMPORTANTE:** Después de la instalación, debes **cerrar sesión y volver a entrar**:
 
 ```bash
 exit
 
 # Vuelve a conectarte
-ssh -i tu-clave.pem ec2-user@tu-ip-ec2
+ssh -i tu-clave.pem ubuntu@tu-ip
+# o si es local, solo abre otra terminal
 ```
 
 Esto es necesario para que los permisos de Docker tomen efecto.
+
+### Verificar que todo funcionó:
+
+```bash
+# Verificar Docker
+docker --version
+docker ps
+
+# Verificar Docker Compose
+docker-compose --version
+
+# Verificar Git
+git --version
+```
+
+Si ves las versiones sin errores, ¡estás listo!
 
 ---
 
@@ -136,19 +201,15 @@ Esto es necesario para que los permisos de Docker tomen efecto.
 Ahora sí, vamos a desplegar tu aplicación:
 
 ```bash
-# Si subiste el script:
-chmod +x ec2-deploy.sh
-./ec2-deploy.sh
-
-# O descárgalo desde GitHub:
-curl -o deploy.sh https://raw.githubusercontent.com/DiegoRaAr/Tingeso/main/ec2-deploy.sh
+# Descargar script de deployment
+curl -o deploy.sh https://raw.githubusercontent.com/DiegoRaAr/Tingeso/main/ec2-full-deploy.sh
 chmod +x deploy.sh
 ./deploy.sh
 ```
 
 ### ¿Qué hace este script?
 
-1. 🌐 Detecta automáticamente la IP pública de tu EC2
+1. 🌐 Detecta automáticamente tu IP pública (EC2, VPS, o local)
 2. 📥 Clona/actualiza el repositorio desde GitHub
 3. 🔧 Configura Keycloak con la IP correcta
 4. 📦 Descarga las imágenes de Docker Hub
@@ -157,6 +218,16 @@ chmod +x deploy.sh
 
 **Este proceso tarda 1-2 minutos.** Verás el progreso en la terminal.
 
+### Si estás en Ubuntu Local:
+
+Cuando el script te pida la IP, escribe `localhost`:
+
+```
+Ingresa la IP pública o 'localhost': localhost
+```
+
+Luego podrás acceder en: `http://localhost:70`
+
 ---
 
 ## ✅ Verificación y Testing
@@ -164,6 +235,7 @@ chmod +x deploy.sh
 ### 1. Verificar que los contenedores estén corriendo:
 
 ```bash
+cd ~/Tingeso
 docker ps
 ```
 
@@ -185,13 +257,17 @@ Presiona `Ctrl + C` para salir de los logs.
 
 ### 3. Probar la aplicación en tu navegador:
 
-Abre tu navegador y ve a:
-- **Aplicación:** `http://TU-IP-EC2:70`
-- **Keycloak Admin:** `http://TU-IP-EC2:70/auth`
-  - Usuario: `admin`
-  - Contraseña: `admin`
+#### Si está en servidor remoto (EC2/VPS):
+- **Aplicación:** `http://TU-IP-SERVIDOR:70`
+- **Keycloak Admin:** `http://TU-IP-SERVIDOR:70/auth`
 
-Por ejemplo: `http://54.94.174.49:70`
+#### Si está en Ubuntu local:
+- **Aplicación:** `http://localhost:70`
+- **Keycloak Admin:** `http://localhost:70/auth`
+
+**Credenciales de Keycloak Admin:**
+- Usuario: `admin`
+- Contraseña: `admin`
 
 ### 4. Verificar el estado de salud:
 
@@ -201,6 +277,11 @@ docker-compose ps
 
 # Ver uso de recursos
 docker stats
+
+# Ver logs de un servicio específico
+docker-compose logs backend1
+docker-compose logs keycloak
+docker-compose logs frontend
 ```
 
 ---

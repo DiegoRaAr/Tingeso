@@ -1,21 +1,28 @@
-# 🚀 Quick Start - Deployment en EC2
+# 🚀 Quick Start - Deployment en Ubuntu
 
 ## Inicio Rápido (3 Pasos)
 
-### 1️⃣ Conectarse a EC2
+### 1️⃣ Conectarse al servidor
 ```bash
-ssh -i tu-clave.pem ec2-user@tu-ip-ec2
+# Si es EC2, usa tu .pem
+ssh -i tu-clave.pem ubuntu@tu-ip-servidor
+
+# Si es VPS o local de Ubuntu
+ssh usuario@tu-ip-servidor
 ```
 
 ### 2️⃣ Instalar dependencias (primera vez)
 ```bash
+# Descargar script de setup
 curl -o setup.sh https://raw.githubusercontent.com/DiegoRaAr/Tingeso/main/ec2-setup.sh
 chmod +x setup.sh
 ./setup.sh
 
-# Cerrar sesión y volver a entrar
+# Cerrar sesión y volver a entrar (IMPORTANTE)
 exit
-ssh -i tu-clave.pem ec2-user@tu-ip-ec2
+
+# Volver a conectar
+ssh -i tu-clave.pem ubuntu@tu-ip-servidor
 ```
 
 ### 3️⃣ Desplegar aplicación
@@ -27,7 +34,23 @@ chmod +x deploy.sh
 
 ## ✅ Listo!
 
-Tu aplicación estará disponible en: `http://TU-IP-EC2:70`
+Tu aplicación estará disponible en: `http://TU-IP:70`
+
+---
+
+## 💻 Deployment Local (Ubuntu)
+
+Si quieres correr todo en tu Ubuntu local:
+
+```bash
+cd ~/
+git clone https://github.com/DiegoRaAr/Tingeso.git
+cd Tingeso
+./check-system.sh  # Verificar que Docker esté instalado
+./ec2-full-deploy.sh  # Usar 'localhost' como IP
+```
+
+Accede en: `http://localhost:70`
 
 ---
 
@@ -49,15 +72,28 @@ Para instrucciones detalladas, troubleshooting y comandos útiles, consulta:
 
 ---
 
-## ⚙️ Configuración del Security Group
+## ⚙️ Configuración de Firewall
 
-**Puertos que debes abrir en AWS:**
+### En EC2 (AWS Security Group)
+
+**Puertos que debes abrir:**
 
 | Puerto | Descripción |
 |--------|-------------|
 | 22 | SSH |
 | 70 | Aplicación web |
 | 8080 | Keycloak (opcional) |
+
+### En Ubuntu Local o VPS
+
+```bash
+# Configurar UFW (Ubuntu Firewall)
+sudo ufw allow 22/tcp
+sudo ufw allow 70/tcp
+sudo ufw allow 8080/tcp
+sudo ufw enable
+sudo ufw status
+```
 
 ---
 

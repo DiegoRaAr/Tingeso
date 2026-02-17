@@ -1,22 +1,29 @@
-# ✅ Checklist Pre-Deployment EC2
+# ✅ Checklist Pre-Deployment Ubuntu
 
-Usa este checklist antes de desplegar tu aplicación en EC2.
+Usa este checklist antes de desplegar tu aplicación en Ubuntu.
 
 ---
 
 ## 📋 Antes de empezar
 
-### AWS EC2
-- [ ] Tienes una instancia EC2 creada y corriendo
-- [ ] Tipo de instancia: Mínimo t3.small (recomendado t3.medium)
-- [ ] AMI: Amazon Linux 2023 o Amazon Linux 2
-- [ ] Almacenamiento: Mínimo 20 GB
-- [ ] Tienes el archivo .pem para conectarte por SSH
+### Servidor Ubuntu
+- [ ] Tienes un servidor Ubuntu (20.04, 22.04, o 24.04)
+  - [ ] EC2 en AWS, o
+  - [ ] VPS (DigitalOcean, Linode, etc.), o
+  - [ ] Ubuntu local
+- [ ] RAM: Mínimo 4 GB (recomendado 8 GB)
+- [ ] Disco: Mínimo 20 GB libre
+- [ ] Acceso: SSH o terminal local
 
-### Security Group
-- [ ] Puerto 22 (SSH) está abierto para tu IP
-- [ ] Puerto 70 (HTTP - Aplicación) está abierto para 0.0.0.0/0
-- [ ] Puerto 8080 (Keycloak - opcional) está abierto para 0.0.0.0/0
+### Firewall
+
+#### Si es EC2:
+- [ ] Puerto 22 (SSH) está abierto en Security Group
+- [ ] Puerto 70 (HTTP - Aplicación) está abierto en Security Group
+- [ ] Puerto 8080 (Keycloak - opcional) está abierto en Security Group
+
+#### Si es VPS o Local:
+- [ ] UFW configurado (o lo configurarás durante la instalación)
 
 ### Docker Hub
 - [ ] Las imágenes están publicadas en Docker Hub:
@@ -31,18 +38,16 @@ Usa este checklist antes de desplegar tu aplicación en EC2.
 
 ## 🔧 Configuración Local (Tu computadora)
 
-### Archivos para subir a EC2
-- [ ] `ec2-cleanup.sh` - Script de limpieza
-- [ ] `ec2-setup.sh` - Script de instalación
-- [ ] `ec2-deploy.sh` - Script de deployment
-- [ ] `ec2-full-deploy.sh` - Script completo
-
-### Subir scripts a EC2 (método alternativo)
+### Si necesitas subir scripts manualmente a un servidor remoto:
 ```bash
 # Desde tu computadora local
 cd "/home/diego/Escritorio/Versiones tingeso/6Tingeso/Tingeso"
 
-scp -i tu-clave.pem ec2-*.sh ec2-user@TU-IP-EC2:~
+# Si es EC2:
+scp -i tu-clave.pem *.sh ubuntu@TU-IP:~
+
+# Si es VPS:
+scp *.sh usuario@TU-IP:~
 ```
 
 ---
@@ -51,33 +56,45 @@ scp -i tu-clave.pem ec2-*.sh ec2-user@TU-IP-EC2:~
 
 ### Opción A: Deployment Completo (Recomendado)
 ```bash
-# 1. Conectarse a EC2
-ssh -i tu-clave.pem ec2-user@TU-IP-EC2
+# 1. Conectarse al servidor (si es remoto)
+ssh -i tu-clave.pem ubuntu@TU-IP-SERVIDOR
+# O si es local, solo abre una terminal
 
-# 2. Instalar dependencias (primera vez)
-./ec2-setup.sh
+# 2. Verificar sistema (opcional)
+curl -o check-system.sh https://raw.githubusercontent.com/DiegoRaAr/Tingeso/main/check-system.sh
+chmod +x check-system.sh
+./check-system.sh
+
+# 3. Instalar dependencias (primera vez)
+curl -o setup.sh https://raw.githubusercontent.com/DiegoRaAr/Tingeso/main/ec2-setup.sh
+chmod +x setup.sh
+./setup.sh
+
+# 4. Cerrar sesión y reconectar (IMPORTANTE)
 exit
-ssh -i tu-clave.pem ec2-user@TU-IP-EC2
+ssh -i tu-clave.pem ubuntu@TU-IP-SERVIDOR
 
-# 3. Desplegar
-./ec2-full-deploy.sh
+# 5. Desplegar
+curl -o deploy.sh https://raw.githubusercontent.com/DiegoRaAr/Tingeso/main/ec2-full-deploy.sh
+chmod +x deploy.sh
+./deploy.sh
 ```
 
-### Opción B: Paso a Paso
+### Opción B: Si ya tienes los scripts descargados
 ```bash
-# 1. Conectarse a EC2
-ssh -i tu-clave.pem ec2-user@TU-IP-EC2
+# 1. Conectarse
+ssh -i tu-clave.pem ubuntu@TU-IP-SERVIDOR
 
-# 2. (Opcional) Limpiar instalación anterior
-./ec2-cleanup.sh
+# 2. Verificar (opcional)
+./check-system.sh
 
-# 3. Instalar dependencias
+# 3. Instalar (primera vez)
 ./ec2-setup.sh
 exit
-ssh -i tu-clave.pem ec2-user@TU-IP-EC2
+ssh -i tu-clave.pem ubuntu@TU-IP-SERVIDOR
 
 # 4. Desplegar
-./ec2-deploy.sh
+./ec2-full-deploy.sh
 ```
 
 ---
@@ -96,8 +113,8 @@ ssh -i tu-clave.pem ec2-user@TU-IP-EC2
   - [ ] nginx-loadbalancer
 
 ### Acceso Web
-- [ ] Aplicación accesible en: `http://TU-IP-EC2:70`
-- [ ] Keycloak accesible en: `http://TU-IP-EC2:70/auth`
+- [ ] Aplicación accesible en: `http://TU-IP:70` (o `http://localhost:70` si es local)
+- [ ] Keycloak accesible en: `http://TU-IP:70/auth` (o `http://localhost:70/auth`)
 - [ ] Login de Keycloak funciona (admin/admin)
 
 ### Logs
@@ -109,8 +126,11 @@ ssh -i tu-clave.pem ec2-user@TU-IP-EC2
 
 ### Backend
 ```bash
-# Probar endpoint de health (si existe)
+# Probar endpoint del backend a través de nginx
 curl http://localhost:70/api/
+
+# Si es remoto
+curl http://TU-IP:70/api/
 ```
 
 ### Frontend
@@ -143,11 +163,12 @@ EXIT;
 
 | Problema | Solución |
 |----------|----------|
-| No puedo conectarme por SSH | Verifica Security Group puerto 22 |
-| No carga la aplicación en puerto 70 | Verifica Security Group puerto 70 |
-| Contenedores se reinician | Ver logs: `docker-compose logs` |
-| Error de memoria | Usa instancia más grande (t3.medium) |
+| No puedo conectarme por SSH | Verifica Security Group puerto 22 (EC2) o UFW (local) |
+| No carga la aplicación en puerto 70 | Verifica Security Group puerto 70 o UFW: `sudo ufw status` |
+| Contenedores se reinician | Ver logs: `docker-compose logs -f` |
+| Error de memoria | Usa instancia más grande o cierra otros procesos |
 | Error de disco lleno | Ejecuta: `docker system prune -a -f` |
+| Docker comando no funciona sin sudo | Cierra sesión y vuelve a entrar después de instalar |
 
 ---
 
@@ -167,6 +188,16 @@ Al finalizar deberías poder:
 - ✅ Hacer login en Keycloak
 - ✅ Usar todas las funcionalidades de la aplicación
 - ✅ Ver los 8 contenedores corriendo sin problemas
+
+### URLs finales:
+
+**Si es servidor remoto:**
+- Aplicación: `http://TU-IP:70`
+- Keycloak: `http://TU-IP:70/auth`
+
+**Si es Ubuntu local:**
+- Aplicación: `http://localhost:70`
+- Keycloak: `http://localhost:70/auth`
 
 ---
 

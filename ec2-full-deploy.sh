@@ -1,25 +1,13 @@
 #!/bin/bash
 # ====================================
-# Script Maestro de Deployment EC2
+# Script Maestro de Deployment para Ubuntu
 # ====================================
 # Este script ejecuta todo el proceso completo
 
 echo "╔════════════════════════════════════════════════════════════╗"
-echo "║     🚀 TINGESO - Deployment Automático en EC2             ║"
+echo "║     🚀 TINGESO - Deployment Automático en Ubuntu          ║"
 echo "╚════════════════════════════════════════════════════════════╝"
 echo ""
-
-# Verificar si estamos en EC2
-TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" 2>/dev/null)
-if [ -z "$TOKEN" ]; then
-    echo "⚠️  Advertencia: No se detectó que estés en una instancia EC2"
-    echo "   Este script está diseñado para ejecutarse en EC2"
-    read -p "¿Deseas continuar de todas formas? (s/n): " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Ss]$ ]]; then
-        exit 1
-    fi
-fi
 
 echo "Este script realizará las siguientes acciones:"
 echo "  1. ✅ Verificar instalaciones necesarias"
@@ -102,9 +90,21 @@ echo "════════════════════════�
 echo "🔧 Paso 4/5: Configuración automática"
 echo "═══════════════════════════════════════════════════════════"
 
-PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+# Intentar detectar IP pública
+PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4 2>/dev/null)
+
+if [ -z "$PUBLIC_IP" ]; then
+    # Intentar con servicios externos
+    PUBLIC_IP=$(curl -s https://api.ipify.org 2>/dev/null || curl -s https://ifconfig.me 2>/dev/null || curl -s https://icanhazip.com 2>/dev/null)
+fi
+
 if [ -z "$PUBLIC_IP" ]; then
     read -p "No se pudo detectar la IP automáticamente. Ingresa tu IP pública: " PUBLIC_IP
+    
+    if [ -z "$PUBLIC_IP" ]; then
+        echo "❌ Error: Debes proporcionar una IP pública"
+        exit 1
+    fi
 fi
 
 echo "📍 IP pública: $PUBLIC_IP"

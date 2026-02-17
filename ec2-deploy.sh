@@ -1,25 +1,38 @@
 #!/bin/bash
 # ====================================
-# Script de Deployment en EC2
+# Script de Deployment para Ubuntu
 # ====================================
-# Este script despliega la aplicación Tingeso en EC2
+# Este script despliega la aplicación Tingeso en Ubuntu
 
 set -e  # Detener en caso de error
 
-echo "🚀 Iniciando deployment de Tingeso en EC2..."
+echo "🚀 Iniciando deployment de Tingeso en Ubuntu..."
 echo ""
 
-# Obtener la IP pública de la instancia EC2 desde metadatos
-echo "🌐 Obteniendo IP pública de esta instancia EC2..."
-PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+# Detectar IP pública
+echo "🌐 Detectando IP pública del servidor..."
+
+# Intentar detectar IP de EC2 primero
+PUBLIC_IP=$(curl -s --max-time 2 http://169.254.169.254/latest/meta-data/public-ipv4 2>/dev/null)
 
 if [ -z "$PUBLIC_IP" ]; then
-    echo "❌ Error: No se pudo obtener la IP pública"
-    echo "   Asegúrate de estar ejecutando esto en una instancia EC2"
-    exit 1
+    # Si no es EC2, intentar con servicios externos
+    echo "   ℹ️  No es instancia EC2, detectando IP externa..."
+    PUBLIC_IP=$(curl -s https://api.ipify.org 2>/dev/null || curl -s https://ifconfig.me 2>/dev/null || curl -s https://icanhazip.com 2>/dev/null)
+    
+    if [ -z "$PUBLIC_IP" ]; then
+        echo "   ⚠️  No se pudo detectar IP automáticamente"
+        echo "   Si estás en localhost, puedes usar 'localhost' o la IP de tu máquina"
+        read -p "   Ingresa la IP pública o 'localhost': " PUBLIC_IP
+        
+        if [ -z "$PUBLIC_IP" ]; then
+            echo "❌ Error: Debes proporcionar una IP"
+            exit 1
+        fi
+    fi
 fi
 
-echo "   ✅ IP pública detectada: $PUBLIC_IP"
+echo "   ✅ IP detectada: $PUBLIC_IP"
 echo ""
 
 # 1. Clonar o actualizar el repositorio
