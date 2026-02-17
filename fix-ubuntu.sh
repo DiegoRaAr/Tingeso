@@ -32,24 +32,36 @@ echo ""
 echo "⚙️  Reconfigurando dpkg..."
 sudo dpkg --configure -a
 
-# 5. Reparar paquetes rotos
+# 5. Resolver conflictos de Docker Compose
+echo ""
+echo "🐳 Resolviendo conflictos de Docker Compose..."
+if dpkg -l | grep -q docker-compose-v2; then
+    echo "   Removiendo docker-compose-v2 conflictivo..."
+    sudo apt-get remove -y docker-compose-v2 || true
+fi
+if dpkg -l | grep -q docker-compose-plugin; then
+    echo "   Removiendo docker-compose-plugin conflictivo..."
+    sudo apt-get remove -y docker-compose-plugin || true
+fi
+
+# 6. Reparar paquetes rotos
 echo ""
 echo "🔨 Reparando paquetes rotos..."
 sudo apt-get update
 sudo apt-get install -f -y
 
-# 6. Limpiar paquetes obsoletos
+# 7. Limpiar paquetes obsoletos
 echo ""
 echo "🧹 Limpiando paquetes obsoletos..."
 sudo apt-get autoremove -y
 sudo apt-get autoclean -y
 
-# 7. Actualizar base de datos de paquetes
+# 8. Actualizar base de datos de paquetes
 echo ""
 echo "📦 Actualizando base de datos de paquetes..."
 sudo apt-get update
 
-# 8. Verificar el estado
+# 9. Verificar el estado
 echo ""
 echo "✅ Verificando el estado del sistema..."
 if sudo apt-get check &> /dev/null; then
