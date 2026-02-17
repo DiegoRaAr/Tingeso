@@ -97,7 +97,6 @@ if command -v ufw &> /dev/null; then
         echo "   Configurando puertos en UFW..."
         sudo ufw allow 22/tcp comment 'SSH'
         sudo ufw allow 70/tcp comment 'Aplicación Tingeso'
-        sudo ufw allow 8080/tcp comment 'Keycloak'
         
         echo "   ¿Quieres habilitar UFW ahora? (s/n)"
         read -r -n 1 ENABLE_UFW

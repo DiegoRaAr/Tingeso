@@ -109,26 +109,10 @@ fi
 
 echo "📍 IP pública: $PUBLIC_IP"
 
-# Actualizar keycloak.js
-cat > frontend-tingeso/src/services/keycloak.js << EOF
-import Keycloak from "keycloak-js";
-
-const keycloak = new Keycloak({
-  url: "http://${PUBLIC_IP}:70/auth",
-  realm: "tingeso-realm",
-  clientId: "frontend-app",
-}); 
-
-export default keycloak;
-EOF
-
 # Actualizar .env.production
 cat > frontend-tingeso/.env.production << EOF
-# Configuración para producción (Docker en EC2)
+# Configuración para producción (Docker en Ubuntu)
 VITE_API_URL=/api
-VITE_KEYCLOAK_URL=http://${PUBLIC_IP}:70/auth
-VITE_KEYCLOAK_REALM=tingeso-realm
-VITE_KEYCLOAK_CLIENT=frontend-app
 EOF
 
 echo "✅ Archivos de configuración actualizados"
@@ -165,12 +149,7 @@ echo ""
 echo "🌐 Tu aplicación está disponible en:"
 echo "   → http://${PUBLIC_IP}:70"
 echo ""
-echo "🔐 Panel de Keycloak:"
-echo "   → http://${PUBLIC_IP}:70/auth"
-echo "   Usuario: admin"
-echo "   Contraseña: admin"
-echo ""
-echo "📝 Comandos útiles:"
+echo " Comandos útiles:"
 echo "   Ver logs:    docker-compose logs -f"
 echo "   Ver estado:  docker-compose ps"
 echo "   Reiniciar:   docker-compose restart"

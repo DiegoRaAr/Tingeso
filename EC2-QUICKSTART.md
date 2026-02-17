@@ -101,7 +101,6 @@ Para instrucciones detalladas, troubleshooting y comandos útiles, consulta:
 |--------|-------------|
 | 22 | SSH |
 | 70 | Aplicación web |
-| 8080 | Keycloak (opcional) |
 
 ### En Ubuntu Local o VPS
 
@@ -109,7 +108,6 @@ Para instrucciones detalladas, troubleshooting y comandos útiles, consulta:
 # Configurar UFW (Ubuntu Firewall)
 sudo ufw allow 22/tcp
 sudo ufw allow 70/tcp
-sudo ufw allow 8080/tcp
 sudo ufw enable
 sudo ufw status
 ```
@@ -118,15 +116,12 @@ sudo ufw status
 
 ## 🔑 Credenciales por Defecto
 
-**Keycloak Admin:**
-- URL: `http://tu-ip:70/auth`
-- Usuario: `admin`
-- Contraseña: `admin`
-
 **MySQL (solo interno):**
 - Usuario: `diego`
 - Contraseña: `diego1234`
 - Base de datos: `db_tingeso`
+
+**Nota:** Esta aplicación no requiere autenticación.
 
 ---
 
@@ -172,7 +167,7 @@ Internet → [Puerto 70] → Nginx Load Balancer
                             ↓
                          MySQL
                             
-Frontend + Keycloak
+                        Frontend
 ```
 
 ---

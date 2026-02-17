@@ -95,35 +95,6 @@ services:
     restart: always
 
   # ==========================
-  # 🔹 Keycloak
-  # ==========================
-  keycloak:
-    image: quay.io/keycloak/keycloak:26.0
-    container_name: keycloak
-    command: start-dev --import-realm --http-relative-path=/auth
-    environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-      - KC_DB=mysql
-      - KC_DB_URL=jdbc:mysql://mysql:3306/keycloak_db
-      - KC_DB_USERNAME=diego
-      - KC_DB_PASSWORD=diego1234
-      - KC_HTTP_RELATIVE_PATH=/auth
-      - KC_PROXY=edge
-      - KC_HOSTNAME_STRICT=false
-      - KC_HOSTNAME_STRICT_HTTPS=false
-      - KC_HTTP_ENABLED=true
-    volumes:
-      - ./keycloak-config/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
-    depends_on:
-      - mysql
-    ports:
-      - "8080:8080"
-    networks:
-      - tingeso-net
-    restart: always
-
-  # ==========================
   # 🔹 Frontend (React)
   # ==========================
   frontend:
@@ -131,8 +102,6 @@ services:
     #build: ./frontend-tingeso
     container_name: frontend
     restart: always
-    depends_on:
-      - keycloak
     expose:
       - "80"
     networks:

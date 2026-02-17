@@ -219,7 +219,6 @@ docker-compose logs -f
 
 # Ver logs de un servicio específico
 docker-compose logs backend1
-docker-compose logs keycloak
 docker-compose logs mysql
 
 # Ver uso de recursos
@@ -252,30 +251,6 @@ docker pull diegoraar/frontend-tingeso:latest
 # Si funcionó, intenta el deployment de nuevo
 cd ~/Tingeso
 docker-compose up -d
-```
-
----
-
-## Error: Keycloak no carga o da error 502
-
-Keycloak tarda en iniciar o hay problema con la base de datos.
-
-### Solución:
-
-```bash
-# Ver logs de Keycloak
-docker-compose logs keycloak
-
-# Esperar más tiempo (Keycloak puede tardar 1-2 minutos)
-sleep 60
-
-# Reiniciar Keycloak
-docker-compose restart keycloak
-
-# Si persiste, reiniciar MySQL y Keycloak
-docker-compose restart mysql
-sleep 20
-docker-compose restart keycloak
 ```
 
 ---

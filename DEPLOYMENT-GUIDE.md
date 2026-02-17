@@ -38,7 +38,6 @@
 |-------------|--------|---------------|--------------------------------|
 | SSH         | 22     | Tu IP / 0.0.0.0/0 | Acceso SSH                |
 | Custom TCP  | 70     | 0.0.0.0/0     | Aplicación web (Nginx)         |
-| Custom TCP  | 8080   | 0.0.0.0/0     | Keycloak (opcional)            |
 
 #### Pasos para configurar:
 1. Ve a AWS Console → EC2 → Security Groups
@@ -57,9 +56,6 @@ sudo ufw allow 22/tcp
 
 # Permitir aplicación web
 sudo ufw allow 70/tcp
-
-# Permitir Keycloak (opcional)
-sudo ufw allow 8080/tcp
 
 # Habilitar firewall
 sudo ufw enable
@@ -211,10 +207,9 @@ chmod +x deploy.sh
 
 1. 🌐 Detecta automáticamente tu IP pública (EC2, VPS, o local)
 2. 📥 Clona/actualiza el repositorio desde GitHub
-3. 🔧 Configura Keycloak con la IP correcta
-4. 📦 Descarga las imágenes de Docker Hub
-5. 🚀 Inicia todos los servicios con Docker Compose
-6. ✅ Verifica que todo esté funcionando
+3. � Descarga las imágenes de Docker Hub
+4. 🚀 Inicia todos los servicios con Docker Compose
+5. ✅ Verifica que todo esté funcionando
 
 **Este proceso tarda 1-2 minutos.** Verás el progreso en la terminal.
 
@@ -239,10 +234,9 @@ cd ~/Tingeso
 docker ps
 ```
 
-Debes ver 8 contenedores corriendo:
+Debes ver 7 contenedores corriendo:
 - mysql
 - backend1, backend2, backend3
-- keycloak
 - frontend
 - nginx-loadbalancer
 
@@ -259,15 +253,11 @@ Presiona `Ctrl + C` para salir de los logs.
 
 #### Si está en servidor remoto (EC2/VPS):
 - **Aplicación:** `http://TU-IP-SERVIDOR:70`
-- **Keycloak Admin:** `http://TU-IP-SERVIDOR:70/auth`
 
 #### Si está en Ubuntu local:
 - **Aplicación:** `http://localhost:70`
-- **Keycloak Admin:** `http://localhost:70/auth`
 
-**Credenciales de Keycloak Admin:**
-- Usuario: `admin`
-- Contraseña: `admin`
+**Nota:** Esta aplicación no requiere autenticación.
 
 ### 4. Verificar el estado de salud:
 
@@ -280,7 +270,6 @@ docker stats
 
 # Ver logs de un servicio específico
 docker-compose logs backend1
-docker-compose logs keycloak
 docker-compose logs frontend
 ```
 
@@ -298,7 +287,6 @@ docker-compose logs -f
 
 # Ver logs de un servicio específico
 docker-compose logs -f backend1
-docker-compose logs -f keycloak
 docker-compose logs -f frontend
 
 # Reiniciar todos los servicios
@@ -372,17 +360,6 @@ sudo journalctl -u docker
 docker-compose restart mysql
 sleep 10
 docker-compose restart backend1 backend2 backend3
-```
-
-### Problema: "Keycloak no carga"
-
-**Solución:**
-```bash
-# Ver logs de Keycloak
-docker-compose logs keycloak
-
-# Reiniciar Keycloak
-docker-compose restart keycloak
 ```
 
 ### Problema: "Memory out of error"
@@ -466,8 +443,6 @@ Backend1   Backend2   Backend3
            [MySQL]
     
 [Frontend] ← Nginx Load Balancer
-               ↓
-          [Keycloak] ← MySQL
 ```
 
 ---

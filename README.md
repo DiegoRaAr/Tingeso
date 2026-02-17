@@ -9,9 +9,8 @@ El flujo del código se divide en dos partes:
 1. Base de datos
 2. Backend
 3. Frontend
-4. Keycloak
-5. Docker
-6. Jenkins
+4. Docker
+5. Jenkins
 
 Las cuales serán explicadas a continuación:
 
@@ -38,11 +37,8 @@ El frontend esta hecho en React. Ademas este implementa Axios, el cual ayuda a c
 - Componentes (Components):
     Los componentes son las partes visuales de la interfaz de usuario.
 
-### Keycloak
-Keycloak es un servidor de autenticación y autorización que se encarga de gestionar los usuarios y sus roles.
-
 ### Docker
-Docker es un software que permite crear y gestionar contenedores. Esto se puede ver en el archivo docker-compose.yml. El cual permite crear los contenedores de la base de datos, el backend, el frontend y keycloak. 
+Docker es un software que permite crear y gestionar contenedores. Esto se puede ver en el archivo docker-compose.yml. El cual permite crear los contenedores de la base de datos, el backend y el frontend. 
 
 ### Jenkins
 Jenkins es un software que permite automatizar tareas. En este caso se encarga de hacer el build del backend y el frontend, y subirlos a DockerHub.

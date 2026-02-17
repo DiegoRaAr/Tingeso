@@ -2,14 +2,8 @@ import React, {useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toolService from "../services/tool.service";
 import '../App.css';
-import { useKeycloak } from "@react-keycloak/web";
 
 const Home = () => {
-
-    const { keycloak } = useKeycloak();
-    const roles = keycloak.tokenParsed?.realm_access?.roles || [];
-    const isAdmin = roles.includes("ADMIN");
-
     const [tools, setTools] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -76,7 +70,6 @@ const Home = () => {
                             <td>
                             <div className="d-grid gap-2 d-md-block">
                                 
-                                {isAdmin && (
                                 <button
                                     className="btn btn-warning mx-2"
                                     type="button"
@@ -84,9 +77,7 @@ const Home = () => {
                                     >
                                     Editar
                                 </button>
-                                )}
 
-                                {isAdmin && (
                                 <button className="btn btn-success mx-2"
                                     type="button" 
                                     onClick={() => {toolService.addTool(tool.idTool)
@@ -99,9 +90,7 @@ const Home = () => {
                                     }}
                                     >Sumar herramienta
                                 </button>
-                                )}
 
-                                {isAdmin && (
                                 <button className="btn btn-danger mx-2" 
                                     type="button" 
                                     onClick={() => {
@@ -125,7 +114,6 @@ const Home = () => {
                                     }}
                                     >Bajar herramienta
                                 </button>
-                                )}
                             </div>
                         </td>
                         </tr>

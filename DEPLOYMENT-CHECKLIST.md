@@ -20,7 +20,6 @@ Usa este checklist antes de desplegar tu aplicación en Ubuntu.
 #### Si es EC2:
 - [ ] Puerto 22 (SSH) está abierto en Security Group
 - [ ] Puerto 70 (HTTP - Aplicación) está abierto en Security Group
-- [ ] Puerto 8080 (Keycloak - opcional) está abierto en Security Group
 
 #### Si es VPS o Local:
 - [ ] UFW configurado (o lo configurarás durante la instalación)
@@ -103,19 +102,18 @@ ssh -i tu-clave.pem ubuntu@TU-IP-SERVIDOR
 
 ### Contenedores
 - [ ] Ejecutar: `docker ps`
-- [ ] Deben estar corriendo 8 contenedores:
+- [ ] Deben estar corriendo 7 contenedores:
   - [ ] mysql
   - [ ] backend1
   - [ ] backend2
   - [ ] backend3
-  - [ ] keycloak
   - [ ] frontend
   - [ ] nginx-loadbalancer
 
 ### Acceso Web
 - [ ] Aplicación accesible en: `http://TU-IP:70` (o `http://localhost:70` si es local)
-- [ ] Keycloak accesible en: `http://TU-IP:70/auth` (o `http://localhost:70/auth`)
-- [ ] Login de Keycloak funciona (admin/admin)
+
+**Nota:** Esta aplicación no requiere autenticación.
 
 ### Logs
 - [ ] No hay errores críticos en: `docker-compose logs`
@@ -137,12 +135,6 @@ curl http://TU-IP:70/api/
 ```bash
 # Ver logs del frontend
 docker-compose logs frontend
-```
-
-### Keycloak
-```bash
-# Ver logs de Keycloak
-docker-compose logs keycloak
 ```
 
 ### Base de Datos
@@ -185,19 +177,16 @@ Si todo falla:
 
 Al finalizar deberías poder:
 - ✅ Acceder a la aplicación desde tu navegador
-- ✅ Hacer login en Keycloak
 - ✅ Usar todas las funcionalidades de la aplicación
-- ✅ Ver los 8 contenedores corriendo sin problemas
+- ✅ Ver los 7 contenedores corriendo sin problemas
 
 ### URLs finales:
 
 **Si es servidor remoto:**
 - Aplicación: `http://TU-IP:70`
-- Keycloak: `http://TU-IP:70/auth`
 
 **Si es Ubuntu local:**
 - Aplicación: `http://localhost:70`
-- Keycloak: `http://localhost:70/auth`
 
 ---
 
