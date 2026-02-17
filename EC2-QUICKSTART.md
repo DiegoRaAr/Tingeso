@@ -38,6 +38,25 @@ Tu aplicación estará disponible en: `http://TU-IP:70`
 
 ---
 
+## 🆘 ¿Tienes Errores?
+
+### Error: "Sub-process /usr/bin/dpkg returned an error code (1)"
+
+```bash
+# Ejecuta el script de reparación
+curl -o fix-ubuntu.sh https://raw.githubusercontent.com/DiegoRaAr/Tingeso/main/fix-ubuntu.sh
+chmod +x fix-ubuntu.sh
+./fix-ubuntu.sh
+
+# Luego intenta de nuevo
+./ec2-setup.sh
+```
+
+### Otros errores:
+Consulta **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Soluciones a errores comunes
+
+---
+
 ## 💻 Deployment Local (Ubuntu)
 
 Si quieres correr todo en tu Ubuntu local:

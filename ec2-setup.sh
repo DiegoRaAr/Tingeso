@@ -10,7 +10,18 @@ set -e  # Detener en caso de error
 echo "🚀 Iniciando configuración de Ubuntu desde cero..."
 echo ""
 
+# Verificar y limpiar locks si es necesario
+echo "🔍 Verificando estado del sistema de paquetes..."
+if ! sudo apt-get check &> /dev/null; then
+    echo "⚠️  Detectados problemas con el sistema de paquetes"
+    echo "   Ejecutando reparación automática..."
+    sudo rm -f /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock /var/cache/apt/archives/lock /var/lib/apt/lists/lock 2>/dev/null || true
+    sudo dpkg --configure -a
+    sudo apt-get install -f -y
+fi
+
 # 1. Actualizar el sistema
+echo ""
 echo "📦 Actualizando sistema operativo..."
 sudo apt-get update
 sudo apt-get upgrade -y
