@@ -1,5 +1,6 @@
 import React, {useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import toolService from "../services/tool.service";
 import '../App.css';
 
@@ -27,11 +28,9 @@ const Home = () => {
     }, []);
 
     return (
-        
-
         <div className="container-fluid">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1 className="text-start my-1 mb-0">Lista de herramientas</h1>
+                <h2 className="text-start my-1 mb-0">Lista de herramientas</h2>
                 <input 
                     className="form-control" 
                     style={{ width: '300px' }}
@@ -41,6 +40,7 @@ const Home = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </div>
+            <h6 className="text-start my-1 mb-3">En este apartado puede ver las herramientas disponibles en el sistema, además puede editarlas y modificar el stock.</h6>
            
             <div style={{ height: '550px', overflowY: 'scroll', border: '1px solid #dee2e6', borderRadius: '5px' }}>
                 <table className="table table-striped table-hover align-middle mb-0">
@@ -70,50 +70,65 @@ const Home = () => {
                             <td>
                             <div className="d-grid gap-2 d-md-block">
                                 
-                                <button
-                                    className="btn btn-warning mx-2"
-                                    type="button"
-                                    onClick={() => navigate('/add-tool', { state: { tool } })}
-                                    >
-                                    Editar
-                                </button>
+                                <OverlayTrigger
+                                    placement="top"
+                                    overlay={<Tooltip>Editar las propiedades de esta herramienta</Tooltip>}
+                                >
+                                    <button
+                                        className="btn btn-warning mx-2"
+                                        type="button"
+                                        onClick={() => navigate('/add-tool', { state: { tool } })}
+                                        >
+                                        Editar
+                                    </button>
+                                </OverlayTrigger>
 
-                                <button className="btn btn-success mx-2"
-                                    type="button" 
-                                    onClick={() => {toolService.addTool(tool.idTool)
-                                        .then(() => {
-                                            alert("Herramienta agregada con éxito");
-                                            window.location.reload();
-                                        })
-                                        .catch(() => alert("Error al agregar herramienta"));
-                                    
-                                    }}
-                                    >Sumar herramienta
-                                </button>
-
-                                <button className="btn btn-danger mx-2" 
-                                    type="button" 
-                                    onClick={() => {
-                                        if (tool.stockTool > 1){
-                                            toolService.subtractTool(tool.idTool)
+                                <OverlayTrigger
+                                    placement="top"
+                                    overlay={<Tooltip>Aumentar el stock de esta herramienta en 1 unidad</Tooltip>}
+                                >
+                                    <button className="btn btn-success mx-2"
+                                        type="button" 
+                                        onClick={() => {toolService.addTool(tool.idTool)
                                             .then(() => {
-                                                alert("Herramienta quitada con éxito");
+                                                alert("Herramienta agregada con éxito");
                                                 window.location.reload();
                                             })
-                                            .catch(() => alert("Error al quitar herramienta"));
-                                        }else{
-                                            if(confirm('¿Eliminar herramienta?')){
+                                            .catch(() => alert("Error al agregar herramienta"));
+                                        
+                                        }}
+                                        >Sumar herramienta
+                                    </button>
+                                </OverlayTrigger>
+
+                                <OverlayTrigger
+                                    placement="top"
+                                    overlay={<Tooltip>Reducir el stock en 1 unidad o eliminar si queda 1</Tooltip>}
+                                >
+                                    <button className="btn btn-danger mx-2" 
+                                        type="button" 
+                                        onClick={() => {
+                                            if (tool.stockTool > 1){
                                                 toolService.subtractTool(tool.idTool)
                                                 .then(() => {
-                                                    alert("Herramienta eliminada con éxito");
+                                                    alert("Herramienta quitada con éxito");
+                                                    window.location.reload();
                                                 })
-                                                .catch(() => alert("Error al eliminar herramienta"));
-                                                window.location.reload()
+                                                .catch(() => alert("Error al quitar herramienta"));
+                                            }else{
+                                                if(confirm('¿Eliminar herramienta?')){
+                                                    toolService.subtractTool(tool.idTool)
+                                                    .then(() => {
+                                                        alert("Herramienta eliminada con éxito");
+                                                    })
+                                                    .catch(() => alert("Error al eliminar herramienta"));
+                                                    window.location.reload()
+                                                }
                                             }
-                                        }
-                                    }}
-                                    >Bajar herramienta
-                                </button>
+                                        }}
+                                        >Bajar herramienta
+                                    </button>
+                                </OverlayTrigger>
                             </div>
                         </td>
                         </tr>
@@ -123,8 +138,18 @@ const Home = () => {
             </div>
 
             <div className="mt-4">
-                <button className="btn btn-primary mx-2" type="button" onClick={() => navigate(`/add-tool`)}>Agregar herramienta</button>
-                <button className="btn btn-primary mx-2" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
+                <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip>Registrar una nueva herramienta en el sistema</Tooltip>}
+                >
+                    <button className="btn btn-primary mx-2" type="button" onClick={() => navigate(`/add-tool`)}>Agregar herramienta</button>
+                </OverlayTrigger>
+                <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip>Regresar a la página principal</Tooltip>}
+                >
+                    <button className="btn btn-warning mx-2" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
+                </OverlayTrigger>
             </div>
             
 

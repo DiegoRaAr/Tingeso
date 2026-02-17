@@ -2,6 +2,7 @@ import toolService from "../services/tool.service";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const AddTool = () => {
 
@@ -71,12 +72,12 @@ const AddTool = () => {
 
     return (
         <div className="container-fluid">
-            <h1 className="text-start my-1 mb-4">
-                {toolService ? "Editar herramienta" : "Añadir Nueva Herramienta"}
-                </h1>
-            <h5 className="text-start my-3 mb-4">
-                {toolToEdit ? "Modifique los datos de la herramienta":"Ingrese los datos de la herramienta:"}
-                </h5>
+            <h2 className="text-start my-1 mb-4">
+                {toolToEdit ? "Editar herramienta" : "Añadir Nueva Herramienta"}
+                </h2>
+            <h6 className="text-start my-3 mb-4">
+                {toolToEdit ? "En este apartado puede actualizar los datos de la herramienta seleccionada. A continuación, modifique los datos.":"En este apartado puede crear una herramienta nueva. A continuación ingrese los datos de la herramienta."}
+                </h6>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4 text-start">
                     <label htmlFor="nameTool" className="form-label">Nombre herramienta</label>
@@ -90,6 +91,7 @@ const AddTool = () => {
                         name="nameTool"
                         value={tool.nameTool}
                         onChange={handleChange}
+                        placeholder="Ejemplo: Martillo"
                     />
                 </div>
 
@@ -101,6 +103,7 @@ const AddTool = () => {
                         name="categoryTool"
                         value={tool.categoryTool}
                         onChange={handleChange}
+                        
                         required
                     >
                         <option value="">Selecciona una opción</option>
@@ -161,12 +164,38 @@ const AddTool = () => {
                         onChange={handleChange}
                     />
                 </div>
-                
-                <button type="submit" className="btn btn-primary">
-                    {toolToEdit ? "Actualizar herramienta" : "Añadir herramienta"}</button>
             </form>
 
-            <button className="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/home`)}>Volver</button>
+            <div className="d-flex gap-2 justify-content-center">
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={
+                      <Tooltip>
+                        {toolToEdit 
+                          ? 'Se guardarán los cambios realizados' 
+                          : 'Se agregará una nueva herramienta al sistema'}
+                      </Tooltip>
+                    }
+                  >
+                    <button 
+                      type="submit" 
+                      className="btn btn-primary">
+                        {toolToEdit ? "Actualizar herramienta" : "Añadir herramienta"}
+                    </button>
+                  </OverlayTrigger>
+                  
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip>Al volver se descartarán los cambios no guardados</Tooltip>}
+                  >
+                    <button 
+                      type="button"
+                      className="btn btn-warning" 
+                      onClick={() => navigate(`/admin-client`)}>
+                        Volver
+                    </button>
+                  </OverlayTrigger>
+                </div>
         </div>
     );
 }

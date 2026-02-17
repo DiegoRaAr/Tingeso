@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import clientService from "../services/client.service";
 import loanService from "../services/loan.service";
 import toolService from "../services/tool.service";
@@ -167,7 +168,9 @@ const Reports = () => {
                 `}
             </style>
 
-            <h1 className="text-center my-4">Reportes</h1>
+            <h2 className="text-center my-4">Reportes</h2>
+
+            <h6 className="text-center mb-4">En este apartado puedes generar reportes de herramientas, clientes y préstamos.</h6>
 
             {/* MENÚ PRINCIPAL (Solo visible en vista 'menu' y no al imprimir) */}
             {currentView === 'menu' && (
@@ -469,11 +472,6 @@ const Reports = () => {
                 </div>
             )}
             
-            {reportData.length === 0 && !searched && (
-                <div className="no-print alert alert-info text-center">
-                    Seleccione una opción para ver el reporte.
-                </div>
-            )}
 
             {reportData.length === 0 && searched && (
                 <div className="no-print alert alert-warning text-center">
@@ -484,7 +482,12 @@ const Reports = () => {
             {/* BOTÓN VOLVER GENERAL (Mostrado solo en Menu) */}
             {currentView === 'menu' && (
                 <div className="text-center mt-5 no-print">
-                     <button className="btn btn-primary" onClick={() => window.history.back()}>Volver al Inicio</button>
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip>Regresar a la página principal</Tooltip>}
+                    >
+                        <button className="btn btn-warning" onClick={() => window.history.back()}>Volver al Inicio</button>
+                    </OverlayTrigger>
                 </div>
             )}
         </div>

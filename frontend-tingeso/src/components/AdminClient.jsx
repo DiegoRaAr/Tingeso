@@ -2,6 +2,7 @@ import React, {use, useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import clientService from '../services/client.service';
 import loanService from '../services/loan.service';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import '../App.css';
 
 const AdminClient = () => {
@@ -24,7 +25,7 @@ const AdminClient = () => {
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className='text-start my-1 mb-0'>Lista de clientes</h2>
+        <h2 className='text-start my-1 mb-0'>Listado de clientes</h2>
         <input 
           className="form-control" 
           style={{ width: '300px' }}
@@ -34,6 +35,8 @@ const AdminClient = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
+
+      <h6 className="text-start mb-4">En este apartado puedes gestionar los clientes registrados en el sistema, iniciar nuevos préstamos, revisar el historial de préstamos de cada cliente y editar su información.</h6>
       <div style={{ height: '550px', overflowY: 'scroll', border: '1px solid #dee2e6', borderRadius: '5px' }}>
       <table className="table table-striped table-hover align-middle mb-0">
                 <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f8f9fa', zIndex: 1 }}>
@@ -61,17 +64,22 @@ const AdminClient = () => {
                             <td>{client.phoneNumberClient}</td>
                             <td>
                             <div className="d-flex gap-2 justify-content-center">
-                              <button 
-                                className="btn btn-sm btn-success" 
-                                type="button" 
-                                style={{ width: '130px' }}
-                                onClick={() => {
-                                  loanService.updatePenalty(client.idClient)
-                                  .then(() => navigate(`/make-loan/${client.rutClient}`, {state: {client}}))
-                                }}
+                              <OverlayTrigger
+                                placement="top"
+                                overlay={<Tooltip>Crear un nuevo préstamo para este cliente</Tooltip>}
                               >
-                                Iniciar préstamo
-                              </button>
+                                <button 
+                                  className="btn btn-sm btn-success" 
+                                  type="button" 
+                                  style={{ width: '130px' }}
+                                  onClick={() => {
+                                    loanService.updatePenalty(client.idClient)
+                                    .then(() => navigate(`/make-loan/${client.rutClient}`, {state: {client}}))
+                                  }}
+                                >
+                                  Iniciar préstamo
+                                </button>
+                              </OverlayTrigger>
 
                               <div className="dropdown">
                                 <button 
@@ -131,8 +139,20 @@ const AdminClient = () => {
                 </table>
             </div>
 
-            <button class="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/add-client`)}>Agregar cliente</button>
-            <button class="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip>Usted será redirigido al formulario para crear un cliente
+</Tooltip>}
+            >
+              <button className="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/add-client`)}>Agregar cliente</button>
+            </OverlayTrigger>
+            
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip>Regresar a la página de inicio</Tooltip>}
+            >
+              <button className="btn btn-warning mx-2 my-4" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
+            </OverlayTrigger>
       
     </div>
   );

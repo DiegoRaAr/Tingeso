@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import es from 'date-fns/locale/es';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 registerLocale('es', es);
 
@@ -78,7 +79,9 @@ const MakeLoan = () => {
 
   return (
     <div>
-      <h1 className="text-start fs-2 my-1 mb-4">{client.nameClient} - {client.rutClient}</h1>
+      <h2 className="text-start fs-2 my-1 mb-4">
+        Se está realizando préstamo para <strong>{client.nameClient}</strong> de rut: <strong>{client.rutClient}</strong>
+      </h2>
       <form onSubmit={handleSubmit}>
         
         <div className="mb-3">
@@ -115,13 +118,24 @@ const MakeLoan = () => {
                       <td>{tool.lateCharge}</td>
                       <td>{tool.stockTool}</td>
                       <td>
-                        <button
-                          type="button"
-                          className={`btn btn-sm ${selectedTools.includes(tool.idTool) ? 'btn-danger' : 'btn-success'}`}
-                          onClick={() => handleToolSelect(tool.idTool)}
+                        <OverlayTrigger
+                          placement="left"
+                          overlay={
+                            <Tooltip>
+                              {selectedTools.includes(tool.idTool) 
+                                ? 'Quitar esta herramienta del préstamo' 
+                                : 'Agregar esta herramienta al préstamo'}
+                            </Tooltip>
+                          }
                         >
-                          {selectedTools.includes(tool.idTool) ? 'Quitar' : 'Agregar'}
-                        </button>
+                          <button
+                            type="button"
+                            className={`btn btn-sm ${selectedTools.includes(tool.idTool) ? 'btn-danger' : 'btn-success'}`}
+                            onClick={() => handleToolSelect(tool.idTool)}
+                          >
+                            {selectedTools.includes(tool.idTool) ? 'Quitar' : 'Agregar'}
+                          </button>
+                        </OverlayTrigger>
                       </td>
                     </tr>
                   ))}
@@ -155,28 +169,43 @@ const MakeLoan = () => {
         )}
         
         <div className="mb-3">          
-        <button
-          type="submit"
-          className="btn btn-success mx-2"
+        <OverlayTrigger
+          placement="top"
+          overlay={<Tooltip>Crea el préstamo con las herramientas seleccionadas</Tooltip>}
         >
-          Crear Préstamo
-        </button>
+          <button
+            type="submit"
+            className="btn btn-success mx-2"
+          >
+            Crear Préstamo
+          </button>
+        </OverlayTrigger>
 
-        <button
-          type="button"
-          className="btn btn-info mx-2"
-          onClick={handlePreview}
+        <OverlayTrigger
+          placement="top"
+          overlay={<Tooltip>Calcula el precio total antes de crear el préstamo</Tooltip>}
         >
-          Vista previa precio
-        </button>
+          <button
+            type="button"
+            className="btn btn-info mx-2"
+            onClick={handlePreview}
+          >
+            Vista previa precio
+          </button>
+        </OverlayTrigger>
 
-        <button
-          type="button"
-          className="btn btn-warning mx-2"
-          onClick={() => navigate(-1)}
+        <OverlayTrigger
+          placement="top"
+          overlay={<Tooltip>Volver a la página anterior sin guardar cambios</Tooltip>}
         >
-          Cancelar
-        </button>
+          <button
+            type="button"
+            className="btn btn-warning mx-2"
+            onClick={() => navigate(-1)}
+          >
+            Volver
+          </button>
+        </OverlayTrigger>
 
         </div>
 

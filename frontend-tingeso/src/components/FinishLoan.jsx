@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import loanService from '../services/loan.service';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import '../App.css';
 
 const FinishLoan = () => {
@@ -74,7 +75,9 @@ const FinishLoan = () => {
 
   return (
     <div>
-      <h1 className="text-start my-1 mb-4">Finalizar prestamo</h1>
+      <h2 className="text-start my-1 mb-4">Finalizar préstamo</h2>
+
+      <h6 className="text-start my-3 mb-4">En este apartado puedes finalizar un préstamo. A continuación, selecciona el estado de cada herramienta y haz clic en "Vista previa" para ver el monto total a pagar.</h6>
       <table className="table">
         <thead>
           <tr>
@@ -107,12 +110,15 @@ const FinishLoan = () => {
         </tbody>
       </table>
 
-      <button className="btn btn-primary mx-2" type="button" onClick={handlePreview}>
-        Vista previa
-      </button>
-      <button className="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/admin-client`)}>
-        Volver al inicio
-      </button>
+      <OverlayTrigger
+        placement="top"
+        overlay={<Tooltip>Calcular el monto total antes de finalizar el préstamo</Tooltip>}
+      >
+        <button className="btn btn-primary mx-2" type="button" onClick={handlePreview}>
+          Vista previa
+        </button>
+      </OverlayTrigger>
+      
 
       {showPreview && (
         <div className="alert alert-info mt-4">
@@ -125,24 +131,53 @@ const FinishLoan = () => {
         </div>
       )}
 
-      <button
-        className="btn btn-success mx-2 my-4"
-        type="button"
-        disabled={!showPreview}
-        onClick={() => {
-          loanService.finishLoan(id, previewValues.total)
-            .then(() => {
-              alert("Préstamo finalizado con éxito");
-              navigate('/admin-client');
-            })
-            .catch(error => {
-              console.log("Error al finalizar préstamo", error);
-              alert("Error al finalizar préstamo. Por favor, intente de nuevo.");
-            });
-        }}
+      <OverlayTrigger
+        placement="top"
+        overlay={<Tooltip>Completar el préstamo con el monto calculado</Tooltip>}
       >
-        Finalizar préstamo
-      </button>
+        <span className="d-inline-block">
+          <button
+            className="btn btn-success mx-2 my-4"
+            type="button"
+            disabled={!showPreview}
+            onClick={() => {
+              loanService.finishLoan(id, previewValues.total)
+                .then(() => {
+                  alert("Préstamo finalizado con éxito");
+                  const rutClient = loan.idClient?.rutClient;
+                  if (rutClient) {
+                    navigate(`/loans-by-rut/${rutClient}`);
+                  } else {
+                    navigate('/admin-client');
+                  }
+                })
+                .catch(error => {
+                  console.log("Error al finalizar préstamo", error);
+                  alert("Error al finalizar préstamo. Por favor, intente de nuevo.");
+                });
+            }}
+            style={{ pointerEvents: showPreview ? 'auto' : 'none' }}
+          >
+            Finalizar préstamo
+          </button>
+        </span>
+      </OverlayTrigger>
+
+        <OverlayTrigger
+          placement="top"
+          overlay={<Tooltip>Regresar sin finalizar el préstamo</Tooltip>}
+        >
+          <button className="btn btn-warning mx-2 my-4" type="button" onClick={() => {
+            const rutClient = loan.idClient?.rutClient;
+            if (rutClient) {
+              navigate(`/loans-by-rut/${rutClient}`);
+            } else {
+              navigate('/admin-client');
+            }
+          }}>
+          Volver
+          </button>
+        </OverlayTrigger>
     </div>
   );
 };

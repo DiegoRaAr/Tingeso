@@ -70,3 +70,23 @@ body {
 .datepicker-large .react-datepicker__current-month {
   font-size: 1.2rem;
 }
+
+/* Estilos para las tarjetas de categorías */
+.category-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.category-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+}
+
+.category-card .card-img-top {
+  transition: all 0.3s ease;
+}
+
+.category-card:hover .card-img-top {
+  filter: brightness(1.1);
+}

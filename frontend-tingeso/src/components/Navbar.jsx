@@ -1,12 +1,21 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import '../App.css';
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  
   return (
     <nav className="navbar navbar-dark bg-navbar fixed-top">
       <div className="container-fluid">
-        <a className="navbar-brand" href="#">Sistema de prestamo de herramientas</a>
+        <a 
+          className="navbar-brand" 
+          onClick={() => navigate('/start')}
+          style={{ cursor: 'pointer' }}
+        >
+          <i className="bi bi-tools me-2"></i>
+          Sistema de prestamo de herramientas
+        </a>
         <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>

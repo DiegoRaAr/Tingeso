@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import '../App.css';
 import kardexService from "../services/kardex.service";
 import DatePicker, { registerLocale } from 'react-datepicker';
@@ -55,7 +56,8 @@ const Kardex = () => {
 
     return (
         <div>
-            <h2>Kardex</h2>
+            <h2 className="text-start mb-4">Control de inventario</h2>
+            <h6 className="text-start mb-4">En este apartado puedes revisar el historial de movimientos de las herramientas, filtrarlos por fecha o buscar por nombre o ID del movimiento.</h6>
             {/* Filtros */}
             <div className="mb-3 d-flex gap-3 align-items-center" style={{ position: 'relative', zIndex: 1050 }}>
                 <div style={{ flex: 1 }}>
@@ -100,23 +102,28 @@ const Kardex = () => {
                     </div>
                 </div>
 
-                <button
-                    className="btn btn-secondary"
-                    type="button"
-                    onClick={() => {
-                        setSearchTerm("");
-                        setStartDate(null);
-                        setEndDate(null);
-                    }}
+                <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip>Restablecer todos los filtros de búsqueda y fecha</Tooltip>}
                 >
-                    Limpiar filtros
-                </button>
+                    <button
+                        className="btn btn-warning mx-2"
+                        type="button"
+                        onClick={() => {
+                            setSearchTerm("");
+                            setStartDate(null);
+                            setEndDate(null);
+                        }}
+                    >
+                        Limpiar filtros
+                    </button>
+                </OverlayTrigger>
             </div>
             <div style={{ height: '550px', overflowY: 'scroll', border: '1px solid #dee2e6', borderRadius: '5px' }}>
             <table className="table table-striped table-hover mb-0">
                 <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f8f9fa', zIndex: 1 }}>
                     <tr>
-                        <th scope="col">ID Kardex</th>
+                        <th scope="col">ID</th>
                         <th scope="col">Fecha</th>
                         <th scope="col">ID Herramienta</th>
                         <th scope="col">Nombre Herramienta</th>
@@ -136,7 +143,12 @@ const Kardex = () => {
                 </tbody>
             </table>
             </div>
-            <button className="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
+            <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip>Regresar a la página principal</Tooltip>}
+            >
+                <button className="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
+            </OverlayTrigger>
         </div>
     );
 };

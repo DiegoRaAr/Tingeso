@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import clientService from "../services/client.service";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const AddClient = () => {
 
@@ -70,21 +71,23 @@ const AddClient = () => {
 
   return (
     <div>
-      <h1 className="text-start my-1 mb-4">
-        {clientToEdit ? "Editar cliente" : "Añadir un nuevo cliente"}</h1>
-      <h5 className="text-start my-3 mb-4">Datos del cliente:</h5>
+      <h2 className="text-start my-1 mb-4">
+        {clientToEdit ? "Editar cliente" : "Añadir un nuevo cliente"}</h2>
+      <h5 className="text-start my-3 mb-4">En este apartado puedes añadir o editar clientes. A continuación ingresa los datos del cliente.</h5>
 
       
       <form onSubmit={handleSubmit}>
                 <div className="mb-4 text-start">
-                    <label htmlFor="rutClient" className="form-label">Rut Cliente</label>
+                    <label htmlFor="rutClient" className="form-label">Rut Cliente (sin puntos y con guion )</label>
                     <input 
                         type="text" 
                         className="form-control" 
                         id="rutClient" 
                         name="rutClient"
+                        placeholder="Ejemplo: 12345678-9"
                         value={client.rutClient}
                         onChange={handleChange}
+                        required
                     />
                 </div>
 
@@ -97,6 +100,8 @@ const AddClient = () => {
                         name="nameClient"
                         value={client.nameClient}
                         onChange={handleChange} 
+                        placeholder="Ejemplo: Pedro Pérez"
+                        required
                     />
                 </div>
 
@@ -107,8 +112,10 @@ const AddClient = () => {
                         className="form-control" 
                         id="emailClient" 
                         name="emailClient"
+                        placeholder="Ejemplo: pedro.perez@ejemplo.com"
                         value={client.emailClient}
                         onChange={handleChange}
+                        required
                     />
                 </div>
 
@@ -119,17 +126,44 @@ const AddClient = () => {
                         className="form-control" 
                         id="phoneNumbreClient"
                         name="phoneNumberClient"
+                        placeholder="Ejemplo: +56912345678"
                         value={client.phoneNumberClient}
                         onChange={handleChange} 
+                        required
                     />
                 </div>
-                <button 
-                  type="submit" 
-                  className="btn btn-primary">
-                    {clientToEdit ? "Actualizar cliente" : "Añadir Cliente"}</button>
+                
+                <div className="d-flex gap-2 justify-content-center">
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={
+                      <Tooltip>
+                        {clientToEdit 
+                          ? 'Se guardarán los cambios realizados' 
+                          : 'Se agregará un nuevo cliente al sistema'}
+                      </Tooltip>
+                    }
+                  >
+                    <button 
+                      type="submit" 
+                      className="btn btn-primary">
+                        {clientToEdit ? "Actualizar cliente" : "Añadir Cliente"}
+                    </button>
+                  </OverlayTrigger>
+                  
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip>Al volver se descartarán los cambios no guardados</Tooltip>}
+                  >
+                    <button 
+                      type="button"
+                      className="btn btn-warning" 
+                      onClick={() => navigate(`/admin-client`)}>
+                        Volver
+                    </button>
+                  </OverlayTrigger>
+                </div>
             </form>
-
-      <button class="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/admin-client`)}>Volver</button>
     </div>
   );
 };

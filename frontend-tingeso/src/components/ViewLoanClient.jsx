@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import loanService from '../services/loan.service';
 import clientService from '../services/client.service';
 
@@ -49,7 +50,9 @@ const ViewLoanClient = () => {
 
   return (
     <div>
-      <h2>Prestamos de {client.nameClient}</h2>
+      <h2>Se están visualizando los préstamos de {client.nameClient}</h2>
+
+      <h6 className="text-start mb-4">En este apartado puedes revisar el historial de préstamos de este cliente, ver las herramientas asociadas a cada préstamo y finalizar los préstamos activos.</h6>
       <table className="table table-striped table-hover align-middle">
         <thead>
           <tr>
@@ -74,27 +77,37 @@ const ViewLoanClient = () => {
                 <td>${loan.totalLoan ? loan.totalLoan.toLocaleString() : '0'}</td>
                 <td>
                   {loan.stateLoan === "ACTIVO" && (
-                    <button 
-                      className="btn btn-danger mx-2" 
-                      type="button"
-                      onClick={ () => { navigate(`/finish-loan/${loan.idLoan}`) } }
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={<Tooltip>Completar y cerrar este préstamo activo</Tooltip>}
                     >
-                      Finalizar prestamo
-                    </button>
+                      <button 
+                        className="btn btn-danger mx-2" 
+                        type="button"
+                        onClick={ () => { navigate(`/finish-loan/${loan.idLoan}`) } }
+                      >
+                        Finalizar prestamo
+                      </button>
+                    </OverlayTrigger>
                   )}
-                  <button 
-                    className="btn btn-info mx-2" 
-                    type="button"
-                    onClick={() => toggleTools(loan.idLoan)}
-                    >
-                    <i className={`bi bi-chevron-${showTools[loan.idLoan] ? 'up' : 'down'}`}></i>
-                    {showTools[loan.idLoan] ? 'Ocultar' : 'Ver'} herramientas
-                    </button>
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip>{showTools[loan.idLoan] ? 'Ocultar la lista de herramientas' : 'Mostrar las herramientas del préstamo'}</Tooltip>}
+                  >
+                    <button 
+                      className="btn btn-info mx-2" 
+                      type="button"
+                      onClick={() => toggleTools(loan.idLoan)}
+                      >
+                      <i className={`bi bi-chevron-${showTools[loan.idLoan] ? 'up' : 'down'}`}></i>
+                      {showTools[loan.idLoan] ? 'Ocultar' : 'Ver'} herramientas
+                      </button>
+                  </OverlayTrigger>
                 </td>
               </tr>
               {showTools[loan.idLoan] && (
                 <tr>
-                  <td colSpan="6">
+                  <td colSpan="7">
                     <div className="card card-body">
                       <h6>Herramientas del préstamo:</h6>
                       {loan.tool && loan.tool.length > 0 ? (
@@ -118,13 +131,18 @@ const ViewLoanClient = () => {
         </tbody>
       </table>
 
-      <button 
-        className="btn btn-primary mx-2" 
-        type="button"
-        onClick={() => navigate(`/admin-client`)}
-        >
-        Volver
-      </button>
+      <OverlayTrigger
+        placement="top"
+        overlay={<Tooltip>Regresar a la lista de clientes</Tooltip>}
+      >
+        <button 
+          className="btn btn-warning mx-2" 
+          type="button"
+          onClick={() => navigate(`/admin-client`)}
+          >
+          Volver
+        </button>
+      </OverlayTrigger>
     </div>
   );
 };

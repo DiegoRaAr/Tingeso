@@ -1,0 +1,123 @@
+version: "3.9"
+
+services:
+  # ==========================
+  # 🔹 MySQL
+  # ==========================
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_tingeso
+      MYSQL_USER: diego
+      MYSQL_PASSWORD: diego1234
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init-mysql:/docker-entrypoint-initdb.d
+    networks:
+      - tingeso-net
+    ports:
+      - "3307:3306"
+
+  # ==========================
+  # 🔹 Backend cluster (3 instancias)
+  # ==========================
+  backend1:
+    image: diegoraar/backend-tingeso:latest
+    #build: ./backend_tingeso
+    container_name: backend1
+    restart: always
+    environment:
+      - DB_HOST=mysql
+      - DB_NAME=db_tingeso
+      - DB_USER=diego
+      - DB_PASSWORD=diego1234
+    depends_on:
+      - mysql
+    networks:
+      - tingeso-net
+    expose:
+      - "8090"
+
+  backend2:
+    image: diegoraar/backend-tingeso:latest
+    #build: ./backend_tingeso
+    container_name: backend2
+    restart: always
+    environment:
+      - DB_HOST=mysql
+      - DB_NAME=db_tingeso
+      - DB_USER=diego
+      - DB_PASSWORD=diego1234
+    depends_on:
+      - mysql
+    networks:
+      - tingeso-net
+    expose:
+      - "8090"
+
+  backend3:
+    image: diegoraar/backend-tingeso:latest
+    #build: ./backend_tingeso
+    container_name: backend3
+    restart: always
+    environment:
+      - DB_HOST=mysql
+      - DB_NAME=db_tingeso
+      - DB_USER=diego
+      - DB_PASSWORD=diego1234
+    depends_on:
+      - mysql
+    networks:
+      - tingeso-net
+    expose:
+      - "8090"
+
+  # ==========================
+  # 🔹 Nginx Load Balancer (LOCAL - Solo HTTP)
+  # ==========================
+  nginx-loadbalancer:
+    image: nginx:latest
+    container_name: nginx-loadbalancer
+    volumes:
+      - ./nginx/nginx.local.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - backend1
+      - backend2
+      - backend3
+      - frontend
+    networks:
+      - tingeso-net
+    restart: always
+
+  # ==========================
+  # 🔹 Frontend (React)
+  # ==========================
+  frontend:
+    #image: diegoraar/frontend-tingeso:latest
+    build: ./frontend-tingeso
+    container_name: frontend
+    restart: always
+    expose:
+      - "80"
+    networks:
+      - tingeso-net
+    volumes:                                                                   
+      - ./frontend-tingeso/nginx.conf:/etc/nginx/conf.d/default.conf:ro 
+
+# ==========================
+# 🔸 Volumes 
+# ==========================
+volumes:
+  mysql_data:
+
+# ==========================
+# 🔸 Network
+# ==========================
+networks:
+  tingeso-net:
+    driver: bridge
