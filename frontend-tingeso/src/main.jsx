@@ -10,6 +10,7 @@ import { ReactKeycloakProvider } from '@react-keycloak/web'
 import ReactDOM from 'react-dom/client'
 
 const initOptions = {
+  onLoad: 'check-sso',
   checkLoginIframe: false
 }
 

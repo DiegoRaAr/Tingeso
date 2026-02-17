@@ -1,10 +1,9 @@
 import Keycloak from "keycloak-js";
 
 const keycloak = new Keycloak({
-  url: "http://54.94.174.49:70/auth",
-  realm: "tingeso-realm",
-  clientId: "frontend-app",
-  enableLogging: true
+  url: import.meta.env.VITE_KEYCLOAK_URL || "http://localhost:70/auth",
+  realm: import.meta.env.VITE_KEYCLOAK_REALM || "tingeso-realm",
+  clientId: import.meta.env.VITE_KEYCLOAK_CLIENT || "frontend-app",
 }); 
 
 export default keycloak;
