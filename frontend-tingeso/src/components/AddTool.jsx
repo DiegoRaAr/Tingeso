@@ -191,7 +191,7 @@ const AddTool = () => {
                     <button 
                       type="button"
                       className="btn btn-warning" 
-                      onClick={() => navigate(`/admin-client`)}>
+                      onClick={() => navigate(`/home`)}>
                         Volver
                     </button>
                   </OverlayTrigger>
