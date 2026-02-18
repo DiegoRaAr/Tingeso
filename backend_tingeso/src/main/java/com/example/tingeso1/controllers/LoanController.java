@@ -35,9 +35,13 @@ public class LoanController {
 
     // Create loan
     @PostMapping("/")
-    public ResponseEntity<LoanEntity> saveLoan(@RequestBody LoanEntity loan) throws Exception {
-        LoanEntity newloan = loanService.createLoan(loan);
-        return ResponseEntity.ok(newloan);
+    public ResponseEntity<?> saveLoan(@RequestBody LoanEntity loan) {
+        try {
+            LoanEntity newloan = loanService.createLoan(loan);
+            return ResponseEntity.ok(newloan);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // Update loan
@@ -55,9 +59,13 @@ public class LoanController {
 
     // Delete loan by id
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteLoanByID(@PathVariable Long id) throws Exception{
-        var isDeleted = loanService.deleteLoan(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteLoanByID(@PathVariable Long id) {
+        try {
+            var isDeleted = loanService.deleteLoan(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // Get tools by loan id
@@ -75,16 +83,24 @@ public class LoanController {
 
     // Finish loan
     @PutMapping("/finish-loan/{id}/{totalValue}")
-    public ResponseEntity<LoanEntity> finishLoan(@PathVariable Long id, @PathVariable Integer totalValue) throws Exception{
-        return ResponseEntity.ok(loanService.finalizeLoan(id,totalValue));
+    public ResponseEntity<?> finishLoan(@PathVariable Long id, @PathVariable Integer totalValue) {
+        try {
+            return ResponseEntity.ok(loanService.finalizeLoan(id,totalValue));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // Get loans by range date
     @GetMapping("/loans-by-range-date/{initDate}/{endDate}")
-    public ResponseEntity<List<LoanEntity>> getLoansByRangeDate(
+    public ResponseEntity<?> getLoansByRangeDate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date initDate,
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate
-    ) throws Exception {
-        return ResponseEntity.ok(loanService.getLoansByDateRange(initDate, endDate));
+    ) {
+        try {
+            return ResponseEntity.ok(loanService.getLoansByDateRange(initDate, endDate));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

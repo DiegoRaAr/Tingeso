@@ -73,7 +73,21 @@ const MakeLoan = () => {
       navigate(`/loans-by-rut/${client.rutClient}`);
     } catch (error) {
       console.error('Error:', error);
-      alert('Error al crear préstamo');
+      // Extraer el mensaje de error del backend
+      let errorMessage = 'Error al crear préstamo';
+      
+      if (error.response && error.response.data) {
+        // Si el backend envía un mensaje de error específico
+        if (typeof error.response.data === 'string') {
+          errorMessage = error.response.data;
+        } else if (error.response.data.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.response.data.error) {
+          errorMessage = error.response.data.error;
+        }
+      }
+      
+      alert(errorMessage);
     }
   };
 
