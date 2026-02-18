@@ -55,17 +55,20 @@ public class LoanService {
 
         // Get all loans of client and verify if it has debt
         boolean debt = false;
+        int activeLoans = 0;
         List<LoanEntity> loans = clientRepository.findAllLoanByIdClient(client);
         for (LoanEntity l: loans) {
             int penalty = l.getPenaltyLoan();
-            if (penalty > 0 && l.getStateLoan() == "ACTIVO") {
+            if (penalty > 0 && l.getStateLoan().equals("ACTIVO")) {
                 debt = true;
-                break;
+            }
+            if (l.getStateLoan().equals("ACTIVO")) {
+                activeLoans++;
             }
         }
 
         // Verify if client has 5 active loans
-        if (loans.size() >= 5) {
+        if (activeLoans >= 5) {
             throw new Exception("El cliente ya tiene 5 prestamos activos");
         }
 

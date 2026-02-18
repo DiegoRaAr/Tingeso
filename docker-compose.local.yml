@@ -98,8 +98,8 @@ services:
   # 🔹 Frontend (React)
   # ==========================
   frontend:
-    #image: diegoraar/frontend-tingeso:latest
-    build: ./frontend-tingeso
+    image: diegoraar/frontend-tingeso:latest
+    #build: ./frontend-tingeso
     container_name: frontend
     restart: always
     expose:

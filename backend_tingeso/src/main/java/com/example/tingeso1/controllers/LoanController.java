@@ -18,8 +18,6 @@ import java.util.Optional;
 public class LoanController {
     @Autowired
     LoanService loanService;
-    @Autowired
-    private AdminService adminService;
 
     // Get all loans
     @GetMapping("/")
