@@ -27,13 +27,15 @@ public class ToolService {
     // Create Tool
     public ToolEntity createTool(ToolEntity toolEntity){
         ToolEntity savedTool = toolRepository.save(toolEntity);
+
+        String stock = String.valueOf(savedTool.getStockTool());
         
         // Registrar en kardex como "NUEVA"
         KardexEntity kardex = new KardexEntity();
         kardex.setDateKardex(new java.util.Date());
         kardex.setIdTool(savedTool.getIdTool());
         kardex.setNameTool(savedTool.getNameTool());
-        kardex.setStateTool("NUEVA");
+        kardex.setStateTool("NUEVA +" + stock);
         kardexRepository.save(kardex);
         
         return savedTool;
@@ -46,6 +48,21 @@ public class ToolService {
 
     // Update Tool
     public ToolEntity updateTool(ToolEntity toolEntity){
+        int ActualStock = findById(toolEntity.getIdTool()).getStockTool();
+        int NewStock = toolEntity.getStockTool();
+
+        KardexEntity kardex = new KardexEntity();
+        kardex.setDateKardex(new java.util.Date());
+        kardex.setIdTool(toolEntity.getIdTool());
+        kardex.setNameTool(toolEntity.getNameTool());
+        if (NewStock > ActualStock) {
+            kardex.setStateTool("SUMA +" + (NewStock - ActualStock));
+        } else if (NewStock < ActualStock) {
+            kardex.setStateTool("DISMINUCIÓN -" + (ActualStock - NewStock));
+        } else {
+            kardex.setStateTool("ACTUALIZACIÓN");
+        }
+        kardexRepository.save(kardex);
         return toolRepository.save(toolEntity);
     }
 

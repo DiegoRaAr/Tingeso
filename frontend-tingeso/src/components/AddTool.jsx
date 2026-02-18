@@ -124,6 +124,7 @@ const AddTool = () => {
                         value={tool.totalValue}
                         onChange={handleChange} 
                     />
+                    <div className="form-text">Valor total de la herramienta, en caso de que se devuelva inutilizable, se cobra este precio como valor agregado</div>
                 </div>
 
                 <div className="mb-4 text-start">
@@ -137,6 +138,7 @@ const AddTool = () => {
                         value={tool.repairCharge}
                         onChange={handleChange}
                     />
+                    <div className="form-text">Este es un valor agregado en caso de que la herramienta tenga daños leves a la hora de su devolución </div>
                 </div>
 
                 <div className="mb-4 text-start">
@@ -150,6 +152,7 @@ const AddTool = () => {
                         value={tool.dailyCharge}
                         onChange={handleChange} 
                     />
+                    <div className="form-text">Precio que se cobra diario por esta herramienta</div>
                 </div>
 
                 <div className="mb-4 text-start">
@@ -163,10 +166,26 @@ const AddTool = () => {
                         value={tool.lateCharge}
                         onChange={handleChange}
                     />
+                    <div className="form-text">Precio que empieza a cobrarse por cada día de atraso</div>
                 </div>
-            </form>
 
-            <div className="d-flex gap-2 justify-content-center">
+                <div className="mb-4 text-start">
+                    <label htmlFor="stockTool" className="form-label">Stock inicial</label>
+                    <input 
+                        type="number" 
+                        className="form-control" 
+                        id="stockTool"
+                        name="stockTool"
+                        min="1"
+                        required
+                        value={tool.stockTool}
+                        onChange={handleChange}
+                        placeholder="Ejemplo: 5"
+                    />
+                    <div className="form-text">Cantidad de unidades disponibles de esta herramienta</div>
+                </div>
+
+                <div className="d-flex gap-2 justify-content-center">
                   <OverlayTrigger
                     placement="top"
                     overlay={
@@ -196,6 +215,7 @@ const AddTool = () => {
                     </button>
                   </OverlayTrigger>
                 </div>
+            </form>
         </div>
     );
 }
