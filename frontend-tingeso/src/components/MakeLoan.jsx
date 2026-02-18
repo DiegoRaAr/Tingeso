@@ -56,16 +56,26 @@ const MakeLoan = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const loanData = {
-      initDate: new Date(),
-      endDate: endDate,
-      stateLoan: 'ACTIVO',
-      penaltyLoan: 0,
-      tool: selectedTools.map(id => ({ idTool: id })),
-      idClient: { idClient: client.idClient }
-    };
-
     try {
+      // Verificar primero el número de préstamos activos del cliente
+      const response = await loanService.getNumLoanRestrinByRutClient(client.rutClient);
+      const numLoans = response.data;
+
+      if (numLoans >= 5) {
+        alert('Los préstamos de este cliente son mayores a 5');
+        return;
+      }
+
+      // Si tiene menos de 5 préstamos, proceder a crear el préstamo
+      const loanData = {
+        initDate: new Date(),
+        endDate: endDate,
+        stateLoan: 'ACTIVO',
+        penaltyLoan: 0,
+        tool: selectedTools.map(id => ({ idTool: id })),
+        idClient: { idClient: client.idClient }
+      };
+
       await loanService.createLoan(loanData);
       alert('Préstamo creado exitosamente');
       setSelectedTools([]);

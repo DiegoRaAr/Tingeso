@@ -40,4 +40,8 @@ const getLoanByRangeDate = (startDate, endDate) => {
     return httpLoan.get(`/v1/loan/loans-by-range-date/${startDate}/${endDate}`);
 }
 
-export default { getAllLoans, createLoan, getLoanById, updateLoan, deleteLoan , getLoansByRut, getToolsByLoanId, updatePenalty, finishLoan, getLoanByRangeDate };
+const getNumLoanRestrinByRutClient = (rut) => {
+    return httpLoan.get(`/v1/loan/num-loans-restringido/${rut}`);
+}
+
+export default { getAllLoans, createLoan, getLoanById, updateLoan, deleteLoan , getLoansByRut, getToolsByLoanId, updatePenalty, finishLoan, getLoanByRangeDate, getNumLoanRestrinByRutClient };

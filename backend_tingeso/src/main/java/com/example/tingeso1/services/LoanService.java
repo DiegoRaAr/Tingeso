@@ -295,4 +295,17 @@ public class LoanService {
         }
         return filteredLoans;
     }
+
+    //Get num loan "RESTRINGIDO" by rut client
+    public Integer getNumLoanRestrinByRutClient(String rut) throws Exception {
+        List<LoanEntity> loans = loanRepository.findByIdClient_RutClient(rut);
+        int numRestrin = 0;
+        for (LoanEntity loan : loans) {
+            if (loan.getStateLoan().equals("RESTRINGIDO")) {
+                numRestrin++;
+            }
+        }
+        return numRestrin;
+    }
 }
+    
