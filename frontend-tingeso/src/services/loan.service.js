@@ -44,4 +44,8 @@ const getNumLoanRestrinByRutClient = (rut) => {
     return httpLoan.get(`/v1/loan/num-loans-restringido/${rut}`);
 }
 
-export default { getAllLoans, createLoan, getLoanById, updateLoan, deleteLoan , getLoansByRut, getToolsByLoanId, updatePenalty, finishLoan, getLoanByRangeDate, getNumLoanRestrinByRutClient };
+const getNumActiveLoans = (rut) => {
+    return httpLoan.get(`/v1/loan/num-active-loans/${rut}`);
+}
+
+export default { getAllLoans, createLoan, getLoanById, updateLoan, deleteLoan , getLoansByRut, getToolsByLoanId, updatePenalty, finishLoan, getLoanByRangeDate, getNumLoanRestrinByRutClient, getNumActiveLoans };

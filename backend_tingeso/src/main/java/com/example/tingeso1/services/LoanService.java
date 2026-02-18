@@ -307,5 +307,17 @@ public class LoanService {
         }
         return numRestrin;
     }
+
+    //Get num loan "ACTIVO" by rut client
+    public Integer getNumActiveLoans(String rut) throws Exception {
+        List<LoanEntity> loans = loanRepository.findByIdClient_RutClient(rut);
+        int numActive = 0;
+        for (LoanEntity loan : loans) {
+            if (loan.getStateLoan().equals("ACTIVO")) {
+                numActive++;
+            }
+        }
+        return numActive;
+    }
 }
     

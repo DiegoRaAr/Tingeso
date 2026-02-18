@@ -58,7 +58,7 @@ const MakeLoan = () => {
 
     try {
       // Verificar primero el número de préstamos activos del cliente
-      const response = await loanService.getNumLoanRestrinByRutClient(client.rutClient);
+      const response = await loanService.getNumActiveLoans(client.rutClient);
       const numLoans = response.data;
 
       if (numLoans >= 5) {

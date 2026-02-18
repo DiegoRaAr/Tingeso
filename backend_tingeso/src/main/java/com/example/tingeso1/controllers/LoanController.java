@@ -97,4 +97,14 @@ public class LoanController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    // Get num loans "ACTIVO"
+    @GetMapping("/num-active-loans/{rut}")
+    public ResponseEntity<?> getNumActiveLoans(@PathVariable String rut) {
+        try {
+            return ResponseEntity.ok(loanService.getNumActiveLoans(rut));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
