@@ -9,8 +9,8 @@ export const options = {
   vus: 10,              
   duration: "30s",      
   thresholds: {
-    http_req_failed: ["rate<0.01"],      // Aumentado porque ahora hay 3 operaciones
-    http_req_duration: ["p(95)<500"],   // Aumentado por la creación de cliente adicional
+    http_req_failed: ["rate<0.01"],     
+    http_req_duration: ["p(95)<500"], 
   },
 };
 
@@ -33,13 +33,13 @@ export default function () {
   };
 
   // PASO 1: Crear un nuevo cliente
-  const clientRut = `${10000000 + iterationNumber}-${iterationNumber % 10}`; // RUT único
+  const clientRut = '11111111-1';
   const clientPayload = JSON.stringify({
     rutClient: clientRut,
-    nameClient: `usuario ${iterationNumber}`,
+    nameClient: `usuario test`,
     stateClient: 'ACTIVO',
-    emailClient: `usuario${iterationNumber}@test.com`,
-    phoneNumberClient: `+56912345${String(iterationNumber).padStart(3, '0')}`
+    emailClient: `usuario_test@test.com`,
+    phoneNumberClient: `+5691234500`
   });
 
   const createClientResponse = http.post(`${BASE_URL}/client/`, clientPayload, params);
@@ -77,7 +77,7 @@ export default function () {
   // PASO 2: Crear préstamo con el cliente recién creado
   const initDate = new Date();
   const endDate = new Date();
-  endDate.setDate(endDate.getDate() + 7); // 7 días después
+  endDate.setDate(endDate.getDate() + 7);
 
   // Seleccionar una herramienta aleatoria de las disponibles
   const randomTool = availableToolIds[Math.floor(Math.random() * availableToolIds.length)];
@@ -148,7 +148,5 @@ export default function () {
       console.error(`Error al procesar préstamo: ${e}`);
     }
   }
-
-  // Pausa entre iteraciones
   sleep(1);
 }

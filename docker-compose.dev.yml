@@ -25,7 +25,7 @@ services:
   # 🔹 Backend cluster (3 instancias)
   # ==========================
   backend1:
-    image: diegoraar/backend-tingeso:latest
+    build: ./backend_tingeso
     container_name: backend1
     restart: always
     environment:
@@ -41,7 +41,7 @@ services:
       - "8090"
 
   backend2:
-    image: diegoraar/backend-tingeso:latest
+    build: ./backend_tingeso
     container_name: backend2
     restart: always
     environment:
@@ -57,7 +57,7 @@ services:
       - "8090"
 
   backend3:
-    image: diegoraar/backend-tingeso:latest
+    build: ./backend_tingeso
     container_name: backend3
     restart: always
     environment:

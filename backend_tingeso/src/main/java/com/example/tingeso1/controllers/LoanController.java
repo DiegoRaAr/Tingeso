@@ -39,18 +39,18 @@ public class LoanController {
         try {
             LoanEntity newloan = loanService.createLoan(loan);
             // Respuesta exitosa con código 200
-            return ResponseEntity.ok(java.util.Map.of(
-                "success", true,
-                "data", newloan,
-                "message", "Préstamo creado exitosamente"
-            ));
+            java.util.Map<String, Object> response = new java.util.HashMap<>();
+            response.put("success", true);
+            response.put("data", newloan);
+            response.put("message", "Préstamo creado exitosamente");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             // Respuesta con código 200 pero indicando error
-            return ResponseEntity.ok(java.util.Map.of(
-                "success", false,
-                "data", null,
-                "message", e.getMessage()
-            ));
+            java.util.Map<String, Object> response = new java.util.HashMap<>();
+            response.put("success", false);
+            response.put("data", null);
+            response.put("message", e.getMessage() != null ? e.getMessage() : "Error al crear préstamo");
+            return ResponseEntity.ok(response);
         }
     }
 

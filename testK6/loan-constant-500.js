@@ -6,7 +6,7 @@ import { Counter } from 'k6/metrics';
 const iterationCounter = new Counter('iterations');
 
 export const options = {
-  vus: 100,              
+  vus: 500,              
   duration: "30s",      
   thresholds: {
     http_req_failed: ["rate<0.01"],     
