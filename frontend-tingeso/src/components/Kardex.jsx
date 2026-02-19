@@ -55,9 +55,10 @@ const Kardex = () => {
     }).sort((a, b) => b.idKardex - a.idKardex);
 
     return (
-        <div>
-            <h2 className="text-start mb-4">Control de inventario</h2>
-            <h6 className="text-start mb-4">En este apartado puedes revisar el historial de movimientos de las herramientas, filtrarlos por fecha o buscar por nombre o ID del movimiento.</h6>
+        <div className="container-fluid">
+            <h2 className="text-start my-1 mb-4">Control de inventario</h2>
+            <h6 className="text-start my-1 mb-3">En este apartado puedes revisar el historial de movimientos de las herramientas, filtrarlos por fecha o buscar por nombre o ID del movimiento.</h6>
+            
             {/* Filtros */}
             <div className="mb-3 d-flex gap-3 align-items-center" style={{ position: 'relative', zIndex: 1050 }}>
                 <div style={{ flex: 1 }}>
@@ -119,36 +120,40 @@ const Kardex = () => {
                     </button>
                 </OverlayTrigger>
             </div>
+
             <div style={{ height: '550px', overflowY: 'scroll', border: '1px solid #dee2e6', borderRadius: '5px' }}>
-            <table className="table table-striped table-hover mb-0">
-                <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f8f9fa', zIndex: 1 }}>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">ID Herramienta</th>
-                        <th scope="col">Nombre Herramienta</th>
-                        <th scope="col">Estado Herramienta</th>
-                    </tr>
-                </thead>
-                <tbody className="table-group-divider">
-                    {filteredKardexes.map((kardex) => (
-                        <tr key={kardex.idKardex}>
-                            <td>{kardex.idKardex}</td>
-                            <td>{new Date(kardex.dateKardex).toLocaleDateString()}</td>
-                            <td>{kardex.idTool}</td>
-                            <td>{kardex.nameTool}</td>
-                            <td>{kardex.stateTool}</td>
+                <table className="table table-striped table-hover align-middle mb-0">
+                    <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f8f9fa', zIndex: 1 }}>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">ID Herramienta</th>
+                            <th scope="col">Nombre Herramienta</th>
+                            <th scope="col">Estado Herramienta</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody className="table-group-divider">
+                        {filteredKardexes.map((kardex) => (
+                            <tr key={kardex.idKardex}>
+                                <td>{kardex.idKardex}</td>
+                                <td>{new Date(kardex.dateKardex).toLocaleDateString()}</td>
+                                <td>{kardex.idTool}</td>
+                                <td>{kardex.nameTool}</td>
+                                <td>{kardex.stateTool}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
-            <OverlayTrigger
-                placement="top"
-                overlay={<Tooltip>Regresar a la página principal</Tooltip>}
-            >
-                <button className="btn btn-primary mx-2 my-4" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
-            </OverlayTrigger>
+
+            <div className="mt-4">
+                <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip>Regresar a la página principal</Tooltip>}
+                >
+                    <button className="btn btn-primary mx-2" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
+                </OverlayTrigger>
+            </div>
         </div>
     );
 };

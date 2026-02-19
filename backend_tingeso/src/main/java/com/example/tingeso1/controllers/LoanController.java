@@ -35,9 +35,23 @@ public class LoanController {
 
     // Create loan
     @PostMapping("/")
-    public ResponseEntity<LoanEntity> saveLoan(@RequestBody LoanEntity loan) throws Exception {
-        LoanEntity newloan = loanService.createLoan(loan);
-        return ResponseEntity.ok(newloan);
+    public ResponseEntity<?> saveLoan(@RequestBody LoanEntity loan) {
+        try {
+            LoanEntity newloan = loanService.createLoan(loan);
+            // Respuesta exitosa con código 200
+            return ResponseEntity.ok(java.util.Map.of(
+                "success", true,
+                "data", newloan,
+                "message", "Préstamo creado exitosamente"
+            ));
+        } catch (Exception e) {
+            // Respuesta con código 200 pero indicando error
+            return ResponseEntity.ok(java.util.Map.of(
+                "success", false,
+                "data", null,
+                "message", e.getMessage()
+            ));
+        }
     }
 
     // Update loan
