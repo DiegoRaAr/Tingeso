@@ -3,17 +3,22 @@ package com.example.tingeso1.controllers;
 import com.example.tingeso1.entities.KardexEntity;
 import com.example.tingeso1.services.KardexService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/kardex")
 public class KardexController {
+    
+    private final KardexService kardexService;
+
     @Autowired
-    KardexService kardexService;
+    public KardexController(KardexService kardexService) {
+        this.kardexService = kardexService;
+    }
 
     // Get all kardexes
     @GetMapping("/")
@@ -24,8 +29,8 @@ public class KardexController {
 
     // Get kardex by id
     @GetMapping("/{id}")
-    public ResponseEntity<KardexEntity> getKardexByID(@PathVariable Long id){
-        KardexEntity kardex = kardexService.getKardexById(id);
+    public ResponseEntity<Optional<KardexEntity>> getKardexByID(@PathVariable Long id){
+        Optional<KardexEntity> kardex = kardexService.getKardexById(id);
         return ResponseEntity.ok(kardex);
     }
 
@@ -45,8 +50,8 @@ public class KardexController {
 
     // Delete kardex by id
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteKardexByID(@PathVariable Long id)throws Exception{
-        var isDeleted = kardexService.deleteKardex(id);
+    public ResponseEntity<Boolean> deleteKardexByID(@PathVariable Long id){
+        kardexService.deleteKardex(id);
         return ResponseEntity.noContent().build();
     }
 }

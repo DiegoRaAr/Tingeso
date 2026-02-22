@@ -49,7 +49,7 @@ const AdminClient = () => {
                     <th scope="col" className="text-center">Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="table-group-divider">
+                <tbody className="table-group-divider">
                     {clients
                       .filter(client => 
                         client.nameClient.toLowerCase().includes(searchTerm.toLowerCase()) ||

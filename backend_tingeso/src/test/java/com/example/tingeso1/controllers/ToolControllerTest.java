@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,7 +26,7 @@ public class ToolControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private ToolService toolService;
 
     @Autowired
@@ -55,7 +55,7 @@ public class ToolControllerTest {
     // ---------- GET /api/v1/tool/{id} ----------
     @Test
     void whenGetToolById_thenReturnTool() throws Exception {
-        when(toolService.findById(1L)).thenReturn(t1);
+        when(toolService.findById(1L)).thenReturn(Optional.of(t1));
 
         mockMvc.perform(get("/api/v1/tool/{id}", 1L))
                 .andExpect(status().isOk())

@@ -5,21 +5,19 @@ import com.example.tingeso1.services.AdminService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -32,7 +30,7 @@ public class AdminControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private AdminService adminService;
 
     @Autowired
@@ -72,7 +70,7 @@ public class AdminControllerTest {
     // ---------- GET /api/v1/admin/{id} ----------
     @Test
     void whenGetAdminById_thenReturnAdmin() throws Exception {
-        when(adminService.getAdminById(1L)).thenReturn(a1);
+        when(adminService.getAdminById(1L)).thenReturn(Optional.of(a1));
 
         mockMvc.perform(get("/api/v1/admin/{id}", 1L))
                 .andExpect(status().isOk())

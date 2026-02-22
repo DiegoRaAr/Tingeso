@@ -71,9 +71,9 @@ class KardexServiceTest {
     void whenGetKardexById_thenReturnEntity() {
         when(kardexRepository.findById(1L)).thenReturn(Optional.of(kardex1));
 
-        KardexEntity result = kardexService.getKardexById(1L);
+        Optional<KardexEntity> result = kardexService.getKardexById(1L);
 
-        assertThat(result.getNameTool()).isEqualTo("Martillo");
+        assertThat(result.get().getNameTool()).isEqualTo("Martillo");
         verify(kardexRepository, times(1)).findById(1L);
     }
 
@@ -105,7 +105,7 @@ class KardexServiceTest {
 
         Exception e = assertThrows(Exception.class, () -> kardexService.deleteKardex(1L));
 
-        assertThat(e.getMessage()).contains("DB error");
+        assertThat(e.getMessage()).contains("Error deleting kardex with id: 1");
         verify(kardexRepository, times(1)).deleteById(1L);
     }
 }

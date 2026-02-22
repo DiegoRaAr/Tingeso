@@ -7,12 +7,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/admin")
 public class AdminController {
+    private final AdminService adminService;
+
     @Autowired
-    AdminService adminService;
+    public AdminController(AdminService adminService) {
+        this.adminService = adminService;
+    }
 
     //Rute for find all Admin
     @GetMapping("/")
@@ -23,8 +28,8 @@ public class AdminController {
 
     // Rute for find admin by id
     @GetMapping("/{id}")
-    public ResponseEntity<AdminEntity> getAdminByID(@PathVariable Long id){
-        AdminEntity admin = adminService.getAdminById(id);
+    public ResponseEntity<Optional<AdminEntity>> getAdminByID(@PathVariable Long id){
+        Optional<AdminEntity> admin = adminService.getAdminById(id);
         return ResponseEntity.ok(admin);
     }
 
@@ -44,8 +49,8 @@ public class AdminController {
 
     //Delete Admin
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteAdminById(@PathVariable Long id) throws Exception {
-        var isDeleted = adminService.deleteAdmin(id);
+    public ResponseEntity<Boolean> deleteAdminById(@PathVariable Long id){
+        adminService.deleteAdmin(id);
         return ResponseEntity.noContent().build();
     }
 }

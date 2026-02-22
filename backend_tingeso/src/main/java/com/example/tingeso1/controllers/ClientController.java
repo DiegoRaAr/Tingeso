@@ -7,12 +7,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/client")
 public class ClientController {
-    @Autowired
-    ClientService clientService;
+    private final ClientService clientService;
+
+     @Autowired
+    public ClientController(ClientService clientService) {
+        this.clientService = clientService;
+    }
 
     // Get all clients
     @GetMapping("/")
@@ -23,8 +28,8 @@ public class ClientController {
 
     // Get client by id
     @GetMapping("/{id}")
-    public ResponseEntity<ClientEntity> getClientByID(@PathVariable Long id){
-        ClientEntity client = clientService.getClientById(id);
+    public ResponseEntity<Optional<ClientEntity>> getClientByID(@PathVariable Long id){
+        Optional<ClientEntity> client = clientService.getClientById(id);
         return ResponseEntity.ok(client);
     }
 
@@ -44,8 +49,8 @@ public class ClientController {
 
     // Delete client
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteClient(@PathVariable Long id) throws Exception{
-        var isDeleted = clientService.deleteClient(id);
+    public ResponseEntity<Boolean> deleteClient(@PathVariable Long id){
+        clientService.deleteClient(id);
         return ResponseEntity.noContent().build();
     }
 

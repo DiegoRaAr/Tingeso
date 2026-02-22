@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -49,7 +50,7 @@ public class ToolServiceTest {
 
     @Test
     void whenStockGreaterThanOne_thenSubtractAndSaveWithDisminucion() throws Exception {
-        doReturn(tool).when(toolService).findById(1L);
+        doReturn(Optional.of(tool)).when(toolService).findById(1L);
         when(kardexRepository.save(any(KardexEntity.class))).thenReturn(new KardexEntity());
         when(toolRepository.save(any(ToolEntity.class))).thenReturn(tool);
 
@@ -65,7 +66,7 @@ public class ToolServiceTest {
     @Test
     void whenStockEqualsOne_thenSetStateBajaAndSave() throws Exception {
         tool.setStockTool(1);
-        doReturn(tool).when(toolService).findById(1L);
+        doReturn(Optional.of(tool)).when(toolService).findById(1L);
         when(kardexRepository.save(any(KardexEntity.class))).thenReturn(new KardexEntity());
         when(toolRepository.save(any(ToolEntity.class))).thenReturn(tool);
 
@@ -81,7 +82,7 @@ public class ToolServiceTest {
     @Test
     void whenStockZero_thenThrowException() {
         tool.setStockTool(0);
-        doReturn(tool).when(toolService).findById(1L);
+        doReturn(Optional.of(tool)).when(toolService).findById(1L);
 
         assertThrows(Exception.class, () -> toolService.subtractTool(1L));
     }
@@ -89,7 +90,7 @@ public class ToolServiceTest {
     @Test
     void whenAddTool_thenIncreaseStockAndSaveWithSuma() {
         // Arrange
-        doReturn(tool).when(toolService).findById(1L);
+        doReturn(Optional.of(tool)).when(toolService).findById(1L);
         when(kardexRepository.save(any(KardexEntity.class))).thenReturn(new KardexEntity());
         when(toolRepository.save(any(ToolEntity.class))).thenReturn(tool);
 
@@ -216,10 +217,10 @@ public class ToolServiceTest {
         when(toolRepository.findById(1L)).thenReturn(java.util.Optional.of(tool));
 
         // Act
-        ToolEntity result = toolService.findById(1L);
+        Optional<ToolEntity> result = toolService.findById(1L);
 
         // Assert
-        assertThat(result).isEqualTo(tool);
+        assertThat(result.get()).isEqualTo(tool);
         verify(toolRepository, times(1)).findById(1L);
     }
 
@@ -227,6 +228,8 @@ public class ToolServiceTest {
     void whenUpdateTool_thenSaveAndReturnUpdatedTool() {
         // Arrange
         tool.setNameTool("Martillo reforzado");
+        when(toolRepository.findById(1L)).thenReturn(Optional.of(tool));
+        when(kardexRepository.save(any(KardexEntity.class))).thenReturn(new KardexEntity());
         when(toolRepository.save(tool)).thenReturn(tool);
 
         // Act

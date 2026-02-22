@@ -1,7 +1,6 @@
 package com.example.tingeso1.controllers;
 
 import com.example.tingeso1.entities.LoanEntity;
-import com.example.tingeso1.services.AdminService;
 import com.example.tingeso1.services.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,8 +15,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/loan")
 public class LoanController {
+    private final LoanService loanService;
+
     @Autowired
-    LoanService loanService;
+    public LoanController(LoanService loanService) {
+        this.loanService = loanService; 
+    }
 
     // Get all loans
     @GetMapping("/")
@@ -35,7 +38,7 @@ public class LoanController {
 
     // Create loan
     @PostMapping("/")
-    public ResponseEntity<?> saveLoan(@RequestBody LoanEntity loan) {
+    public ResponseEntity<java.util.Map<String, Object>> saveLoan(@RequestBody LoanEntity loan) {
         try {
             LoanEntity newloan = loanService.createLoan(loan);
             // Respuesta exitosa con código 200
@@ -45,12 +48,12 @@ public class LoanController {
             response.put("message", "Préstamo creado exitosamente");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            // Respuesta con código 200 pero indicando error
+            // Respuesta con código 400 Bad Request para errores
             java.util.Map<String, Object> response = new java.util.HashMap<>();
             response.put("success", false);
             response.put("data", null);
             response.put("message", e.getMessage() != null ? e.getMessage() : "Error al crear préstamo");
-            return ResponseEntity.ok(response);
+            return ResponseEntity.badRequest().body(response);
         }
     }
 
@@ -69,8 +72,8 @@ public class LoanController {
 
     // Delete loan by id
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteLoanByID(@PathVariable Long id) throws Exception{
-        var isDeleted = loanService.deleteLoan(id);
+    public ResponseEntity<Boolean> deleteLoanByID(@PathVariable Long id){
+        loanService.deleteLoan(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -89,7 +92,7 @@ public class LoanController {
 
     // Finish loan
     @PutMapping("/finish-loan/{id}/{totalValue}")
-    public ResponseEntity<LoanEntity> finishLoan(@PathVariable Long id, @PathVariable Integer totalValue) throws Exception{
+    public ResponseEntity<LoanEntity> finishLoan(@PathVariable Long id, @PathVariable Integer totalValue){
         return ResponseEntity.ok(loanService.finalizeLoan(id,totalValue));
     }
 
@@ -98,27 +101,27 @@ public class LoanController {
     public ResponseEntity<List<LoanEntity>> getLoansByRangeDate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date initDate,
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate
-    ) throws Exception {
+    ) {
         return ResponseEntity.ok(loanService.getLoansByDateRange(initDate, endDate));
     }
 
     // Get num loans "RESTRINGIDO"
     @GetMapping("/num-loans-restringido/{rut}")
-    public ResponseEntity<?> getNumLoansRestringido(@PathVariable String rut) {
+    public ResponseEntity<Integer> getNumLoansRestringido(@PathVariable String rut) {
         try {
             return ResponseEntity.ok(loanService.getNumLoanRestrinByRutClient(rut));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(0);
         }
     }
 
     // Get num loans "ACTIVO"
     @GetMapping("/num-active-loans/{rut}")
-    public ResponseEntity<?> getNumActiveLoans(@PathVariable String rut) {
+    public ResponseEntity<Integer> getNumActiveLoans(@PathVariable String rut) {
         try {
             return ResponseEntity.ok(loanService.getNumActiveLoans(rut));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(0);
         }
     }
 }

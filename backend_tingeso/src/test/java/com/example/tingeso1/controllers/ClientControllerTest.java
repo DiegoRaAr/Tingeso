@@ -7,16 +7,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -28,7 +28,7 @@ public class ClientControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private ClientService clientService;
 
     @Autowired
@@ -57,7 +57,7 @@ public class ClientControllerTest {
     // ---------- GET /api/v1/client/{id} ----------
     @Test
     void whenGetClientById_thenReturnClient() throws Exception {
-        when(clientService.getClientById(1L)).thenReturn(c1);
+        when(clientService.getClientById(1L)).thenReturn(Optional.of(c1));
 
         mockMvc.perform(get("/api/v1/client/{id}", 1L))
                 .andExpect(status().isOk())

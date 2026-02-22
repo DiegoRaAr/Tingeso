@@ -70,9 +70,9 @@ class EmployeeServiceTest {
     void whenGetEmployeeById_thenReturnEmployee() {
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(emp1));
 
-        EmployeeEntity result = employeeService.getEmployeeById(1L);
+        Optional<EmployeeEntity> result = employeeService.getEmployeeById(1L);
 
-        assertThat(result.getRutEmployee()).isEqualTo("11-1");
+        assertThat(result.get().getRutEmployee()).isEqualTo("11-1");
         verify(employeeRepository, times(1)).findById(1L);
     }
 
@@ -116,7 +116,7 @@ class EmployeeServiceTest {
 
         Exception e = assertThrows(Exception.class, () -> employeeService.deleteEmployee(1L));
 
-        assertThat(e.getMessage()).contains("DB error");
+        assertThat(e.getMessage()).contains("Error deleting employee with id: 1");
         verify(employeeRepository, times(1)).deleteById(1L);
     }
 }

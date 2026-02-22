@@ -3,6 +3,9 @@ package com.example.tingeso1.services;
 import com.example.tingeso1.entities.ClientEntity;
 import com.example.tingeso1.entities.KardexEntity;
 import com.example.tingeso1.entities.LoanEntity;
+import com.example.tingeso1.exceptions.BusinessRuleException;
+import com.example.tingeso1.exceptions.DataPersistenceException;
+import com.example.tingeso1.exceptions.ResourceNotFoundException;
 import com.example.tingeso1.repositories.ClientRepository;
 import com.example.tingeso1.repositories.KardexRepository;
 import com.example.tingeso1.repositories.LoanRepository;
@@ -22,17 +25,22 @@ import java.util.Optional;
 
 @Service
 public class LoanService {
-    @Autowired
-    private LoanRepository loanRepository;
+    private final LoanRepository loanRepository;
+    private final KardexRepository kardexRepository;
+    private final ClientRepository clientRepository;
+    private final ToolRepository toolRepository;
 
     @Autowired
-    private KardexRepository kardexRepository;
+    public LoanService(LoanRepository loanRepository, KardexRepository kardexRepository, 
+                      ClientRepository clientRepository, ToolRepository toolRepository) {
+        this.loanRepository = loanRepository;
+        this.kardexRepository = kardexRepository;
+        this.clientRepository = clientRepository;
+        this.toolRepository = toolRepository;
+    }
 
-    @Autowired
-    private ClientRepository clientRepository;
-
-    @Autowired
-    private ToolRepository toolRepository;
+    private static final String ACTIVE = "ACTIVO";
+    private static final String RESTRICTED = "RESTRINGIDO";
 
 
     // Find Loan
@@ -41,17 +49,17 @@ public class LoanService {
     }
 
     // Create Loan with conditions
-    public LoanEntity createLoan(LoanEntity loan) throws Exception {
+    public LoanEntity createLoan(LoanEntity loan) {
         // Search all tools of loan, and verify if they exist
         List<ToolEntity> completeTools = new ArrayList<>();
         for (ToolEntity t : loan.getTool()) {
-            ToolEntity tool = toolRepository.findById(t.getIdTool()).orElseThrow(() -> new Exception("Herramienta no encontrada"));
+            ToolEntity tool = toolRepository.findById(t.getIdTool()).orElseThrow(() -> new ResourceNotFoundException("Herramienta no encontrada"));
             completeTools.add(tool);
         }
 
         // Search client of loan, and verify if it exists
         ClientEntity client = clientRepository.findById(loan.getIdClient().getIdClient())
-        .orElseThrow(() -> new Exception("Cliente no encontrado"));
+        .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
 
         // Get all loans of client and verify if it has debt
         boolean debt = false;
@@ -59,27 +67,27 @@ public class LoanService {
         List<LoanEntity> loans = clientRepository.findAllLoanByIdClient(client);
         for (LoanEntity l: loans) {
             int penalty = l.getPenaltyLoan();
-            if (penalty > 0 && l.getStateLoan().equals("ACTIVO")) {
+            if (penalty > 0 && l.getStateLoan().equals(ACTIVE)) {
                 debt = true;
             }
-            if (l.getStateLoan().equals("ACTIVO")) {
+            if (l.getStateLoan().equals(ACTIVE)) {
                 activeLoans++;
             }
         }
 
         // Verify if client has 5 active loans
         if (activeLoans >= 5) {
-            throw new Exception("El cliente ya tiene 5 prestamos activos");
+            throw new BusinessRuleException("El cliente ya tiene 5 prestamos activos");
         }
 
         // Verify if client has debt
         if (debt) {
-            throw new Exception("El cliente tiene deudas pendientes");
+            throw new BusinessRuleException("El cliente tiene deudas pendientes");
         }
 
         // Verify if client is restricted
-        if (client.getStateClient().equals("RESTRINGIDO")) {
-            throw new Exception("El cliente se encuentra restringido");
+        if (client.getStateClient().equals(RESTRICTED)) {
+            throw new BusinessRuleException("El cliente se encuentra restringido");
         }
 
         // Verify if end date is before start date
@@ -87,7 +95,7 @@ public class LoanService {
         Date endDate = loan.getEndDate();
 
         if (endDate.before(iniDate)) {
-            throw new Exception("La fecha de fin no puede ser anterior a la fecha de inicio");
+            throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio");
         }
 
         LocalDate start = iniDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -144,12 +152,12 @@ public class LoanService {
     }
 
     // Delete Loam by id
-    public boolean deleteLoan(Long id) throws Exception{
+    public boolean deleteLoan(Long id) {
         try {
             loanRepository.deleteById(id);
             return true;
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new DataPersistenceException("Error al eliminar el préstamo: " + e.getMessage(), e);
         }
     }
 
@@ -164,7 +172,7 @@ public class LoanService {
             Optional<LoanEntity> loan = loanRepository.findByIdLoan(id);
             return loan.get().getTool();
         }catch (Exception e){
-            return null;
+            throw new DataPersistenceException("Error al obtener las herramientas del préstamo: " + e.getMessage(), e);
         }
     }
 
@@ -200,7 +208,7 @@ public class LoanService {
                 int totalPenalty = 0;
                 for (ToolEntity tool: tools) {
                     totalPenalty += tool.getLateCharge() * diffDays;
-                    client.setStateClient("RESTRINGIDO");
+                    client.setStateClient(RESTRICTED);
                     clientRepository.save(client);
                 }
 
@@ -216,23 +224,23 @@ public class LoanService {
     }
 
     // finalize loan with conditions
-    public LoanEntity finalizeLoan(Long id, int totalValueLoan) throws Exception {
+    public LoanEntity finalizeLoan(Long id, int totalValueLoan) {
 
         KardexEntity kardex = new KardexEntity();
         kardex.setDateKardex(new java.util.Date());
 
 
         try {
-            LoanEntity loan = loanRepository.findById(id).get();
+            LoanEntity loan = loanRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Préstamo no encontrado"));
 
             // Search client by id
             ClientEntity client = clientRepository.findById(loan.getIdClient().getIdClient())
-                    .orElseThrow(() -> new Exception("Cliente no encontrado"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
 
             // Search tools by loan id
             List<ToolEntity> completeTools = new ArrayList<>();
             for (ToolEntity t : loan.getTool()) {
-                ToolEntity tool = toolRepository.findById(t.getIdTool()).orElseThrow(() -> new Exception("Herramienta no encontrada"));
+                ToolEntity tool = toolRepository.findById(t.getIdTool()).orElseThrow(() -> new ResourceNotFoundException("Herramienta no encontrada"));
                 completeTools.add(tool);
             }
 
@@ -250,18 +258,18 @@ public class LoanService {
             }
 
             // Verify if client has debt
-            if (client.getStateClient().equals("RESTRINGIDO")) {
+            if (client.getStateClient().equals(RESTRICTED)) {
                 boolean hasDebt = false;
                 List<LoanEntity> loans = clientRepository.findAllLoanByIdClient(client);
                 for (LoanEntity l : loans) {
                     int penalty = l.getPenaltyLoan();
-                    if (penalty > 0 && l.getStateLoan() == "ACTIVO") {
+                    if (penalty > 0 && l.getStateLoan().equals(ACTIVE)) {
                         hasDebt = true;
                         break;
                     }
                 }
                 if (!hasDebt) {
-                    client.setStateClient("ACTIVO");
+                    client.setStateClient(ACTIVE);
                     clientRepository.save(client);
                 }
             }
@@ -270,18 +278,20 @@ public class LoanService {
             loan.setTotalLoan(totalValueLoan);
             loan.setStateLoan("FINALIZADO");
             return loanRepository.save(loan);
+        }catch (RuntimeException e){
+            throw e;
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new DataPersistenceException("Error al finalizar el préstamo: " + e.getMessage(), e);
         }
     }
 
     // Get all loans by date range
-    public List<LoanEntity> getLoansByDateRange(Date startDate, Date endDate) throws Exception {
+    public List<LoanEntity> getLoansByDateRange(Date startDate, Date endDate) {
         if (startDate == null || endDate == null) {
-            throw new Exception("Las fechas no pueden ser nulas");
+            throw new IllegalArgumentException("Las fechas no pueden ser nulas");
         }
         if (endDate.before(startDate)) {
-            throw new Exception("La fecha de fin no puede ser anterior a la fecha de inicio");
+            throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio");
         }
 
         List<LoanEntity> allLoans = loanRepository.findAll();
@@ -297,11 +307,11 @@ public class LoanService {
     }
 
     //Get num loan "RESTRINGIDO" by rut client
-    public Integer getNumLoanRestrinByRutClient(String rut) throws Exception {
+    public Integer getNumLoanRestrinByRutClient(String rut) {
         List<LoanEntity> loans = loanRepository.findByIdClient_RutClient(rut);
         int numRestrin = 0;
         for (LoanEntity loan : loans) {
-            if (loan.getStateLoan().equals("RESTRINGIDO")) {
+            if (loan.getStateLoan().equals(RESTRICTED)) {
                 numRestrin++;
             }
         }
@@ -309,11 +319,11 @@ public class LoanService {
     }
 
     //Get num loan "ACTIVO" by rut client
-    public Integer getNumActiveLoans(String rut) throws Exception {
+    public Integer getNumActiveLoans(String rut) {
         List<LoanEntity> loans = loanRepository.findByIdClient_RutClient(rut);
         int numActive = 0;
         for (LoanEntity loan : loans) {
-            if (loan.getStateLoan().equals("ACTIVO")) {
+            if (loan.getStateLoan().equals(ACTIVE)) {
                 numActive++;
             }
         }

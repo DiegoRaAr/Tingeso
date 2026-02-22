@@ -72,9 +72,9 @@ class ClientServiceTest {
     void whenGetClientById_thenReturnClient() {
         when(clientRepository.findById(1L)).thenReturn(Optional.of(client1));
 
-        ClientEntity result = clientService.getClientById(1L);
+        Optional<ClientEntity> result = clientService.getClientById(1L);
 
-        assertThat(result.getRutClient()).isEqualTo("11-1");
+        assertThat(result.get().getRutClient()).isEqualTo("11-1");
         verify(clientRepository, times(1)).findById(1L);
     }
 
@@ -118,7 +118,7 @@ class ClientServiceTest {
 
         Exception e = assertThrows(Exception.class, () -> clientService.deleteClient(1L));
 
-        assertThat(e.getMessage()).contains("DB error");
+        assertThat(e.getMessage()).contains("Error deleting client with id: 1");
         verify(clientRepository, times(1)).deleteById(1L);
     }
 

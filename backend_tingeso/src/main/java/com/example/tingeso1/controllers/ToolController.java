@@ -7,14 +7,18 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.tools.Tool;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/tool")
 public class ToolController {
+    private final ToolService toolService;
+
     @Autowired
-    ToolService toolService;
+    public ToolController(ToolService toolService) {
+        this.toolService = toolService;
+    }
 
     // Get all tools
     @GetMapping("/")
@@ -25,8 +29,8 @@ public class ToolController {
 
     // Get tool by id
     @GetMapping("/{id}")
-    public ResponseEntity<ToolEntity> getToolById(@PathVariable Long id){
-        ToolEntity tool = toolService.findById(id);
+    public ResponseEntity<Optional<ToolEntity>> getToolById(@PathVariable Long id){
+        Optional<ToolEntity> tool = toolService.findById(id);
         return ResponseEntity.ok(tool);
     }
 
@@ -46,21 +50,21 @@ public class ToolController {
 
     // Delete tool by id
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteTool(@PathVariable Long id) throws Exception {
-        var isDeleted = toolService.deleteTool(id);
+    public ResponseEntity<Boolean> deleteTool(@PathVariable Long id) {
+        toolService.deleteTool(id);
         return ResponseEntity.noContent().build();
     }
 
     // Subtract tool number
     @PutMapping("/subtract-tool/{id}")
-    public   ResponseEntity<Boolean> subtractToolNumber(@PathVariable Long id) throws Exception {
+    public ResponseEntity<Boolean> subtractToolNumber(@PathVariable Long id) {
         toolService.subtractTool(id);
         return ResponseEntity.noContent().build();
     }
 
     // Add tool number
     @PutMapping("/add-tool/{id}")
-    public   ResponseEntity<Boolean> addToolNumber(@PathVariable Long id) throws Exception {
+    public ResponseEntity<Boolean> addToolNumber(@PathVariable Long id){
         toolService.addTool(id);
         return ResponseEntity.noContent().build();
     }

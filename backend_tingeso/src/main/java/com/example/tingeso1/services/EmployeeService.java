@@ -1,17 +1,22 @@
 package com.example.tingeso1.services;
 
-import com.example.tingeso1.entities.ClientEntity;
 import com.example.tingeso1.entities.EmployeeEntity;
+import com.example.tingeso1.exceptions.DataPersistenceException;
 import com.example.tingeso1.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class EmployeeService {
+    private final EmployeeRepository employeeRepository;
+
     @Autowired
-    EmployeeRepository employeeRepository;
+    public EmployeeService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
 
     // Find Employee
     public ArrayList<EmployeeEntity> getEmployees(){
@@ -24,8 +29,8 @@ public class EmployeeService {
     }
 
     // Find Employee by Id
-    public EmployeeEntity getEmployeeById(Long id){
-        return employeeRepository.findById(id).get();
+    public Optional<EmployeeEntity> getEmployeeById(Long id){
+        return employeeRepository.findById(id);
     }
 
     // Find Employee by rut
@@ -39,12 +44,12 @@ public class EmployeeService {
     }
 
     // Delaete Employee
-    public boolean deleteEmployee(Long id) throws Exception{
+    public boolean deleteEmployee(Long id){
         try {
             employeeRepository.deleteById(id);
             return true;
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new DataPersistenceException("Error deleting employee with id: " + id, e);
         }
     }
 

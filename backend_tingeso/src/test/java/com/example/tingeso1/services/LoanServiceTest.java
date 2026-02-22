@@ -159,9 +159,9 @@ class LoanServiceTest {
     void whenGetToolsByLoanIdFails_thenReturnNull() {
         when(loanRepository.findByIdLoan(1L)).thenThrow(new RuntimeException("DB error"));
 
-        List<ToolEntity> result = loanService.getToolsByLoanId(1L);
-
-        assertThat(result).isNull();
+        Exception e = assertThrows(Exception.class, () -> loanService.getToolsByLoanId(1L));
+        
+        assertThat(e.getMessage()).contains("Error al obtener las herramientas del préstamo");
         verify(loanRepository, times(1)).findByIdLoan(1L);
     }
 
@@ -249,7 +249,7 @@ class LoanServiceTest {
 
         // Act + Assert
         Exception e = assertThrows(Exception.class, () -> loanService.finalizeLoan(1L, 5000));
-        assertThat(e.getMessage()).contains("No value present"); // lo que lanza .get() en Optional vacío
+        assertThat(e.getMessage()).contains("Préstamo no encontrado");
         verify(loanRepository, never()).save(any());
     }
 
@@ -383,7 +383,18 @@ class LoanServiceTest {
     // ---------- Cliente con 5 préstamos activos ----------
     @Test
     void whenClientHasFiveLoans_thenThrowException() {
-        List<LoanEntity> loans = Arrays.asList(new LoanEntity(), new LoanEntity(), new LoanEntity(), new LoanEntity(), new LoanEntity());
+        LoanEntity loanTest1 = new LoanEntity();
+        loanTest1.setStateLoan("ACTIVO");
+        LoanEntity loanTest2 = new LoanEntity();
+        loanTest2.setStateLoan("ACTIVO");
+        LoanEntity loanTest3 = new LoanEntity();
+        loanTest3.setStateLoan("ACTIVO");
+        LoanEntity loanTest4 = new LoanEntity();
+        loanTest4.setStateLoan("ACTIVO");
+        LoanEntity loanTest5 = new LoanEntity();
+        loanTest5.setStateLoan("ACTIVO");
+        
+        List<LoanEntity> loans = Arrays.asList(loanTest1, loanTest2, loanTest3, loanTest4, loanTest5);
         when(toolRepository.findById(1L)).thenReturn(Optional.of(tool));
         when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
         when(clientRepository.findAllLoanByIdClient(client)).thenReturn(loans);

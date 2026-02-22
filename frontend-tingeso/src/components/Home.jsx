@@ -8,13 +8,6 @@ const Home = () => {
     const [tools, setTools] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
-    const addToolNumber = (id, number) => {
-        toolService.addToolNumber(id, number)
-        window.location.reload()
-            .then(response => {
-                alert("Herramienta agregada con éxito");
-            })
-    }
     const navigate = useNavigate();
 
     useEffect(() => {

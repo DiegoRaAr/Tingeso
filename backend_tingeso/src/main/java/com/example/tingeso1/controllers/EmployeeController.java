@@ -6,14 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/employee")
 public class EmployeeController {
-    @Autowired
-    EmployeeService employeeService;
+    private final EmployeeService employeeService;
+
+     @Autowired
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
 
     // Get all employees
     @GetMapping("/")
@@ -24,8 +28,8 @@ public class EmployeeController {
 
     // Get employee by id
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeEntity> getEmployeeByID(@PathVariable Long id) {
-        EmployeeEntity employee = employeeService.getEmployeeById(id);
+    public ResponseEntity<Optional<EmployeeEntity>> getEmployeeByID(@PathVariable Long id) {
+        Optional<EmployeeEntity> employee = employeeService.getEmployeeById(id);
         return ResponseEntity.ok(employee);
     }
 
@@ -45,8 +49,8 @@ public class EmployeeController {
 
     // Delete employee by id
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteEmployeeByID(@PathVariable Long id) throws Exception {
-        var isDeleted = employeeService.deleteEmployee(id);
+    public ResponseEntity<Boolean> deleteEmployeeByID(@PathVariable Long id){
+        employeeService.deleteEmployee(id);
         return ResponseEntity.noContent().build();
     }
 }

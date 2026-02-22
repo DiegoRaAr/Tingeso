@@ -70,9 +70,10 @@ class AdminServiceTest {
     void whenGetAdminById_thenReturnAdmin() {
         when(adminRepository.findById(1L)).thenReturn(Optional.of(admin1));
 
-        AdminEntity result = adminService.getAdminById(1L);
+        Optional<AdminEntity> result = adminService.getAdminById(1L);
 
-        assertThat(result.getRutAdmin()).isEqualTo("11-1");
+        assertThat(result).isPresent();
+        assertThat(result.get().getRutAdmin()).isEqualTo("11-1");
         verify(adminRepository, times(1)).findById(1L);
     }
 
@@ -116,7 +117,7 @@ class AdminServiceTest {
 
         Exception e = assertThrows(Exception.class, () -> adminService.deleteAdmin(1L));
 
-        assertThat(e.getMessage()).contains("DB error");
+        assertThat(e.getMessage()).contains("Error deleting admin with id: 1");
         verify(adminRepository, times(1)).deleteById(1L);
     }
 }

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,10 +28,10 @@ public class LoanControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private LoanService loanService;
 
-    @MockBean
+    @MockitoBean
     private AdminService adminService;
 
     @Autowired
@@ -81,7 +81,8 @@ public class LoanControllerTest {
 
         mockMvc.perform(get("/api/v1/loan/{id}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.get().idLoan").doesNotExist()); // Optional no se serializa directo
+                .andExpect(jsonPath("$.idLoan").value(1))
+                .andExpect(jsonPath("$.stateLoan").value("ACTIVO"));
     }
 
     // ---------- POST /api/v1/loan/ ----------
@@ -93,7 +94,7 @@ public class LoanControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loan1)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.stateLoan").value("ACTIVO"));
+                .andExpect(jsonPath("$.data.stateLoan").value("ACTIVO"));
     }
 
     // ---------- PUT /api/v1/loan/ ----------
@@ -163,8 +164,6 @@ public class LoanControllerTest {
     // ---------- GET /api/v1/loan/loans-by-range-date/{initDate}/{endDate} ----------
     @Test
     void whenGetLoansByDateRange_thenReturnList() throws Exception {
-        Date start = new Date();
-        Date end = new Date();
         when(loanService.getLoansByDateRange(any(Date.class), any(Date.class)))
                 .thenReturn(List.of(loan1, loan2));
 

@@ -2,6 +2,8 @@ package com.example.tingeso1.services;
 
 import com.example.tingeso1.entities.KardexEntity;
 import com.example.tingeso1.entities.ToolEntity;
+import com.example.tingeso1.exceptions.DataPersistenceException;
+import com.example.tingeso1.exceptions.ResourceNotFoundException;
 import com.example.tingeso1.repositories.KardexRepository;
 import com.example.tingeso1.repositories.ToolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +13,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ToolService {
+    private final ToolRepository toolRepository;
+    private final KardexRepository kardexRepository;
+
+    private static final String TOOL_NOT_FOUND_MESSAGE = "Herramienta no encontrada";
+
     @Autowired
-    ToolRepository toolRepository;
-    @Autowired
-    KardexRepository kardexRepository;
+    public ToolService(ToolRepository toolRepository, KardexRepository kardexRepository) {
+        this.toolRepository = toolRepository;
+        this.kardexRepository = kardexRepository;
+    }
 
     // Find Tools
     public ArrayList<ToolEntity> getTools(){
@@ -42,13 +51,15 @@ public class ToolService {
     }
 
     // Find Tool by id
-    public ToolEntity findById(Long id){
-        return toolRepository.findById(id).get();
+    public Optional<ToolEntity> findById(Long id){
+        return toolRepository.findById(id);
     }
 
     // Update Tool
     public ToolEntity updateTool(ToolEntity toolEntity){
-        int ActualStock = findById(toolEntity.getIdTool()).getStockTool();
+        int ActualStock = findById(toolEntity.getIdTool())
+                .orElseThrow(() -> new ResourceNotFoundException(TOOL_NOT_FOUND_MESSAGE))
+                .getStockTool();
         int NewStock = toolEntity.getStockTool();
 
         KardexEntity kardex = new KardexEntity();
@@ -67,18 +78,19 @@ public class ToolService {
     }
 
     // Delete Tool by Id
-    public boolean deleteTool(Long id) throws Exception{
+    public boolean deleteTool(Long id) {
         try {
             toolRepository.deleteById(id);
             return true;
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new DataPersistenceException("Error al eliminar la herramienta: " + e.getMessage(), e);
         }
     }
 
     // subtract tool by id
-    public boolean subtractTool(Long id) throws Exception{
-        ToolEntity tool =  findById(id);
+    public boolean subtractTool(Long id) {
+        ToolEntity tool = findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(TOOL_NOT_FOUND_MESSAGE));
 
         KardexEntity kardex = new KardexEntity();
         kardex.setDateKardex(new java.util.Date());
@@ -103,12 +115,13 @@ public class ToolService {
             toolRepository.save(tool);
             return true;
         }
-        throw new Exception("Action not found (subtract tool)");
+        throw new IllegalStateException("No se puede restar stock a una herramienta sin stock");
     }
 
     // Add tool by id
     public boolean addTool(Long id){
-        ToolEntity tool =  findById(id);
+        ToolEntity tool = findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(TOOL_NOT_FOUND_MESSAGE));
         KardexEntity kardex = new KardexEntity();
 
         // Update the kardex

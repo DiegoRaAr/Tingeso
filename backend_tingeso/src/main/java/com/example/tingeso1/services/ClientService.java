@@ -1,18 +1,24 @@
 package com.example.tingeso1.services;
 
-import com.example.tingeso1.entities.AdminEntity;
 import com.example.tingeso1.entities.ClientEntity;
+import com.example.tingeso1.exceptions.DataPersistenceException;
+import com.example.tingeso1.exceptions.ResourceNotFoundException;
 import com.example.tingeso1.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClientService {
+    private final ClientRepository clientRepository;
+
     @Autowired
-    ClientRepository clientRepository;
+    public ClientService(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
 
     // Find Client
     public ArrayList<ClientEntity> getClients(){
@@ -25,8 +31,8 @@ public class ClientService {
     }
 
     // find Client by Id
-    public ClientEntity getClientById(Long id){
-        return clientRepository.findById(id).get();
+    public Optional<ClientEntity> getClientById(Long id){
+        return clientRepository.findById(id);
     }
 
     //Find Client by Rut
@@ -40,18 +46,22 @@ public class ClientService {
     }
 
     // Delete Client
-    public boolean deleteClient(Long id) throws  Exception{
+    public boolean deleteClient(Long id){
         try {
             clientRepository.deleteById(id);
             return true;
         }catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new DataPersistenceException("Error deleting client with id: " + id, e);
         }
     }
 
     // Change State Client
     public ClientEntity changeStateClient(Long id) throws Exception{
-        ClientEntity client = getClientById(id);
+        Optional<ClientEntity> clientOptional = getClientById(id);
+        if (clientOptional.isEmpty()) {
+            throw new ResourceNotFoundException("Client not found with id: " + id);
+        }
+        ClientEntity client = clientOptional.get();
         if (client.getStateClient().equals("ACTIVO")){
             client.setStateClient("RESTRINGIDO");
         } else {
