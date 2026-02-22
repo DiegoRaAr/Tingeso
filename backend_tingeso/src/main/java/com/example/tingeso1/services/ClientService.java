@@ -21,48 +21,48 @@ public class ClientService {
     }
 
     // Find Client
-    public ArrayList<ClientEntity> getClients(){
+    public ArrayList<ClientEntity> getClients() {
         return (ArrayList<ClientEntity>) clientRepository.findAll();
     }
 
     //Create Client
-    public ClientEntity saveClient(ClientEntity clientEntity){
+    public ClientEntity saveClient(ClientEntity clientEntity) {
         return clientRepository.save(clientEntity);
     }
 
     // find Client by Id
-    public Optional<ClientEntity> getClientById(Long id){
+    public Optional<ClientEntity> getClientById(Long id) {
         return clientRepository.findById(id);
     }
 
     //Find Client by Rut
-    public ClientEntity getClientByRut(String rut){
+    public ClientEntity getClientByRut(String rut) {
         return clientRepository.findByRutClient(rut);
     }
 
     // Update Client
-    public ClientEntity updateClient(ClientEntity clientEntity){
+    public ClientEntity updateClient(ClientEntity clientEntity) {
         return clientRepository.save(clientEntity);
     }
 
     // Delete Client
-    public boolean deleteClient(Long id){
+    public boolean deleteClient(Long id) {
         try {
             clientRepository.deleteById(id);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new DataPersistenceException("Error deleting client with id: " + id, e);
         }
     }
 
     // Change State Client
-    public ClientEntity changeStateClient(Long id) throws Exception{
+    public ClientEntity changeStateClient(Long id) throws Exception {
         Optional<ClientEntity> clientOptional = getClientById(id);
         if (clientOptional.isEmpty()) {
             throw new ResourceNotFoundException("Client not found with id: " + id);
         }
         ClientEntity client = clientOptional.get();
-        if (client.getStateClient().equals("ACTIVO")){
+        if (client.getStateClient().equals("ACTIVO")) {
             client.setStateClient("RESTRINGIDO");
         } else {
             client.setStateClient("ACTIVO");
@@ -71,12 +71,12 @@ public class ClientService {
     }
 
     // Get client with state "RESTRINGIDO"
-    public ArrayList<ClientEntity> getRestrictedClients(){
+    public ArrayList<ClientEntity> getRestrictedClients() {
         List<ClientEntity> clients = clientRepository.findAll();
 
         ArrayList<ClientEntity> restrictedClients = new ArrayList<>();
         for (ClientEntity client: clients) {
-            if (client.getStateClient().equals("RESTRINGIDO")){
+            if (client.getStateClient().equals("RESTRINGIDO")) {
                 restrictedClients.add(client);
             }
         }

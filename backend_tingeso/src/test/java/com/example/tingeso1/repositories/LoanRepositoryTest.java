@@ -109,10 +109,10 @@ public class LoanRepositoryTest {
         assertThat(result.get(0).getStateLoan()).isEqualTo("ACTIVO");
     }
 
-    // ---------- findByIdClient_RutClient ----------
+    // ---------- findByIdClientRutClient ----------
     @Test
     void whenFindByIdClientRutClient_thenReturnClientLoans() {
-        List<LoanEntity> result = loanRepository.findByIdClient_RutClient("11-1");
+        List<LoanEntity> result = loanRepository.findByIdClientRutClient("11-1");
 
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getIdClient().getRutClient()).isEqualTo("11-1");

@@ -9,7 +9,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-// Class ClientRepository, this class extends JpaRepository and is used to interact with the client table in the database.
+// Class ClientRepository, this class extends JpaRepository
+// and is used to interact with the client table in the database.
 @Repository
 public interface ClientRepository extends JpaRepository<ClientEntity, Long> {
     // Function to find client by rut.

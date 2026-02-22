@@ -19,36 +19,36 @@ public class EmployeeService {
     }
 
     // Find Employee
-    public ArrayList<EmployeeEntity> getEmployees(){
-        return (ArrayList<EmployeeEntity>)  employeeRepository.findAll();
+    public ArrayList<EmployeeEntity> getEmployees() {
+        return (ArrayList<EmployeeEntity>) employeeRepository.findAll();
     }
 
     // Create Employee
-    public EmployeeEntity saveEmployee(EmployeeEntity employeeEntity){
+    public EmployeeEntity saveEmployee(EmployeeEntity employeeEntity) {
         return employeeRepository.save(employeeEntity);
     }
 
     // Find Employee by Id
-    public Optional<EmployeeEntity> getEmployeeById(Long id){
+    public Optional<EmployeeEntity> getEmployeeById(Long id) {
         return employeeRepository.findById(id);
     }
 
     // Find Employee by rut
-    public EmployeeEntity getEmployeeByRut(String rut){
-        return  employeeRepository.findByRutEmployee(rut);
+    public EmployeeEntity getEmployeeByRut(String rut) {
+        return employeeRepository.findByRutEmployee(rut);
     }
 
     //Update Employee
-    public EmployeeEntity updateEmployee(EmployeeEntity employee){
+    public EmployeeEntity updateEmployee(EmployeeEntity employee) {
         return employeeRepository.save(employee);
     }
 
     // Delaete Employee
-    public boolean deleteEmployee(Long id){
+    public boolean deleteEmployee(Long id) {
         try {
             employeeRepository.deleteById(id);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new DataPersistenceException("Error deleting employee with id: " + id, e);
         }
     }

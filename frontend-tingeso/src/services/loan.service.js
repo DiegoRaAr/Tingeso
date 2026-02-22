@@ -1,51 +1,40 @@
 import httpLoan from '../http-common';
 
-const getAllLoans = () => {
-    return httpLoan.get('/v1/loan/');
-}
+const getAllLoans = () => httpLoan.get('/v1/loan/');
 
-const createLoan = data => {
-    return httpLoan.post('/v1/loan/', data);
-}
+const createLoan = (data) => httpLoan.post('/v1/loan/', data);
 
-const getLoanById = id => {
-    return httpLoan.get(`/v1/loan/${id}`);
-}
+const getLoanById = (id) => httpLoan.get(`/v1/loan/${id}`);
 
-const updateLoan = (id, data) => {
-    return httpLoan.put(`/v1/loan/${id}`, data);
-}
+const updateLoan = (id, data) => httpLoan.put(`/v1/loan/${id}`, data);
 
-const deleteLoan = id => {
-    return httpLoan.delete(`/v1/loan/${id}`);
-}
+const deleteLoan = (id) => httpLoan.delete(`/v1/loan/${id}`);
 
-const getLoansByRut = rut => {
-    return httpLoan.get(`/v1/loan/by-rut/${rut}`);
-}
+const getLoansByRut = (rut) => httpLoan.get(`/v1/loan/by-rut/${rut}`);
 
-const getToolsByLoanId = id => {
-    return httpLoan.get(`/v1/loan/tools-by-loan/${id}`);
-}
+const getToolsByLoanId = (id) => httpLoan.get(`/v1/loan/tools-by-loan/${id}`);
 
-const updatePenalty = (id) => {
-    return httpLoan.put(`/v1/loan/update-penalty/${id}`);
-}
+const updatePenalty = (id) => httpLoan.put(`/v1/loan/update-penalty/${id}`);
 
-const finishLoan = (id,total) => {
-    return httpLoan.put(`/v1/loan/finish-loan/${id}/${total}`);
-}
+const finishLoan = (id, total) => httpLoan.put(`/v1/loan/finish-loan/${id}/${total}`);
 
-const getLoanByRangeDate = (startDate, endDate) => {
-    return httpLoan.get(`/v1/loan/loans-by-range-date/${startDate}/${endDate}`);
-}
+const getLoanByRangeDate = (startDate, endDate) => httpLoan.get(`/v1/loan/loans-by-range-date/${startDate}/${endDate}`);
 
-const getNumLoanRestrinByRutClient = (rut) => {
-    return httpLoan.get(`/v1/loan/num-loans-restringido/${rut}`);
-}
+const getNumLoanRestrinByRutClient = (rut) => httpLoan.get(`/v1/loan/num-loans-restringido/${rut}`);
 
-const getNumActiveLoans = (rut) => {
-    return httpLoan.get(`/v1/loan/num-active-loans/${rut}`);
-}
+const getNumActiveLoans = (rut) => httpLoan.get(`/v1/loan/num-active-loans/${rut}`);
 
-export default { getAllLoans, createLoan, getLoanById, updateLoan, deleteLoan , getLoansByRut, getToolsByLoanId, updatePenalty, finishLoan, getLoanByRangeDate, getNumLoanRestrinByRutClient, getNumActiveLoans };
+export default {
+  getAllLoans,
+  createLoan,
+  getLoanById,
+  updateLoan,
+  deleteLoan,
+  getLoansByRut,
+  getToolsByLoanId,
+  updatePenalty,
+  finishLoan,
+  getLoanByRangeDate,
+  getNumLoanRestrinByRutClient,
+  getNumActiveLoans,
+};

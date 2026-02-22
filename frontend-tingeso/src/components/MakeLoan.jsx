@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import toolService from '../services/tool.service';
-import loanService from '../services/loan.service';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from 'react-router-dom';
 import DatePicker, { registerLocale } from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import es from 'date-fns/locale/es';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import 'react-datepicker/dist/react-datepicker.css';
+import toolService from '../services/tool.service';
+import loanService from '../services/loan.service';
 
 registerLocale('es', es);
 
-const MakeLoan = () => {
+function MakeLoan() {
   const location = useLocation();
   const client = location.state?.client;
 
@@ -23,31 +23,28 @@ const MakeLoan = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    toolService.getAllTools().then(r => setTools(r.data));
+    toolService.getAllTools().then((r) => setTools(r.data));
   }, []);
 
   const handleToolSelect = (toolId) => {
-    setSelectedTools(prev =>
-      prev.includes(toolId)
-        ? prev.filter(id => id !== toolId)
-        : [...prev, toolId]
-    );
+    setSelectedTools((prev) => (prev.includes(toolId)
+      ? prev.filter((id) => id !== toolId)
+      : [...prev, toolId]));
   };
 
   const handlePreview = () => {
     if (!endDate || selectedTools.length === 0) {
-      alert("Selecciona herramientas y fecha de devolución");
+      alert('Selecciona herramientas y fecha de devolución');
       return;
     }
 
-    const days =
-      Math.ceil(
-        (endDate.getTime() - new Date().getTime()) /
-        (1000 * 60 * 60 * 24)
-      ) + 1 || 1;
+    const days = Math.ceil(
+      (endDate.getTime() - new Date().getTime())
+        / (1000 * 60 * 60 * 24),
+    ) + 1 || 1;
 
     const total = tools
-      .filter(tool => selectedTools.includes(tool.idTool))
+      .filter((tool) => selectedTools.includes(tool.idTool))
       .reduce((sum, tool) => sum + tool.dailyCharge * days, 0);
 
     setPreviewPrice(total);
@@ -69,11 +66,11 @@ const MakeLoan = () => {
       // Si tiene menos de 5 préstamos, proceder a crear el préstamo
       const loanData = {
         initDate: new Date(),
-        endDate: endDate,
+        endDate,
         stateLoan: 'ACTIVO',
         penaltyLoan: 0,
-        tool: selectedTools.map(id => ({ idTool: id })),
-        idClient: { idClient: client.idClient }
+        tool: selectedTools.map((id) => ({ idTool: id })),
+        idClient: { idClient: client.idClient },
       };
 
       await loanService.createLoan(loanData);
@@ -85,18 +82,20 @@ const MakeLoan = () => {
       console.error('Error:', error);
       // Extraer el mensaje de error del backend
       let errorMessage = 'Error al crear préstamo';
-      
-      if (error.response && error.response.data) {
+
+      if (error.response) {
+        if (error.response.data) {
         // Si el backend envía un mensaje de error específico
-        if (typeof error.response.data === 'string') {
-          errorMessage = error.response.data;
-        } else if (error.response.data.message) {
-          errorMessage = error.response.data.message;
-        } else if (error.response.data.error) {
-          errorMessage = error.response.data.error;
+          if (typeof error.response.data === 'string') {
+            errorMessage = error.response.data;
+          } else if (error.response.data.message) {
+            errorMessage = error.response.data.message;
+          } else if (error.response.data.error) {
+            errorMessage = error.response.data.error;
+          }
         }
       }
-      
+
       alert(errorMessage);
     }
   };
@@ -104,14 +103,20 @@ const MakeLoan = () => {
   return (
     <div>
       <h2 className="text-start fs-2 my-1 mb-4">
-        Se está realizando préstamo para <strong>{client.nameClient}</strong> de rut: <strong>{client.rutClient}</strong>
+        Se está realizando préstamo para
+        {' '}
+        <strong>{client.nameClient}</strong>
+        {' '}
+        de rut:
+        {' '}
+        <strong>{client.rutClient}</strong>
       </h2>
       <form onSubmit={handleSubmit}>
-        
         <div className="mb-3">
           <div className="d-flex justify-content-between align-items-center mb-2">
-            <label className="form-label fw-bold fs-4 mb-0">Seleccionar Herramientas</label>
+            <label htmlFor="searchTool" className="form-label fw-bold fs-4 mb-0">Seleccionar Herramientas</label>
             <input
+              id="searchTool"
               type="text"
               className="form-control"
               style={{ width: '300px' }}
@@ -120,9 +125,15 @@ const MakeLoan = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div style={{ height: '450px', overflowY: 'scroll', border: '1px solid #dee2e6', borderRadius: '5px' }}>
+          <div style={{
+            height: '450px', overflowY: 'scroll', border: '1px solid #dee2e6', borderRadius: '5px',
+          }}
+          >
             <table className="table table-striped table-hover mb-0">
-              <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f8f9fa', zIndex: 1 }}>
+              <thead style={{
+                position: 'sticky', top: 0, backgroundColor: '#f8f9fa', zIndex: 1,
+              }}
+              >
                 <tr>
                   <th>Herramienta</th>
                   <th>Cargo Diario</th>
@@ -133,9 +144,9 @@ const MakeLoan = () => {
               </thead>
               <tbody>
                 {tools
-                  .filter(tool => tool.stockTool >= 1 && tool.stateTool === "ACTIVA")
-                  .filter(tool => tool.nameTool.toLowerCase().includes(searchTerm.toLowerCase()))
-                  .map(tool => (
+                  .filter((tool) => tool.stockTool >= 1 && tool.stateTool === 'ACTIVA')
+                  .filter((tool) => tool.nameTool.toLowerCase().includes(searchTerm.toLowerCase()))
+                  .map((tool) => (
                     <tr key={tool.idTool}>
                       <td>{tool.nameTool}</td>
                       <td>{tool.dailyCharge}</td>
@@ -144,13 +155,13 @@ const MakeLoan = () => {
                       <td>
                         <OverlayTrigger
                           placement="left"
-                          overlay={
+                          overlay={(
                             <Tooltip>
-                              {selectedTools.includes(tool.idTool) 
-                                ? 'Quitar esta herramienta del préstamo' 
+                              {selectedTools.includes(tool.idTool)
+                                ? 'Quitar esta herramienta del préstamo'
                                 : 'Agregar esta herramienta al préstamo'}
                             </Tooltip>
-                          }
+                          )}
                         >
                           <button
                             type="button"
@@ -169,9 +180,10 @@ const MakeLoan = () => {
         </div>
 
         <div className="mb-3 d-flex align-items-center gap-5">
-          <label className="fw-bold fs-4">Seleccione la fecha de devolución </label>
+          <label htmlFor="endDatePicker" className="fw-bold fs-4">Seleccione la fecha de devolución </label>
           <div className="ms-auto" style={{ marginRight: '0%' }}>
             <DatePicker
+              id="endDatePicker"
               selected={endDate}
               onChange={(date) => setEndDate(date)}
               locale="es"
@@ -188,54 +200,57 @@ const MakeLoan = () => {
 
         {previewPrice !== null && (
           <div className="alert alert-primary mb-3">
-            <strong>Precio total del préstamo:</strong> ${previewPrice}
+            <strong>Precio total del préstamo:</strong>
+            {' '}
+            $
+            {previewPrice}
           </div>
         )}
-        
-        <div className="mb-3">          
-        <OverlayTrigger
-          placement="top"
-          overlay={<Tooltip>Crea el préstamo con las herramientas seleccionadas</Tooltip>}
-        >
-          <button
-            type="submit"
-            className="btn btn-success mx-2"
-          >
-            Crear Préstamo
-          </button>
-        </OverlayTrigger>
 
-        <OverlayTrigger
-          placement="top"
-          overlay={<Tooltip>Calcula el precio total antes de crear el préstamo</Tooltip>}
-        >
-          <button
-            type="button"
-            className="btn btn-info mx-2"
-            onClick={handlePreview}
+        <div className="mb-3">
+          <OverlayTrigger
+            placement="top"
+            overlay={<Tooltip>Crea el préstamo con las herramientas seleccionadas</Tooltip>}
           >
-            Vista previa precio
-          </button>
-        </OverlayTrigger>
+            <button
+              type="submit"
+              className="btn btn-success mx-2"
+            >
+              Crear Préstamo
+            </button>
+          </OverlayTrigger>
 
-        <OverlayTrigger
-          placement="top"
-          overlay={<Tooltip>Volver a la página anterior sin guardar cambios</Tooltip>}
-        >
-          <button
-            type="button"
-            className="btn btn-warning mx-2"
-            onClick={() => navigate(-1)}
+          <OverlayTrigger
+            placement="top"
+            overlay={<Tooltip>Calcula el precio total antes de crear el préstamo</Tooltip>}
           >
-            Volver
-          </button>
-        </OverlayTrigger>
+            <button
+              type="button"
+              className="btn btn-info mx-2"
+              onClick={handlePreview}
+            >
+              Vista previa precio
+            </button>
+          </OverlayTrigger>
+
+          <OverlayTrigger
+            placement="top"
+            overlay={<Tooltip>Volver a la página anterior sin guardar cambios</Tooltip>}
+          >
+            <button
+              type="button"
+              className="btn btn-warning mx-2"
+              onClick={() => navigate(-1)}
+            >
+              Volver
+            </button>
+          </OverlayTrigger>
 
         </div>
 
       </form>
     </div>
   );
-};
+}
 
 export default MakeLoan;

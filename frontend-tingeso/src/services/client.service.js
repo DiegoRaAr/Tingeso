@@ -1,35 +1,28 @@
-import httpClient from "../http-common";
+import httpClient from '../http-common';
 
-const getAllClients = () => {
-    return httpClient.get('/v1/client/');
-}
+const getAllClients = () => httpClient.get('/v1/client/');
 
-const createClient = data => {
-    return httpClient.post('/v1/client/', data);
-}
+const createClient = (data) => httpClient.post('/v1/client/', data);
 
-const getClientById = id => {
-    return httpClient.get(`/v1/client/${id}`);
-}
+const getClientById = (id) => httpClient.get(`/v1/client/${id}`);
 
-const getClientByRut = rut => {
-    return httpClient.get(`/v1/client/by-rut/${rut}`);
-}
+const getClientByRut = (rut) => httpClient.get(`/v1/client/by-rut/${rut}`);
 
-const updateClient = (data) => {
-    return httpClient.put('/v1/client/', data);
-}
+const updateClient = (data) => httpClient.put('/v1/client/', data);
 
-const deleteClient = id => {
-    return httpClient.delete(`/v1/client/${id}`);
-}
+const deleteClient = (id) => httpClient.delete(`/v1/client/${id}`);
 
-const changeStateClient = (id) => {
-    return httpClient.put(`/v1/client/change-state/${id}`);
-}
+const changeStateClient = (id) => httpClient.put(`/v1/client/change-state/${id}`);
 
-const getRestrictedClients = () => {
-    return httpClient.get('/v1/client/restricted-clients');
-}
+const getRestrictedClients = () => httpClient.get('/v1/client/restricted-clients');
 
-export default { getAllClients, createClient, getClientById, updateClient, deleteClient, getClientByRut, changeStateClient, getRestrictedClients };
+export default {
+  getAllClients,
+  createClient,
+  getClientById,
+  updateClient,
+  deleteClient,
+  getClientByRut,
+  changeStateClient,
+  getRestrictedClients,
+};

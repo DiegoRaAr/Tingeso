@@ -5,7 +5,14 @@ import com.example.tingeso1.services.ToolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,28 +29,28 @@ public class ToolController {
 
     // Get all tools
     @GetMapping("/")
-    public ResponseEntity<List<ToolEntity>> listTool(){
+    public ResponseEntity<List<ToolEntity>> listTool() {
         List<ToolEntity> tools = toolService.getTools();
         return ResponseEntity.ok(tools);
     }
 
     // Get tool by id
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<ToolEntity>> getToolById(@PathVariable Long id){
+    public ResponseEntity<Optional<ToolEntity>> getToolById(@PathVariable Long id) {
         Optional<ToolEntity> tool = toolService.findById(id);
         return ResponseEntity.ok(tool);
     }
 
     // Create tool
     @PostMapping("/")
-    public ResponseEntity<ToolEntity> saveTool(@RequestBody ToolEntity tool){
+    public ResponseEntity<ToolEntity> saveTool(@RequestBody ToolEntity tool) {
         ToolEntity newTool = toolService.createTool(tool);
         return ResponseEntity.ok(newTool);
     }
 
     // Update tool
     @PutMapping("/")
-    public ResponseEntity<ToolEntity> updateTool(@RequestBody ToolEntity tool){
+    public ResponseEntity<ToolEntity> updateTool(@RequestBody ToolEntity tool) {
         ToolEntity toolUpdated = toolService.updateTool(tool);
         return ResponseEntity.ok(toolUpdated);
     }
@@ -64,7 +71,7 @@ public class ToolController {
 
     // Add tool number
     @PutMapping("/add-tool/{id}")
-    public ResponseEntity<Boolean> addToolNumber(@PathVariable Long id){
+    public ResponseEntity<Boolean> addToolNumber(@PathVariable Long id) {
         toolService.addTool(id);
         return ResponseEntity.noContent().build();
     }

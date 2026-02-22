@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "lint:report": "eslint . --ext .js,.jsx,.ts,.tsx -f json -o eslint-report.json",
+    "lint": "eslint --ext .js,.jsx .",
+    "lint:fix": "eslint --ext .js,.jsx . --fix",
+    "lint:report": "eslint --ext .js,.jsx . -f json -o eslint-report.json",
     "sonar": "sonar-scanner",
     "preview": "vite preview"
   },
@@ -16,6 +16,7 @@
     "axios": "^1.12.1",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
+    "date-fns": "^4.1.0",
     "react": "^19.1.1",
     "react-bootstrap": "^2.10.10",
     "react-datepicker": "^9.1.0",

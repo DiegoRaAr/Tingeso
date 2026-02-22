@@ -17,6 +17,12 @@
     <property name="eachLine" value="true"/>
   </module>
 
+  <!-- Line Length (Checker level, not TreeWalker) -->
+  <module name="LineLength">
+    <property name="max" value="120"/>
+    <property name="ignorePattern" value="^package.*|^import.*"/>
+  </module>
+
   <module name="TreeWalker">
     <!-- Naming Conventions -->
     <module name="PackageName">
@@ -51,12 +57,6 @@
     <module name="AvoidStarImport"/>
     <module name="RedundantImport"/>
     <module name="UnusedImports"/>
-
-    <!-- Line Length -->
-    <module name="LineLength">
-      <property name="max" value="120"/>
-      <property name="ignorePattern" value="^package.*|^import.*"/>
-    </module>
 
     <!-- Whitespace -->
     <module name="EmptyForIteratorPad"/>

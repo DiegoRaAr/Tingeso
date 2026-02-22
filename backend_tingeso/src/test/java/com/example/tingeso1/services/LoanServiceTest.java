@@ -135,12 +135,12 @@ class LoanServiceTest {
     // ---------- findByRutClient ----------
     @Test
     void whenFindByRutClient_thenReturnLoansList() {
-        when(loanRepository.findByIdClient_RutClient("11-1")).thenReturn(List.of(loan1, loan2));
+        when(loanRepository.findByIdClientRutClient("11-1")).thenReturn(List.of(loan1, loan2));
 
         List<LoanEntity> result = loanService.findByRutClient("11-1");
 
         assertThat(result).hasSize(2);
-        verify(loanRepository, times(1)).findByIdClient_RutClient("11-1");
+        verify(loanRepository, times(1)).findByIdClientRutClient("11-1");
     }
 
     // ---------- getToolsByLoanId ----------
@@ -168,12 +168,12 @@ class LoanServiceTest {
     // ---------- findLoansByRutClient ----------
     @Test
     void whenFindLoansByRutClient_thenReturnLoansList() {
-        when(loanRepository.findByIdClient_RutClient("11-1")).thenReturn(List.of(loan2, loan3));
+        when(loanRepository.findByIdClientRutClient("11-1")).thenReturn(List.of(loan2, loan3));
 
         List<LoanEntity> result = loanService.findLoansByRutClient("11-1");
 
         assertThat(result).hasSize(2);
-        verify(loanRepository, times(1)).findByIdClient_RutClient("11-1");
+        verify(loanRepository, times(1)).findByIdClientRutClient("11-1");
     }
 
     @Test

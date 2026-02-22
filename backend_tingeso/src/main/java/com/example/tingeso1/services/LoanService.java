@@ -44,7 +44,7 @@ public class LoanService {
 
 
     // Find Loan
-    public ArrayList<LoanEntity> getLoans(){
+    public ArrayList<LoanEntity> getLoans() {
         return (ArrayList<LoanEntity>) loanRepository.findAll();
     }
 
@@ -53,13 +53,15 @@ public class LoanService {
         // Search all tools of loan, and verify if they exist
         List<ToolEntity> completeTools = new ArrayList<>();
         for (ToolEntity t : loan.getTool()) {
-            ToolEntity tool = toolRepository.findById(t.getIdTool()).orElseThrow(() -> new ResourceNotFoundException("Herramienta no encontrada"));
+            ToolEntity tool = toolRepository.findById(t.getIdTool())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Herramienta no encontrada"));
             completeTools.add(tool);
         }
 
         // Search client of loan, and verify if it exists
         ClientEntity client = clientRepository.findById(loan.getIdClient().getIdClient())
-        .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
 
         // Get all loans of client and verify if it has debt
         boolean debt = false;
@@ -142,12 +144,12 @@ public class LoanService {
     }
 
     // Find Loan by Id
-    public Optional<LoanEntity> findById(Long id){
+    public Optional<LoanEntity> findById(Long id) {
         return loanRepository.findById(id);
     }
 
     //Update Loan
-    public LoanEntity updateLoan(LoanEntity loanEntity){
+    public LoanEntity updateLoan(LoanEntity loanEntity) {
         return loanRepository.save(loanEntity);
     }
 
@@ -156,36 +158,37 @@ public class LoanService {
         try {
             loanRepository.deleteById(id);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new DataPersistenceException("Error al eliminar el préstamo: " + e.getMessage(), e);
         }
     }
 
     // Get loan by rut client
-    public List<LoanEntity> findByRutClient(String rut){
-        return loanRepository.findByIdClient_RutClient(rut);
+    public List<LoanEntity> findByRutClient(String rut) {
+        return loanRepository.findByIdClientRutClient(rut);
     }
 
     // Get tools by loan id
-    public List<ToolEntity> getToolsByLoanId(Long id){
+    public List<ToolEntity> getToolsByLoanId(Long id) {
         try {
             Optional<LoanEntity> loan = loanRepository.findByIdLoan(id);
             return loan.get().getTool();
-        }catch (Exception e){
-            throw new DataPersistenceException("Error al obtener las herramientas del préstamo: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new DataPersistenceException(
+                    "Error al obtener las herramientas del préstamo: " + e.getMessage(), e);
         }
     }
 
     // Get loans by id client
-    public List<LoanEntity> findLoansByRutClient(String rut){
-        return loanRepository.findByIdClient_RutClient(rut);
+    public List<LoanEntity> findLoansByRutClient(String rut) {
+        return loanRepository.findByIdClientRutClient(rut);
     }
 
     // Update penalty: This function updates the penalty of loan
-    public LoanEntity updatePenaltyLoan(Long id){
-        try{
+    public LoanEntity updatePenaltyLoan(Long id) {
+        try {
             // Search loan by id
-            LoanEntity loanEntity =  loanRepository.findById(id).orElse(null);
+            LoanEntity loanEntity = loanRepository.findById(id).orElse(null);
             // Search client by id
             ClientEntity client = loanEntity.getIdClient();
             // Search finish date of loan
@@ -218,7 +221,7 @@ public class LoanService {
             }
             loanEntity.setPenaltyLoan(0);
             return loanRepository.save(loanEntity);
-        } catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
@@ -231,7 +234,9 @@ public class LoanService {
 
 
         try {
-            LoanEntity loan = loanRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Préstamo no encontrado"));
+            LoanEntity loan = loanRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Préstamo no encontrado"));
 
             // Search client by id
             ClientEntity client = clientRepository.findById(loan.getIdClient().getIdClient())
@@ -240,7 +245,9 @@ public class LoanService {
             // Search tools by loan id
             List<ToolEntity> completeTools = new ArrayList<>();
             for (ToolEntity t : loan.getTool()) {
-                ToolEntity tool = toolRepository.findById(t.getIdTool()).orElseThrow(() -> new ResourceNotFoundException("Herramienta no encontrada"));
+                ToolEntity tool = toolRepository.findById(t.getIdTool())
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Herramienta no encontrada"));
                 completeTools.add(tool);
             }
 
@@ -278,9 +285,9 @@ public class LoanService {
             loan.setTotalLoan(totalValueLoan);
             loan.setStateLoan("FINALIZADO");
             return loanRepository.save(loan);
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             throw e;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new DataPersistenceException("Error al finalizar el préstamo: " + e.getMessage(), e);
         }
     }
@@ -308,7 +315,7 @@ public class LoanService {
 
     //Get num loan "RESTRINGIDO" by rut client
     public Integer getNumLoanRestrinByRutClient(String rut) {
-        List<LoanEntity> loans = loanRepository.findByIdClient_RutClient(rut);
+        List<LoanEntity> loans = loanRepository.findByIdClientRutClient(rut);
         int numRestrin = 0;
         for (LoanEntity loan : loans) {
             if (loan.getStateLoan().equals(RESTRICTED)) {
@@ -320,7 +327,7 @@ public class LoanService {
 
     //Get num loan "ACTIVO" by rut client
     public Integer getNumActiveLoans(String rut) {
-        List<LoanEntity> loans = loanRepository.findByIdClient_RutClient(rut);
+        List<LoanEntity> loans = loanRepository.findByIdClientRutClient(rut);
         int numActive = 0;
         for (LoanEntity loan : loans) {
             if (loan.getStateLoan().equals(ACTIVE)) {

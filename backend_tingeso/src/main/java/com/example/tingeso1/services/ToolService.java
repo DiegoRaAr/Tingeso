@@ -29,12 +29,12 @@ public class ToolService {
     }
 
     // Find Tools
-    public ArrayList<ToolEntity> getTools(){
+    public ArrayList<ToolEntity> getTools() {
         return (ArrayList<ToolEntity>) toolRepository.findAll();
     }
 
     // Create Tool
-    public ToolEntity createTool(ToolEntity toolEntity){
+    public ToolEntity createTool(ToolEntity toolEntity) {
         ToolEntity savedTool = toolRepository.save(toolEntity);
 
         String stock = String.valueOf(savedTool.getStockTool());
@@ -51,25 +51,25 @@ public class ToolService {
     }
 
     // Find Tool by id
-    public Optional<ToolEntity> findById(Long id){
+    public Optional<ToolEntity> findById(Long id) {
         return toolRepository.findById(id);
     }
 
     // Update Tool
-    public ToolEntity updateTool(ToolEntity toolEntity){
-        int ActualStock = findById(toolEntity.getIdTool())
+    public ToolEntity updateTool(ToolEntity toolEntity) {
+        int actualStock = findById(toolEntity.getIdTool())
                 .orElseThrow(() -> new ResourceNotFoundException(TOOL_NOT_FOUND_MESSAGE))
                 .getStockTool();
-        int NewStock = toolEntity.getStockTool();
+        int newStock = toolEntity.getStockTool();
 
         KardexEntity kardex = new KardexEntity();
         kardex.setDateKardex(new java.util.Date());
         kardex.setIdTool(toolEntity.getIdTool());
         kardex.setNameTool(toolEntity.getNameTool());
-        if (NewStock > ActualStock) {
-            kardex.setStateTool("SUMA +" + (NewStock - ActualStock));
-        } else if (NewStock < ActualStock) {
-            kardex.setStateTool("DISMINUCIÓN -" + (ActualStock - NewStock));
+        if (newStock > actualStock) {
+            kardex.setStateTool("SUMA +" + (newStock - actualStock));
+        } else if (newStock < actualStock) {
+            kardex.setStateTool("DISMINUCIÓN -" + (actualStock - newStock));
         } else {
             kardex.setStateTool("ACTUALIZACIÓN");
         }
@@ -82,7 +82,7 @@ public class ToolService {
         try {
             toolRepository.deleteById(id);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new DataPersistenceException("Error al eliminar la herramienta: " + e.getMessage(), e);
         }
     }
@@ -97,7 +97,7 @@ public class ToolService {
         kardex.setIdTool(tool.getIdTool());
 
         // Verify if tool is the last one
-        if (tool.getStockTool() == 1){
+        if (tool.getStockTool() == 1) {
             tool.setStockTool(tool.getStockTool() - 1);
             tool.setStateTool("BAJA");
             kardex.setStateTool("BAJA");
@@ -107,7 +107,7 @@ public class ToolService {
             return true;
         }
         // Verify if tool has stock 
-        if (tool.getStockTool() > 1){
+        if (tool.getStockTool() > 1) {
             tool.setStockTool(tool.getStockTool() - 1);
             kardex.setStateTool("DISMINUCIÓN");
             kardex.setNameTool(tool.getNameTool());
@@ -119,7 +119,7 @@ public class ToolService {
     }
 
     // Add tool by id
-    public boolean addTool(Long id){
+    public boolean addTool(Long id) {
         ToolEntity tool = findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(TOOL_NOT_FOUND_MESSAGE));
         KardexEntity kardex = new KardexEntity();

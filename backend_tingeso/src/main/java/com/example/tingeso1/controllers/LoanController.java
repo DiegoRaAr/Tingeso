@@ -5,7 +5,14 @@ import com.example.tingeso1.services.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import com.example.tingeso1.entities.ToolEntity;
 
 import java.util.Date;
@@ -24,14 +31,14 @@ public class LoanController {
 
     // Get all loans
     @GetMapping("/")
-    public ResponseEntity<List<LoanEntity>> listLoan(){
+    public ResponseEntity<List<LoanEntity>> listLoan() {
         List<LoanEntity> loans = loanService.getLoans();
         return ResponseEntity.ok(loans);
     }
 
     // Get loan by id
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<LoanEntity>> getLoanById(@PathVariable Long id){
+    public ResponseEntity<Optional<LoanEntity>> getLoanById(@PathVariable Long id) {
         Optional<LoanEntity> loan = loanService.findById(id);
         return ResponseEntity.ok(loan);
     }
@@ -59,41 +66,41 @@ public class LoanController {
 
     // Update loan
     @PutMapping("/")
-    public ResponseEntity<LoanEntity> updateLoan(@RequestBody LoanEntity loan){
+    public ResponseEntity<LoanEntity> updateLoan(@RequestBody LoanEntity loan) {
         LoanEntity loanUpdated = loanService.updateLoan(loan);
         return ResponseEntity.ok(loanUpdated);
     }
 
     // Get loans by rut
     @GetMapping("/by-rut/{rut}")
-    public ResponseEntity<List<LoanEntity>> getLoansByRut(@PathVariable String rut){
+    public ResponseEntity<List<LoanEntity>> getLoansByRut(@PathVariable String rut) {
         return ResponseEntity.ok(loanService.findByRutClient(rut));
     }
 
     // Delete loan by id
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteLoanByID(@PathVariable Long id){
+    public ResponseEntity<Boolean> deleteLoanByID(@PathVariable Long id) {
         loanService.deleteLoan(id);
         return ResponseEntity.noContent().build();
     }
 
     // Get tools by loan id
     @GetMapping("/tools-by-loan/{id}")
-    public ResponseEntity<List<ToolEntity>> getToolsByLoanId(@PathVariable Long id){
+    public ResponseEntity<List<ToolEntity>> getToolsByLoanId(@PathVariable Long id) {
         return ResponseEntity.ok(loanService.getToolsByLoanId(id));
     }
 
     // Update penalty loan
     @PutMapping("/update-penalty/{id}")
-    public ResponseEntity<LoanEntity> updatePenaltyLoan(@PathVariable Long id){
+    public ResponseEntity<LoanEntity> updatePenaltyLoan(@PathVariable Long id) {
         LoanEntity loanUpdated = loanService.updatePenaltyLoan(id);
         return ResponseEntity.ok(loanUpdated);
     }
 
     // Finish loan
     @PutMapping("/finish-loan/{id}/{totalValue}")
-    public ResponseEntity<LoanEntity> finishLoan(@PathVariable Long id, @PathVariable Integer totalValue){
-        return ResponseEntity.ok(loanService.finalizeLoan(id,totalValue));
+    public ResponseEntity<LoanEntity> finishLoan(@PathVariable Long id, @PathVariable Integer totalValue) {
+        return ResponseEntity.ok(loanService.finalizeLoan(id, totalValue));
     }
 
     // Get loans by range date

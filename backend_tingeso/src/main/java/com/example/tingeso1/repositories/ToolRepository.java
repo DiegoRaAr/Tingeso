@@ -32,6 +32,6 @@ public interface ToolRepository extends JpaRepository<ToolEntity, Long> {
     // Function to find tool by daily charge.
     // Input: daily charge of tool(int)
     // Output: list of tool entities
-    List<ToolEntity> findByDailyCharge(int daily_charge);
+    List<ToolEntity> findByDailyCharge(int dailyCharge);
 
 }

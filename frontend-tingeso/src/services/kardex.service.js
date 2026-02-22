@@ -1,23 +1,15 @@
-import httpKardex from "../http-common";
+import httpKardex from '../http-common';
 
-const getAllKardex = () => {
-    return httpKardex.get('/v1/kardex/');
-}           
+const getAllKardex = () => httpKardex.get('/v1/kardex/');
 
-const createKardex = data => {
-    return httpKardex.post('/v1/kardex/', data);
-}
+const createKardex = (data) => httpKardex.post('/v1/kardex/', data);
 
-const getKardexById = id => {
-    return httpKardex.get(`/v1/kardex/${id}`);
-}
+const getKardexById = (id) => httpKardex.get(`/v1/kardex/${id}`);
 
-const updateKardex = (id, data) => {
-    return httpKardex.put(`/v1/kardex/${id}`, data);
-}
+const updateKardex = (id, data) => httpKardex.put(`/v1/kardex/${id}`, data);
 
-const deleteKardex = id => {
-    return httpKardex.delete(`/v1/kardex/${id}`);
-}
+const deleteKardex = (id) => httpKardex.delete(`/v1/kardex/${id}`);
 
-export default { getAllKardex, createKardex, getKardexById, updateKardex, deleteKardex };
+export default {
+  getAllKardex, createKardex, getKardexById, updateKardex, deleteKardex,
+};

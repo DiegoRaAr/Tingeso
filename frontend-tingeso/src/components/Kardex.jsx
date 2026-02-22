@@ -1,161 +1,167 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import '../App.css';
-import kardexService from "../services/kardex.service";
 import DatePicker, { registerLocale } from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import es from 'date-fns/locale/es';
+import 'react-datepicker/dist/react-datepicker.css';
+import '../App.css';
+import kardexService from '../services/kardex.service';
 
 registerLocale('es', es);
 
-const Kardex = () => {
-    const navigate = useNavigate();
+function Kardex() {
+  const navigate = useNavigate();
 
-    const [kardexes, setKardexes] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
+  const [kardexes, setKardexes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
-    useEffect(() => {
-        kardexService.getAllKardex()
-            .then(response => setKardexes(response.data))
-            .catch(error => console.log("Error al obtener kardex", error));
-    }, []);
+  useEffect(() => {
+    kardexService.getAllKardex()
+      .then((response) => setKardexes(response.data))
+      .catch((error) => console.log('Error al obtener kardex', error));
+  }, []);
 
-    const filteredKardexes = kardexes.filter(kardex => {
-        // Filter for tool name or ID Kardex
-        const searchMatch = searchTerm 
-            ? kardex.nameTool.toLowerCase().includes(searchTerm.toLowerCase()) || 
-              kardex.idKardex.toString().includes(searchTerm)
-            : true;
+  const filteredKardexes = kardexes.filter((kardex) => {
+    // Filter for tool name or ID Kardex
+    const searchMatch = searchTerm
+      ? kardex.nameTool.toLowerCase().includes(searchTerm.toLowerCase())
+              || kardex.idKardex.toString().includes(searchTerm)
+      : true;
 
-        // filter for date range
-        if (!startDate && !endDate) return searchMatch;
-        
-        const kardexDate = new Date(kardex.dateKardex);
-        // Normalize dates to ignore time for stricter day comparison if desired, 
-        // but simple comparison usually suffices if kardexDate is mostly date-based.
-        // Assuming kardexDate comes from DB as ISO string.
-        
-        const startMatch = startDate ? kardexDate >= startDate : true;
-        // For end date, we might want to include the whole end day.
-        // DatePicker returns 00:00:00 of the selected day.
-        // If kardexDate has time (e.g. 14:00), and endDate is selected day 00:00, 
-        // <= endDate will exclude it unless we set endDate to end of day.
-        
-        let endMatch = true;
-        if (endDate) {
-            const endOfDay = new Date(endDate);
-            endOfDay.setHours(23, 59, 59, 999);
-            endMatch = kardexDate <= endOfDay;
-        }
+    // filter for date range
+    if (!startDate && !endDate) return searchMatch;
 
-        return searchMatch && startMatch && endMatch;
-    }).sort((a, b) => b.idKardex - a.idKardex);
+    const kardexDate = new Date(kardex.dateKardex);
+    // Normalize dates to ignore time for stricter day comparison if desired,
+    // but simple comparison usually suffices if kardexDate is mostly date-based.
+    // Assuming kardexDate comes from DB as ISO string.
 
-    return (
-        <div className="container-fluid">
-            <h2 className="text-start my-1 mb-4">Control de inventario</h2>
-            <h6 className="text-start my-1 mb-3">En este apartado puedes revisar el historial de movimientos de las herramientas, filtrarlos por fecha o buscar por nombre o ID del movimiento.</h6>
-            
-            {/* Filtros */}
-            <div className="mb-3 d-flex gap-3 align-items-center" style={{ position: 'relative', zIndex: 1050 }}>
-                <div style={{ flex: 1 }}>
-                    <input
-                        type="search"
-                        className="form-control w-100"
-                        placeholder="Buscar por ID o nombre..."
-                        value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
-                    />
-                </div>
-                
-                <div className="d-flex gap-2" style={{ flex: 2 }}>
-                    <div style={{ flex: 1 }}>
-                        <DatePicker
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            placeholderText="Desde"
-                            className="form-control w-100"
-                            wrapperClassName="w-100"
-                            locale="es"
-                            dateFormat="dd/MM/yyyy"
-                            showMonthDropdown
-                            showYearDropdown
-                            dropdownMode="select"
-                        />
-                    </div>
-                    <div style={{ flex: 1 }}>
-                        <DatePicker
-                            selected={endDate}
-                            onChange={(date) => setEndDate(date)}
-                            minDate={startDate}
-                            placeholderText="Hasta"
-                            className="form-control w-100"
-                            wrapperClassName="w-100"
-                            locale="es"
-                            dateFormat="dd/MM/yyyy"
-                            showMonthDropdown
-                            showYearDropdown
-                            dropdownMode="select"
-                        />
-                    </div>
-                </div>
+    const startMatch = startDate ? kardexDate >= startDate : true;
+    // For end date, we might want to include the whole end day.
+    // DatePicker returns 00:00:00 of the selected day.
+    // If kardexDate has time (e.g. 14:00), and endDate is selected day 00:00,
+    // <= endDate will exclude it unless we set endDate to end of day.
 
-                <OverlayTrigger
-                    placement="top"
-                    overlay={<Tooltip>Restablecer todos los filtros de búsqueda y fecha</Tooltip>}
-                >
-                    <button
-                        className="btn btn-warning mx-2"
-                        type="button"
-                        onClick={() => {
-                            setSearchTerm("");
-                            setStartDate(null);
-                            setEndDate(null);
-                        }}
-                    >
-                        Limpiar filtros
-                    </button>
-                </OverlayTrigger>
-            </div>
+    let endMatch = true;
+    if (endDate) {
+      const endOfDay = new Date(endDate);
+      endOfDay.setHours(23, 59, 59, 999);
+      endMatch = kardexDate <= endOfDay;
+    }
 
-            <div style={{ height: '550px', overflowY: 'scroll', border: '1px solid #dee2e6', borderRadius: '5px' }}>
-                <table className="table table-striped table-hover align-middle mb-0">
-                    <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f8f9fa', zIndex: 1 }}>
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Fecha</th>
-                            <th scope="col">ID Herramienta</th>
-                            <th scope="col">Nombre Herramienta</th>
-                            <th scope="col">Estado Herramienta</th>
-                        </tr>
-                    </thead>
-                    <tbody className="table-group-divider">
-                        {filteredKardexes.map((kardex) => (
-                            <tr key={kardex.idKardex}>
-                                <td>{kardex.idKardex}</td>
-                                <td>{new Date(kardex.dateKardex).toLocaleDateString()}</td>
-                                <td>{kardex.idTool}</td>
-                                <td>{kardex.nameTool}</td>
-                                <td>{kardex.stateTool}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+    return searchMatch && startMatch && endMatch;
+  }).sort((a, b) => b.idKardex - a.idKardex);
 
-            <div className="mt-4">
-                <OverlayTrigger
-                    placement="top"
-                    overlay={<Tooltip>Regresar a la página principal</Tooltip>}
-                >
-                    <button className="btn btn-primary mx-2" type="button" onClick={() => navigate(`/start`)}>Volver al inicio</button>
-                </OverlayTrigger>
-            </div>
+  return (
+    <div className="container-fluid">
+      <h2 className="text-start my-1 mb-4">Control de inventario</h2>
+      <h6 className="text-start my-1 mb-3">En este apartado puedes revisar el historial de movimientos de las herramientas, filtrarlos por fecha o buscar por nombre o ID del movimiento.</h6>
+
+      {/* Filtros */}
+      <div className="mb-3 d-flex gap-3 align-items-center" style={{ position: 'relative', zIndex: 1050 }}>
+        <div style={{ flex: 1 }}>
+          <input
+            type="search"
+            className="form-control w-100"
+            placeholder="Buscar por ID o nombre..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
-    );
-};
+
+        <div className="d-flex gap-2" style={{ flex: 2 }}>
+          <div style={{ flex: 1 }}>
+            <DatePicker
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+              placeholderText="Desde"
+              className="form-control w-100"
+              wrapperClassName="w-100"
+              locale="es"
+              dateFormat="dd/MM/yyyy"
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+            />
+          </div>
+          <div style={{ flex: 1 }}>
+            <DatePicker
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              minDate={startDate}
+              placeholderText="Hasta"
+              className="form-control w-100"
+              wrapperClassName="w-100"
+              locale="es"
+              dateFormat="dd/MM/yyyy"
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+            />
+          </div>
+        </div>
+
+        <OverlayTrigger
+          placement="top"
+          overlay={<Tooltip>Restablecer todos los filtros de búsqueda y fecha</Tooltip>}
+        >
+          <button
+            className="btn btn-warning mx-2"
+            type="button"
+            onClick={() => {
+              setSearchTerm('');
+              setStartDate(null);
+              setEndDate(null);
+            }}
+          >
+            Limpiar filtros
+          </button>
+        </OverlayTrigger>
+      </div>
+
+      <div style={{
+        height: '550px', overflowY: 'scroll', border: '1px solid #dee2e6', borderRadius: '5px',
+      }}
+      >
+        <table className="table table-striped table-hover align-middle mb-0">
+          <thead style={{
+            position: 'sticky', top: 0, backgroundColor: '#f8f9fa', zIndex: 1,
+          }}
+          >
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">ID Herramienta</th>
+              <th scope="col">Nombre Herramienta</th>
+              <th scope="col">Estado Herramienta</th>
+            </tr>
+          </thead>
+          <tbody className="table-group-divider">
+            {filteredKardexes.map((kardex) => (
+              <tr key={kardex.idKardex}>
+                <td>{kardex.idKardex}</td>
+                <td>{new Date(kardex.dateKardex).toLocaleDateString()}</td>
+                <td>{kardex.idTool}</td>
+                <td>{kardex.nameTool}</td>
+                <td>{kardex.stateTool}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="mt-4">
+        <OverlayTrigger
+          placement="top"
+          overlay={<Tooltip>Regresar a la página principal</Tooltip>}
+        >
+          <button className="btn btn-primary mx-2" type="button" onClick={() => navigate('/start')}>Volver al inicio</button>
+        </OverlayTrigger>
+      </div>
+    </div>
+  );
+}
 
 export default Kardex;

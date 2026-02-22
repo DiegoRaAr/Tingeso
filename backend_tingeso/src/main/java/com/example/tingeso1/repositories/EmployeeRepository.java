@@ -6,7 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-// Class EmployeeRepository, this class extends JpaRepository and is used to interact with the employee table in the database.
+// Class EmployeeRepository, this class extends JpaRepository
+// and is used to interact with the employee table in the database.
 @Repository
 public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> {
     // Function to find employee by rut.
